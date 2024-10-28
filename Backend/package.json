@@ -4,8 +4,7 @@
   "description": "Express tutorial",
   "main": "server.js",
   "scripts": {
-    "start": "node server",
-    "dev": "nodemon server"
+    "start": "nodemon server"
   },
   "author": "Dave Gray",
   "license": "ISC",
@@ -22,6 +21,6 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.22"
   }
 }

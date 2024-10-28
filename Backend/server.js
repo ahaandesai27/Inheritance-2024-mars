@@ -35,8 +35,8 @@ app.use('/register', require('./routes/register'));
 app.use('/auth', require('./routes/auth'));
 app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
-app.use(verifyJWT)
-// app.use('/api/employees', require('./routes/api/employees'));
+// app.use(verifyJWT) 
+app.use('/api/recipes', require('./routes/api/recipes'));
 
 // Nothing found
 app.all('*', (req, res) => {

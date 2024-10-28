@@ -1,0 +1,6 @@
+node_modules
+.env
+models/Employee.js
+controllers/employeesController.js
+logs
+routes/api/employees.js

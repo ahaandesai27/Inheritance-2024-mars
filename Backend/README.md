@@ -1,3 +1,3 @@
-# MongoDB Express.js Backend
+# Recipaura backend
 
-This is a simple template of a MongoDB and Express.js backend. It provides a basic setup for building RESTful APIs.
+The backend for recipaura, written in node.js

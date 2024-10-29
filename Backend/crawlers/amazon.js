@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const { URL } = require('url');
 
-async function scrapeAmazon(query) {
+async function amazonScraper(query) {
   // Start a headless browser
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
@@ -41,4 +41,4 @@ async function scrapeAmazon(query) {
   return products;
 }
 
-module.exports = scrapeAmazon;
+module.exports = amazonScraper;

@@ -1,10 +1,12 @@
 const Recipe = require('../models/Recipe');
 
+// Unique key is ID
+
 //get all Recipes
 const getRecipes = async (req, res) => {
     try {
         const skip = parseInt(req.query.skip) || 0;
-        const limit = parseInt(req.query.limit) || 10;
+        const limit = parseInt(req.query.limit) || 1;
         const cuisine = req.query.cuisine;
         if(cuisine) {
             const recipes = await Recipe.find({Cuisine: cuisine}).skip(skip).limit(limit);
@@ -23,56 +25,41 @@ const getRecipes = async (req, res) => {
     }
 };
 
-//create new ID and add to list
-const createNewRecipe = async (req, res) => {
-    if(!req?.body.firstname || !req?.body.lastname) {
-        res.status(400).json({error: 'Please include both first and last name'});
-    }
-    try {
-        console.log(req.body.firstName);
-        console.log(req.body.lastName);
-        const newRecipe = new Recipe({
-            firstName: req.body.firstname,
-            lastName: req.body.lastname
-        });
-        console.log(newRecipe);
-        const result = await newRecipe.save();
-        console.log(result)
-        res.status(201).json(result);
-    }
-    catch(err) {
-        res.status(500).json({error: err});
-    }
-}
-//find by ID and update
-const updateRecipe = async (req, res) => {
-    // Write later
-}
-//find by ID and delete
-const deleteRecipe = async (req, res) => {
-    if(!req?.params?.id) {
-        res.status(400).json({error: 'Please include Recipe ID'});
-    }
-    const id = req.params.id;
-    const deletedRecipe = await Recipe.findOne({_id: id}).exec();
-    if(!deletedRecipe) {
-        res.status(204).json({error: `No Recipe with id ${id}`});
-    } else {
-        const result = await Recipe.deleteOne({_id: id});
-        res.json(result);
-    }
-}   
-//find by ID and return
 const getRecipeById = async (req, res) => {
-    if(!req?.params?.id) {
-        res.status(400).json({error: 'Please include Recipe ID'});
-    } 
-    const id = req.params.id;
-    const singleRecipe = await Recipe.findOne({_id: id}).exec();
-    if(!singleRecipe) {
-        res.status(204).json({error: `No Recipe with id ${id}`});
-    } else {
-        res.json(singleRecipe);
+    try {
+        const recipe  = await Recipe.findOne({_id: req.params.id});
+        res.status(200).json(recipe);
+    } catch (error) {
+        res.status(400).json({ error: 'Failed to find recipe' });
+    }
+}
+
+const createNewRecipe = async (req, res) => {
+    try {
+        const recipe = new Recipe(req.body);
+        await recipe.save();
+        res.status(201).json(recipe);
+    }
+    catch (error) {
+        res.status(400).json({ error: 'Failed to create recipe' });
+    }
+}
+
+const updateRecipe = async (req, res) => {
+    try {
+        const recipe  = await Recipe.findOneAndUpdate({_id: req.params.id}, req.body , {new: true, runValidators: true});
+        res.status(200).json(recipe);
+    } catch (error) {
+        res.status(400).json({ error: 'Failed to update recipe' });
+    }
+}
+
+const deleteRecipe = async (req, res) => {
+    try {
+        const recipe = await Recipe.findOneAndDelete({_id: req.params.id});
+        res.status(200).json(recipe);
+    } catch (error) {
+        res.status(400).json({ error: 'Failed to delete recipe' });
     }
 }
 

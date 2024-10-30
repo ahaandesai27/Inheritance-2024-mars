@@ -1,37 +1,46 @@
 const puppeteer = require('puppeteer');
+const { URL } = require('url');
 
 async function zeptoScraper(query) {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
+  // Start a headless browser
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
 
-    // Enable geolocation for your current location
-    const context = browser.defaultBrowserContext();
-    await context.overridePermissions('https://www.zeptonow.com', ['geolocation']);
-    
-    // Set your current location (latitude and longitude)
-    await page.setGeolocation({
-        latitude: 19.115171,
-        longitude: 72.901933
+  const context = browser.defaultBrowserContext();
+  await context.overridePermissions('https://www.zeptonow.com', ['geolocation']);
+
+  await page.setGeolocation({
+    latitude: 19.115171,
+    longitude: 72.901933
+  });
+
+  const startUrl = `https://www.zeptonow.com/search?query=${query}`;
+  await page.goto(startUrl, { waitUntil: 'networkidle2' });
+  console.log(`Navigating to: ${startUrl}`);
+
+  const products = await page.evaluate(() => {
+    const productNames = Array.from(document.querySelectorAll('.\\!tracking-normal')).map(el => el.innerText);
+    const productWeights = Array.from(document.querySelectorAll('.\\!font-normal')).map(el => el.innerText);
+    const productPrices = Array.from(document.querySelectorAll('.items-end')).map(el => {
+      const prices = el.innerText.split('\n\n').map(price => parseInt(price.slice(1)));
+      return prices.length > 1 ? { originalPrice: prices[0], discountedPrice: prices[1] } : { originalPrice: prices[0], discountedPrice: null };
     });
+    const productImages = Array.from(document.querySelectorAll('.group-hover\\:scale-110')).map(el => el.src);
 
-    // Go to the page with the specified query
-    await page.goto(`https://www.zeptonow.com/search?query=${query}`, { waitUntil: 'networkidle2' });
-    await page.setViewport({ width: 1920, height: 1080 });
+    return productNames.map((name, index) => ({
+      product_name: name,
+      product_weight: productWeights[index] || 'N/A',
+      product_price: productPrices[index] || { originalPrice: 'N/A', discountedPrice: null },
+      product_image: productImages[index] || 'N/A'
+    }));
+  });
 
-    // Optional: Handle location popup if needed
-    // await page.waitForSelector('[data-testid="location-popup"]');
-    // await page.click('[data-testid="auto-address-btn"]');
-    // await page.waitForTimeout(2000);
+  if (products.length === 0) {
+    console.warn("No product names found. Check your selectors.");
+  }
 
-    const selector = '.\\!tracking-normal';
-
-    // Scrape the specified elements
-    const scrapedData = await page.$$eval(selector, elements => 
-        elements.map(element => element.innerText)
-    );
-
-    await browser.close();
-    return scrapedData;
+  await browser.close();
+  return products;
 }
 
 module.exports = zeptoScraper;

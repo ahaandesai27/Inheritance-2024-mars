@@ -12,21 +12,19 @@ async function amazonScraper(query) {
 
   console.log(`Navigating to: ${startUrl}`);
 
-  // const screenshotPath = `screenshots/iphone_screenshot.png`;
-  // await page.screenshot({ path: screenshotPath, fullPage: true });
-  // console.log(`Screenshot saved at: ${screenshotPath}`);
-
-
-  // Extract product names and links
   const products = await page.evaluate(() => {
-    let productNames = Array.from(document.querySelectorAll('span.a-text-normal')).map(el => el.innerText);
-    let productLinks = Array.from(document.querySelectorAll('a.a-link-normal.a-text-normal')).map(el => el.href);
-    let productPrices = Array.from(document.querySelectorAll('.a-price-whole')).map(el => el.innerText);
-    
+    const productNames = Array.from(document.querySelectorAll('span.a-text-normal')).map(el => el.innerText);
+    const productLinks = Array.from(document.querySelectorAll('a.a-link-normal.a-text-normal')).map(el => el.href);
+    const productPrices = Array.from(document.querySelectorAll('.a-price-whole')).map(el => el.innerText);
+    const productImages = Array.from(document.querySelectorAll('img.s-image')).map(el => el.src);
+    const productWeights = Array.from(document.querySelectorAll('.a-price+ .a-color-secondary')).map(el => el.innerText);
+    // Need to format later
     return productNames.map((name, index) => ({
       product_name: name,
       product_link: productLinks[index],
-      product_price: productPrices[index] || 'N/A'
+      product_price: productPrices[index] || 'N/A',
+      productImages: productImages[index],
+      productWeights: productWeights[index]
     }));
   });
 
@@ -34,9 +32,6 @@ async function amazonScraper(query) {
     console.warn("No product names found. Check your selectors.");
   }
 
-  // Output scraped dat
-
-  // Close the browser
   await browser.close();
   return products;
 }

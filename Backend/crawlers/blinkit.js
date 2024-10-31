@@ -44,7 +44,7 @@ async function blinkitScraper(query) {
             let newProducts = await page.evaluate(() => {
                 let product_names = Array.from(document.querySelectorAll('.tw-font-semibold.tw-line-clamp-2')).map(el => el.innerText);
                 let product_weights = Array.from(document.querySelectorAll('.tw-font-medium.tw-line-clamp-1')).map(el => el.innerText);
-                let product_images = Array.from(document.querySelectorAll('.tw-h-full.tw-w-full.tw.transition-opacity.tw-opacity-100'));
+                let product_images = Array.from(document.querySelectorAll('.gagoLZ img')).map(el => el.src).slice(6)
                 let product_prices = Array.from(document.querySelectorAll('div.tw-text-200.tw-font-semibold')).map(el => el.innerText.slice(1));
 
 

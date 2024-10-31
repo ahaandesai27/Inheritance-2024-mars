@@ -1,0 +1,9 @@
+WebScraping:
+1. Add two more websites to scrape
+2. Add pagination to scrapers
+3. Fix blinkit image issues 
+
+Normal backend:
+1. Add collection for ingredients categories
+2. Add veg/nonveg column to recipe collection
+3. Figure out a way to calculate calories for each dish 

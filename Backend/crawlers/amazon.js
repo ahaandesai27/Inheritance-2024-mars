@@ -13,18 +13,22 @@ async function amazonScraper(query) {
   console.log(`Navigating to: ${startUrl}`);
 
   const products = await page.evaluate(() => {
-    const productNames = Array.from(document.querySelectorAll('span.a-text-normal')).map(el => el.innerText);
-    const productLinks = Array.from(document.querySelectorAll('a.a-link-normal.a-text-normal')).map(el => el.href);
-    const productPrices = Array.from(document.querySelectorAll('.a-price-whole')).map(el => el.innerText);
+    const productNames = Array.from(document.querySelectorAll('.a-color-base.a-text-normal')).map(el => el.innerText);
+    const productPrices = Array.from(document.querySelectorAll('.a-price-whole')).map(el => parseInt(el.innerText.replace(/,/g, ''), 10));
     const productImages = Array.from(document.querySelectorAll('img.s-image')).map(el => el.src);
-    const productWeights = Array.from(document.querySelectorAll('.a-price+ .a-color-secondary')).map(el => el.innerText);
-    // Need to format later
+    const productWeights = Array.from(document.querySelectorAll('.a-price+ .a-color-secondary')).map((el) => {
+      el = el.innerText
+      let result = el.split('\n')[2].replace(')', '');
+      return result
+    });
+    const productLinks = Array.from(document.querySelectorAll('.a-color-base.a-text-normal')).map(el => el.closest('a').href);
+
     return productNames.map((name, index) => ({
       product_name: name,
-      product_link: productLinks[index],
       product_price: productPrices[index] || 'N/A',
       productImages: productImages[index],
-      productWeights: productWeights[index]
+      productWeights: productWeights[index],
+      productLinks: productLinks[index] || 'No-link'
     }));
   });
 

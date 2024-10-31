@@ -8,11 +8,13 @@ const crawlerController = require('../../controllers/crawlerController');
 const {
     getAmazonIngredients,
     getBlinkitIngredients,
-    getZeptoIngredients
+    getZeptoIngredients,
+    getSwiggyIngredients
 } = crawlerController;
 
 router.route('/amazon').get(getAmazonIngredients);
 router.route('/blinkit').get(getBlinkitIngredients);
 router.route('/zepto').get(getZeptoIngredients);
+router.route('/swiggy').get(getSwiggyIngredients);
 
 module.exports = router;

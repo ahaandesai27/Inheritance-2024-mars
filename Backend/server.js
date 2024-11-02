@@ -37,7 +37,8 @@ app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 // app.use(verifyJWT) 
 app.use('/api/recipes', require('./routes/api/recipes'));
-app.use('/api/ingredients', require('./routes/api/crawlers'));
+app.use('/api/getingredients', require('./routes/api/crawlers'));
+app.use('/api/ingredients', require('./routes/api/ingredients'));
 // Nothing found
 app.all('*', (req, res) => {
     res.status(404);

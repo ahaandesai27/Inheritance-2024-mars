@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+// sample url https://www.swiggy.com/instamart/search?custom_back=true&query=almonds
 
 async function swiggyScraper(query) {
   const browser = await puppeteer.launch({ headless: true });
@@ -16,13 +17,14 @@ async function swiggyScraper(query) {
     const productNames = Array.from(document.querySelectorAll('._1sPB0')).map(el => el.innerText);
     const productPrices = Array.from(document.querySelectorAll('.JZGfZ')).map(el => el.innerText);
     const productWeights = Array.from(document.querySelectorAll('._3eIPt')).map(el => el.innerText);
-    const productImage = Array.from(document.querySelectorAll('img._1NxA5')).map(el => el.src);
+    const productImages = Array.from(document.querySelectorAll('img._1NxA5')).map(el => el.src);
 
     return productPrices.map((price, index) => ({
-      product_name: productNames[index] || 'N/A',
-      product_prices: price || 'N/A',
-      productWeights: productWeights[index] || 'N/A',
-      productImage: productImage[index] || 'N/A'
+      productName: productNames[index] || 'N/A',
+      productPrice: price || 'N/A',
+      productWeight: productWeights[index] || 'N/A',
+      productImage: productImages[index] || 'N/A',
+      origin: "swiggy"
     }));
   });
 

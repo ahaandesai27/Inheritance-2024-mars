@@ -9,12 +9,14 @@ const {
     getAmazonIngredients,
     getBlinkitIngredients,
     getZeptoIngredients,
-    getSwiggyIngredients
+    getSwiggyIngredients,
+    getBigBasketIngredients
 } = crawlerController;
 
 router.route('/amazon').get(getAmazonIngredients);
 router.route('/blinkit').get(getBlinkitIngredients);
 router.route('/zepto').get(getZeptoIngredients);
 router.route('/swiggy').get(getSwiggyIngredients);
+router.route('/bigbasket').get(getBigBasketIngredients);
 
 module.exports = router;

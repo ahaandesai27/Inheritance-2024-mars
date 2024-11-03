@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const { URL } = require('url');
+// https://www.amazon.in/s?k=almonds&page=1 - for testing
 
 async function amazonScraper(query) {
   // Start a headless browser
@@ -15,20 +16,25 @@ async function amazonScraper(query) {
   const products = await page.evaluate(() => {
     const productNames = Array.from(document.querySelectorAll('.a-color-base.a-text-normal')).map(el => el.innerText);
     const productPrices = Array.from(document.querySelectorAll('.a-price-whole')).map(el => parseInt(el.innerText.replace(/,/g, ''), 10));
-    const productImages = Array.from(document.querySelectorAll('img.s-image')).map(el => el.src);
+    const productMRPs = Array.from(document.querySelectorAll('.aok-inline-block .a-text-price span')).map(el => parseInt(el.innerText.slice(1), 10));
     const productWeights = Array.from(document.querySelectorAll('.a-price+ .a-color-secondary')).map((el) => {
       el = el.innerText
       let result = el.split('\n')[2].replace(')', '');
       return result
     });
+    const productImages = Array.from(document.querySelectorAll('img.s-image')).map(el => el.src);
     const productLinks = Array.from(document.querySelectorAll('.a-color-base.a-text-normal')).map(el => el.closest('a').href);
 
     return productNames.map((name, index) => ({
-      product_name: name,
-      product_price: productPrices[index] || 'N/A',
-      productImages: productImages[index],
-      productWeights: productWeights[index],
-      productLinks: productLinks[index] || 'No-link'
+      productName: name,
+      productPrice: {
+        amazonPrice: productPrices[index] || 'N/A',
+        originalPrice: productMRPs[index] || 'N/A'
+      },
+      productWeight: productWeights[index],
+      productImage: productImages[index],
+      productLink: productLinks[index] || 'No-link',
+      origin: "amazon"
     }));
   });
 

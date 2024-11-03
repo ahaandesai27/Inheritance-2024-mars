@@ -2,6 +2,7 @@ const amazonScraper = require('../crawlers/amazon');
 const blinkitScraper = require('../crawlers/blinkit');
 const zeptoScraper = require('../crawlers/zepto');
 const swiggyScraper = require('../crawlers/swiggy');
+const bigBasketScraper = require('../crawlers/bigbasket');
 
 const getAmazonIngredients = async (req, res) => {
     try {
@@ -43,9 +44,20 @@ const getSwiggyIngredients = async (req, res) => {
     }
 }
 
+const getBigBasketIngredients = async (req, res) => {
+    try {
+        const ingredient = req.query.q;
+        const products = await bigBasketScraper(ingredient);
+        return res.json(products);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch ingredients' });
+    }
+}
+
 module.exports = {
     getAmazonIngredients,
     getBlinkitIngredients,
     getZeptoIngredients,
-    getSwiggyIngredients
+    getSwiggyIngredients,
+    getBigBasketIngredients
 }

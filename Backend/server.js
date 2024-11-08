@@ -31,10 +31,9 @@ app.use('/',express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 
 //routes
-app.use('/register', require('./routes/register'));
-app.use('/auth', require('./routes/auth'));
-app.use('/refresh', require('./routes/refresh'));
-app.use('/logout', require('./routes/logout'));
+app.use('/register', require('./routes/user/register'));
+app.use('/auth', require('./routes/user/login'));            // Login
+app.use('/logout', require('./routes/user/logout'));
 // app.use(verifyJWT) 
 app.use('/api/recipes', require('./routes/api/recipes'));
 app.use('/api/getingredients', require('./routes/api/crawlers'));

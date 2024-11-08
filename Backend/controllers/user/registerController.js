@@ -1,8 +1,8 @@
-const User = require('../models/User');
+const User = require('../../models/User');
 const bcrypt = require('bcrypt');
 
 const handleNewUser = async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, email, mobileNumber } = req.body;
     if(!username || !password) {
         res.status(400).send('Missing username or password');
         return;
@@ -20,7 +20,9 @@ const handleNewUser = async (req, res) => {
         //add new user to DB
         const result = await User.create({ 
             username,
-            password: hashedPassword 
+            password: hashedPassword,
+            email,
+            mobileNumber
         });
         console.log(result);
         res.status(201).send(`New user ${username} created!`);

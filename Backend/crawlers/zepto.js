@@ -3,7 +3,6 @@ const {
   URL
 } = require('url');
 // https://www.zeptonow.com/search?query=almonds - for testing
-
 async function zeptoScraper(query) {
   try {
     // Start a headless browser
@@ -40,7 +39,8 @@ async function zeptoScraper(query) {
         };
       });
       const productImages = Array.from(document.querySelectorAll('.group-hover\\:scale-110')).map(el => el.src);
-      const productLinks = Array.from(document.querySelectorAll('a.\\!my-0.relative.my-3.mb-9.rounded-t-xl.rounded-b-md.group')).map(el => el.href);
+      const productLinks = Array.from(document.querySelectorAll('a[class="!my-0 relative my-3 mb-9 rounded-t-xl rounded-b-md group selectorgadget_suggested"][data-testid="product-card"]'))
+        .map(el => el.innerHTML);
 
       return productNames.map((name, index) => ({
         productName: name,
@@ -50,8 +50,7 @@ async function zeptoScraper(query) {
         },
         productWeight: productWeights[index] || 'N/A',
         productImage: productImages[index] || 'N/A',
-        productLink: productLinks[index] || 'No-link',
-        origin: "zepto"
+        productLink: productLinks[index] || null,
       })).sort((a, b) => a.productPrice.originalPrice - b.productPrice.originalPrice);
     });
 

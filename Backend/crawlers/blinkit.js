@@ -43,16 +43,20 @@ async function blinkitScraper(query) {
         while (products.length < SCRAPE_LIMIT && hasMoreProducts) {
             let newProducts = await page.evaluate(() => {
                 let product_names = Array.from(document.querySelectorAll('.tw-font-semibold.tw-line-clamp-2')).map(el => el.innerText);
-                let product_weights = Array.from(document.querySelectorAll('.tw-font-medium.tw-line-clamp-1')).map(el => el.innerText);
+                let product_weights = Array.from(document.querySelectorAll('.ljxcbQ div div')).map(el => el.innerText);
                 let product_images = Array.from(document.querySelectorAll('.gagoLZ img')).map(el => el.src).slice(6)
-                let product_prices = Array.from(document.querySelectorAll('div.tw-text-200.tw-font-semibold')).map(el => el.innerText.slice(1));
-
+                let productDiscountedPrices = Array.from(document.querySelectorAll('div.tw-text-200.tw-font-semibold')).map(el => el.innerText.slice(1));
+                let productOriginalPrices = Array.from(document.querySelectorAll('div.tw-text-200.tw-font-regular.tw-line-through span span')).map(el => el.innerText.slice(1));
 
                 return product_names.map((name, index) => ({
-                    product_name: name,
-                    product_weight: product_weights[index] || 'N/A',
-                    product_image: product_images[index],
-                    product_price: product_prices[index] || 'N/A'
+                    productName: name,
+                    productWeight: product_weights[index] || 'N/A',
+                    productImage: product_images[index],
+                    productPrice: {
+                        discountedPrice: productDiscountedPrices[index] || 'N/A',
+                        originalPrice: productOriginalPrices[index] || 'N/A'
+                    },
+                    origin: "blinkit"
                 }));
             });
 

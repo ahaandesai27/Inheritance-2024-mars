@@ -28,7 +28,7 @@ async function amazonScraper(query) {
     return productNames.map((name, index) => ({
       productName: name,
       productPrice: {
-        amazonPrice: productPrices[index] || 'N/A',
+        discountedPrice: productPrices[index] || productMRPs[index],
         originalPrice: productMRPs[index] || 'N/A'
       },
       productWeight: productWeights[index],

@@ -29,8 +29,8 @@ The backend for recipaura
    - Add the following variables to configure your server (adjust values as needed):
 
      ```env
-     PORT=3500
      DATABASE_URL=
+     PORT=3500
      JWT_SECRET=
      ```
 
@@ -45,10 +45,116 @@ The backend for recipaura
 
 ## API Documentation
 
-- will add soon
+## **Routes**
+
+### **1. Recipe Routes**
+**Base Path**: `/api/recipes`
+
+### **Recipe Schema**
+- **`translatedRecipeName`**: Name of the recipe (String, required).  
+- **`translatedIngredients`**: Ingredients as a string (String, required).  
+- **`totalTimeInMins`**: Total time required to prepare the recipe (Number, required, minimum value: 1).  
+- **`cuisine`**: Cuisine type (String, required).  
+- **`translatedInstructions`**: Instructions for preparation (String, required).  
+- **`url`**: URL to the recipe (String, optional).  
+- **`cleanedIngredients`**: Processed ingredient details (String, required).  
+- **`imageUrl`**: URL to the recipe's image (String, required).  
+- **`ingredientCount`**: Number of ingredients used (Number, required, minimum value: 1).
+
+#### **Endpoints**:
+- **`GET /`**  
+  Fetch all recipes.
+
+- **`POST /`**  
+  Create a new recipe.
+
+- **`GET /:id`**  
+  Fetch a recipe by its ID.
+
+- **`PUT /:id`**  
+  Update a recipe by its ID.
+
+- **`DELETE /:id`**  
+  Delete a recipe by its ID.
+
+### **2. Ingredient Categories Routes**
+**Base Path**: `/api/ingredients`
+
+These routes manage ingredient categories and subcategories.
+
+#### **Endpoints**:
+- **`POST /`**  
+  Create a new category.
+
+- **`GET /`**  
+  Fetch all categories.
+
+- **`GET /:id`**  
+  Fetch a category by its ID.
+
+- **`PUT /:id`**  
+  Update a category by its ID.
+
+- **`DELETE /:id`**  
+  Delete a category by its ID.
+
+
+### **Category Schema**
+
+#### **Category Fields**:
+- **`category`**: Name of the category (String, required, unique).  
+- **`subcategories`**: Array of subcategory objects.
+
+#### **Subcategory Fields**:
+- **`name`**: Name of the subcategory (String, required).  
+- **`ingredients`**: Array of ingredient objects.
+
+#### **Ingredient Fields**:
+- **`name`**: Name of the ingredient (String).  
+- **`nutritionalInfo`**: Object containing:
+  - `calories`: Number of calories.
+  - `protein`: Protein content.
+  - `fat`: Fat content.
+  - `carbohydrates`: Carbohydrate content.  
+
+### **3. Routes for getting ingredient prices and other data from crawlers**
+**Base Path**: `/api/getingredients/<platform>?q=<item>`<br>
+**Example**: `/api/getingredients/amazon?q=bananas`
+
+#### **Crawler Response Keys**:
+Each crawler returns an array of objects with the following keys:
+- **`productName`**: Name of the product.  
+- **`productPrice`**: Object containing:
+  - `discountedPrice`: Discounted or final price.
+  - `originalPrice`: Original or marked price (if available).  
+- **`productWeight`**: Weight of the product.  
+- **`productImage`**: URL to the product image.  
+- **`productLink`**: Link to the product page.  
+- **`origin`**: Source platform (e.g., "amazon").
+<br> **Note**: Some crawlers may return less information than mentioned above.
+
+#### **Endpoints**:
+- **`GET /amazon`**  
+  Fetches ingredients data from Amazon.
+
+- **`GET /zepto`**  
+  Fetches ingredients data from Zepto.
+
+[**Note**: the following routes need fixing.]
+- **`GET /blinkit`**  
+  Fetches ingredients data from Blinkit.
+
+- **`GET /swiggy`**  
+  Fetches ingredients data from Swiggy. 
+
+- **`GET /bigbasket`**  
+  Fetches ingredients data from BigBasket.
+
+
+
 
 ## Troubleshooting
 
 - If the server doesn't start, make sure Node.js and npm are correctly installed and that all dependencies are installed.
 - Check that your `.env` file has the correct configuration.
-- or message me with the issue
+- or create an issue on github.

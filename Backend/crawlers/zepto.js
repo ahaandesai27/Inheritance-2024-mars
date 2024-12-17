@@ -51,6 +51,7 @@ async function zeptoScraper(query) {
         productWeight: productWeights[index] || 'N/A',
         productImage: productImages[index] || 'N/A',
         productLink: productLinks[index] || null,
+        origin: "zepto"
       })).sort((a, b) => a.productPrice.originalPrice - b.productPrice.originalPrice);
     });
 

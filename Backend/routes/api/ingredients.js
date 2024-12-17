@@ -1,4 +1,3 @@
-// Define routes with the created functions
 const express = require('express');
 const router = express.Router();
 const ingredientsController = require('../../controllers/ingredientsController');

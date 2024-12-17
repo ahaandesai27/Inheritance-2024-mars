@@ -1,27 +1,51 @@
 const puppeteer = require('puppeteer');
-// sample url https://www.swiggy.com/instamart/search?custom_back=true&query=almonds
 
 async function swiggyScraper(query) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   const startUrl = `https://www.swiggy.com/instamart/search?custom_back=true&query=${query}`;
 
-  await page.goto(startUrl, { waitUntil: 'domcontentloaded' });
   console.log(`Navigating to: ${startUrl}`);
+  await page.goto(startUrl, { waitUntil: 'networkidle2' });
 
-  // Wait for the product elements to load
-  await page.waitForSelector('._1sPB0'); 
-  await page.waitForSelector('.JZGfZ'); 
+  try {
+    await page.waitForSelector('.sc-aXZVg.hwhxsS._1sPB0', { timeout: 10000 });
+  } catch (error) {
+    console.error("Error: Product elements did not load in time.");
+    await browser.close();
+    return [];
+  }
+
+  await page.evaluate(async () => {
+    await new Promise((resolve) => {
+      let totalHeight = 0;
+      const distance = 200;
+      const timer = setInterval(() => {
+        const scrollHeight = document.body.scrollHeight;
+        window.scrollBy(0, distance);
+        totalHeight += distance;
+
+        if (totalHeight >= scrollHeight) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, 100);
+    });
+  });
 
   const products = await page.evaluate(() => {
-    const productNames = Array.from(document.querySelectorAll('._1sPB0')).map(el => el.innerText);
-    const productPrices = Array.from(document.querySelectorAll('.JZGfZ')).map(el => el.innerText);
-    const productWeights = Array.from(document.querySelectorAll('._3eIPt')).map(el => el.innerText);
+    const productNames = Array.from(document.querySelectorAll('.sc-aXZVg.hwhxsS._1sPB0')).map(el => el.innerText.trim());
+    const productPrices = Array.from(document.querySelectorAll('.JZGfZ')).map(el => el.innerText.trim());
+    const discountedPrices = Array.from(document.querySelectorAll('._1MUgI')).map(el => el.innerText.trim());
+    const productWeights = Array.from(document.querySelectorAll('._3eIPt')).map(el => el.innerText.trim());
     const productImages = Array.from(document.querySelectorAll('img._1NxA5')).map(el => el.src);
 
-    return productPrices.map((price, index) => ({
-      productName: productNames[index] || 'N/A',
-      productPrice: price || 'N/A',
+    return productNames.map((name, index) => ({
+      productName: name || 'N/A',
+      productPrice: {
+        discountedPrice: discountedPrices[index] || productPrices[index] || 'N/A',
+        originalPrice: productPrices[index] || 'N/A'
+      },
       productWeight: productWeights[index] || 'N/A',
       productImage: productImages[index] || 'N/A',
       origin: "swiggy"
@@ -29,7 +53,7 @@ async function swiggyScraper(query) {
   });
 
   if (products.length === 0) {
-    console.warn("No product names found. Check your selectors.");
+    console.warn("No product names found. Verify the selectors or page structure.");
   }
 
   await browser.close();

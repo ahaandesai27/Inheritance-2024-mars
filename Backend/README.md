@@ -140,16 +140,17 @@ Each crawler returns an array of objects with the following keys:
 - **`GET /zepto`**  
   Fetches ingredients data from Zepto.
 
-[**Note**: the following routes need fixing.]
-- **`GET /blinkit`**  
-  Fetches ingredients data from Blinkit.
-
 - **`GET /swiggy`**  
   Fetches ingredients data from Swiggy. 
+  <br>[**Note**: `productLink` not available yet]
 
 - **`GET /bigbasket`**  
   Fetches ingredients data from BigBasket.
+  <br>[**Note**: `productImage` not available yet]
 
+[**Note**: the following routes need fixing.]
+- **`GET /blinkit`**  
+  Fetches ingredients data from Blinkit.
 
 
 

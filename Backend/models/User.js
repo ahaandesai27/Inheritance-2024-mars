@@ -5,12 +5,23 @@ const userSchema = new Schema({
     username: {
         type: String,
         required: [true, 'Username is required'],
-        trim: true
+        trim: true,
+        unique: true
     },
     password: {
         type: String,
         required: [true, 'Password is required'],
         trim: true,
+    },
+    firstName: {
+        type: String,
+        required: [true, 'First name is required'],
+        trim: true
+    },
+    lastName: {
+        type: String,
+        required: [true, 'Last name is required'],
+        trim: true
     },
     email: {
         type: String,
@@ -33,6 +44,10 @@ const userSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    vegetarian: {
+        type: Boolean,
+        default: false
     }
 });
 

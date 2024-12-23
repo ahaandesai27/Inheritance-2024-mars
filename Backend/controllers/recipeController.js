@@ -6,7 +6,8 @@ const Recipe = require('../models/Recipe');
 const getRecipes = async (req, res) => {
     try {
         const skip = parseInt(req.query.skip) || 0;
-        const limit = parseInt(req.query.limit) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        console.log(skip, limit)
         const cuisine = req.query.cuisine;
         if(cuisine) {
             const recipes = await Recipe.find({Cuisine: cuisine}).skip(skip).limit(limit);

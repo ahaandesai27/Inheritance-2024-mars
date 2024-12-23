@@ -62,8 +62,8 @@ The backend for recipaura
 - **`ingredientCount`**: Number of ingredients used (Number, required, minimum value: 1).
 
 #### **Endpoints**:
-- **`GET /`**  
-  Fetch all recipes.
+- **`GET - /api/recipes?skip={skip}&limit={limit}`**  
+  Fetch all recipes, skipping by certain index and limiting by certain value. Default is 0 skip and 10 limit.
 
 - **`POST /`**  
   Create a new recipe.

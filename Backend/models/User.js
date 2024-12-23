@@ -39,6 +39,10 @@ const userSchema = new Schema({
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'recipes'
     },
+    history: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'recipes'
+    },
     allergies: [String],
     refreshToken: [String],
     createdAt: {

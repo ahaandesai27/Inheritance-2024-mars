@@ -113,5 +113,5 @@ module.exports = {
     saveRecipe,
     deleteSavedRecipe,
     addToHistory,
-    getHistory
+    getHistory,
 }

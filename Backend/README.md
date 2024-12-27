@@ -77,6 +77,11 @@ The backend for recipaura
 - **`DELETE /:id`**  
   Delete a recipe by its ID.
 
+- **`GET /search?q={query}&skip={skip}&limit={limit}`**
+  Searches for recipes based on the query, skip by 'skip' amount and limit by 'limit' amount
+  Example: /search?q=paneer&skip=4&limit=10
+  By default skip = 0 and limit = 10
+
 ### **2. Ingredient Categories Routes**
 **Base Path**: `/api/ingredients`
 

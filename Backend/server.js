@@ -27,7 +27,6 @@ app.use(cors(corsOptions));
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/',express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 
 //routes
@@ -35,12 +34,19 @@ app.use('/register', require('./routes/user/register'));
 app.use('/login', require('./routes/user/login'));            // Login
 app.use('/logout', require('./routes/user/logout'));
 // app.use(verifyJWT) 
+
+// Normal routes
 app.use('/api/recipes', require('./routes/api/recipes'));
 app.use('/api/getingredients', require('./routes/api/crawlers'));
 app.use('/api/ingredients', require('./routes/api/ingredients'));
-app.use('/api/user/recipes', require('./routes/user/recipes'));    
+app.use('/api/dietplan', require('./routes/api/dietplans'));
+
+// User routes 
 app.use('/api/user', require('./routes/user/fetch'));
-// Nothing found
+app.use('/api/user/recipes', require('./routes/user/recipes'));   
+app.use('/api/user/dietplans', require('./routes/user/dietplans'));
+
+// 404 
 app.all('*', (req, res) => {
     res.status(404);
     if(req.accepts('json')) {

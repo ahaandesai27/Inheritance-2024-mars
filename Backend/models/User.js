@@ -52,6 +52,10 @@ const userSchema = new Schema({
     vegetarian: {
         type: Boolean,
         default: false
+    },
+    dietPlans: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'dietplans'
     }
 });
 

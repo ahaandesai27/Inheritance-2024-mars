@@ -21,11 +21,12 @@ class Recipaura extends StatelessWidget {
         ),
         home: const UserPage(),
         routes: {
-          "/": (context) => const UserPage(),
-          "/signup": (context) => const SignUpPage(),
-          "/login": (context) => const LoginPage(),
-          "/grocery": (context) => const GroceryPage(),
-          '/recipe': (context) => const RecipePage(),
-        });
+         // "/": (context) => const UserPage(),
+         // "/signup": (context) => const SignUpPage(),
+         //"/login": (context) => const LoginPage(),
+         // "/grocery": (context) => const GroceryPage(),
+         // '/recipe': (context) => const RecipePage(),
+        }
+      );
   }
 }

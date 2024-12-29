@@ -6,10 +6,12 @@ const corsOptions = require('./config/corsOptions');
 const {logger} = require('./middleware/logEvents');
 const errorHandler = require('./middleware/errorHandler');
 const verifyJWT = require('./middleware/verifyJWT');
-const cookieParser = require('cookie-parser');
 const credentials = require('./middleware/credentials');
 const mongoose = require('mongoose');
 const connectDB = require('./config/dbConnection');
+const passport = require('passport');
+
+require('./controllers/user/googleController')
 require('dotenv').config();
 const PORT = process.env.PORT || 3500;
 // Connect to DB
@@ -27,12 +29,19 @@ app.use(cors(corsOptions));
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 
-//routes
+// authentication
 app.use('/register', require('./routes/user/register'));
 app.use('/login', require('./routes/user/login'));            // Login
 app.use('/logout', require('./routes/user/logout'));
+app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+app.get('/auth/google/callback', 
+    passport.authenticate('google', { session: false }), 
+    (req, res) => {
+        res.json({ message: 'Login successful!', user: req.user });
+    }
+);
+
 // app.use(verifyJWT) 
 
 // Normal routes

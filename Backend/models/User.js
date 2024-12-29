@@ -4,13 +4,11 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     username: {
         type: String,
-        required: [true, 'Username is required'],
         trim: true,
         unique: true
     },
     password: {
         type: String,
-        required: [true, 'Password is required'],
         trim: true,
     },
     firstName: {
@@ -23,6 +21,10 @@ const userSchema = new Schema({
         required: [true, 'Last name is required'],
         trim: true
     },
+    googleId: {
+        type: String,
+        unique: true
+    },
     email: {
         type: String,
         required: [true, 'Email is required'],
@@ -31,7 +33,6 @@ const userSchema = new Schema({
     },
     mobileNumber: {
         type: String,
-        required: [true, 'Mobile number is required'],
         unique: true,
         trim: true
     },

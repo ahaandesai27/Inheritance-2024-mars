@@ -16,8 +16,11 @@
     "date-fns": "^2.23.0",
     "dotenv": "^16.3.1",
     "express": "^4.17.1",
+    "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.3.4",
+    "passport": "^0.7.0",
+    "passport-google-oauth2": "^0.2.0",
     "puppeteer": "^23.6.0",
     "uuid": "^8.3.2"
   },

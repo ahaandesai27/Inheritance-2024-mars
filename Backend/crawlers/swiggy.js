@@ -43,8 +43,8 @@ async function swiggyScraper(query) {
     return productNames.map((name, index) => ({
       productName: name || 'N/A',
       productPrice: {
-        discountedPrice: discountedPrices[index] || productPrices[index] || 'N/A',
-        originalPrice: productPrices[index] || 'N/A'
+        discountedPrice: parseInt(discountedPrices[index]) || parseInt(productPrices[index]) || 'N/A',
+        originalPrice: parseInt(productPrices[index]) || 'N/A'
       },
       productWeight: productWeights[index] || 'N/A',
       productImage: productImages[index] || 'N/A',

@@ -23,6 +23,10 @@ const DietPlan = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'user'
+    },
+    totalCalorieCount: {
+        type: Number,
+        default: 0
     }
 });
 

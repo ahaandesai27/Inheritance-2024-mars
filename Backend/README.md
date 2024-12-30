@@ -29,9 +29,11 @@ The backend for recipaura
    - Add the following variables to configure your server (adjust values as needed):
 
      ```env
-     DATABASE_URL=
-     PORT=3500
-     JWT_SECRET=
+      DATABASE_URI = 
+      PORT = 4000
+      ACCESS_TOKEN_SECRET = 
+      OAUTH2_CLIENT_ID = 
+      OAUTH2_CLIENT_SECRET = 
      ```
 
 4. **Run the server**
@@ -152,11 +154,6 @@ Each crawler returns an array of objects with the following keys:
 - **`GET /bigbasket`**  
   Fetches ingredients data from BigBasket.
   <br>[**Note**: `productImage` not available yet]
-
-[**Note**: the following routes need fixing.]
-- **`GET /blinkit`**  
-  Fetches ingredients data from Blinkit.
-
 
 
 ## Troubleshooting

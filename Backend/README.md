@@ -155,6 +155,77 @@ Each crawler returns an array of objects with the following keys:
   Fetches ingredients data from BigBasket.
   <br>[**Note**: `productImage` not available yet]
 
+### **4. Routes for Diet Plan management**
+ There are two sets of routes 
+ 1) `/api/user/dietplans` - for managing diet plans of a user
+ 2) `/api/dietplans` - for managing recipes within a diet plan
+ 
+ ####  Base `/api/user/dietplans`
+ Note: before all these requests base url must be added.
+- **`POST /:userId`**  
+  Creates a new diet plan for a user. Specify the user ID in the request parameters, and the diet plan **name** and **description** in the request body.
+
+- **`GET /:userId`**  
+  Fetches all diet plans for a user.
+
+- **`PUT /:dietPlanId`**  
+  Edits an existing diet plan.
+
+- **`DELETE /:userId/:dietPlanId`**  
+  Deletes a diet plan for a user, specify user Id and corresponding diet plan Id.
+
+ 
+#### Base `/api/dietplans/`
+
+- **`POST /:dietPlanId/recipes/:recipeId`**  
+  Adds a recipe to a diet plan.
+
+- **`DELETE /:dietPlanId/recipes/:recipeId`**  
+  Removes a recipe from a diet plan.
+
+- **`GET /:dietPlanId/recipes`**  
+  Retrieves all recipes in a diet plan.
+
+### **5. User routes** 
+
+- **`POST /register`
+    Registers a user. Fields needed:
+    i) For normal registration - firstName, lastName, username, password, email, mobileNumber
+    ii) For google registration - firstName, lastName, username, email, googleId. After google verification on the frontend call a request on this route.
+    All fields must be specified in the request body.
+
+- **`POST /login`
+    Logs in a user, this will return the JWT token, use that to authenticate user on client side.
+ 
+- **`POST /auth/google` - Backend alternative for google auth, use only if frontend doesnt work
+
+- **`GET /api/user/id/:userId` - fetches user using its user ID.
+- 
+- **`GET /api/user/:username` - fetches user using its username
+    Example: /api/user/ahaandesai27
+
+### **6. User recipe routes**
+Base Path: `/api/user/recipes`
+
+#### Endpoints:
+POST `/saved`
+Save a recipe for the user.
+
+DELETE `/saved`
+Delete a saved recipe for the user.
+
+GET `/saved/:userId`
+Get all saved recipes for a user.
+
+POST `/history`
+Add a recipe to the user's history.
+
+GET `/history/:userId`
+Get the history of recipes for a user.
+ 
+Note: in the POST and DELETE requests, the fields "userId" and "recipeId" will need to be specified in the request body.
+
+
 
 ## Troubleshooting
 

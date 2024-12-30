@@ -13,12 +13,12 @@ const userSchema = new Schema({
     },
     firstName: {
         type: String,
-        required: [true, 'First name is required'],
+        // required: [true, 'First name is required'],
         trim: true
     },
     lastName: {
         type: String,
-        required: [true, 'Last name is required'],
+        // required: [true, 'Last name is required'],
         trim: true
     },
     googleId: {
@@ -50,9 +50,9 @@ const userSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    vegetarian: {
+    veg: {
         type: Boolean,
-        default: false
+        default: null
     },
     dietPlans: {
         type: [mongoose.Schema.Types.ObjectId],

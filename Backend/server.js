@@ -9,9 +9,8 @@ const verifyJWT = require('./middleware/verifyJWT');
 const credentials = require('./middleware/credentials');
 const mongoose = require('mongoose');
 const connectDB = require('./config/dbConnection');
+const session = require('express-session')
 const passport = require('passport');
-
-require('./controllers/user/googleController')
 require('dotenv').config();
 const PORT = process.env.PORT || 3500;
 // Connect to DB
@@ -30,17 +29,22 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use(session({
+    secret: '75d6b7ec58761381e182e49abef9b2d1',
+    resave: false,
+    saveUninitialized: true,
+  }));
+  
+  // Passport initialization
+app.use(passport.initialize());
+app.use(passport.session());
+  
+
 // authentication
 app.use('/register', require('./routes/user/register'));
 app.use('/login', require('./routes/user/login'));            // Login
 app.use('/logout', require('./routes/user/logout'));
-app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
-app.get('/auth/google/callback', 
-    passport.authenticate('google', { session: false }), 
-    (req, res) => {
-        res.json({ message: 'Login successful!', user: req.user });
-    }
-);
+app.use('/auth/google', require('./routes/user/google')); // Google OAuth  
 
 // app.use(verifyJWT) 
 

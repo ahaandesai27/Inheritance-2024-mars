@@ -19,7 +19,7 @@ class Recipaura extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const UserPage(),
+        home: const LoginPage(),
         routes: {
          // "/": (context) => const UserPage(),
          // "/signup": (context) => const SignUpPage(),

@@ -14,7 +14,7 @@ const addRecipeToDietPlan = async (req, res) => {
         if (!recipe) {
             return res.status(404).json({ message: 'Recipe not found' });
         }
-
+        dietPlan.totalCalorieCount += recipe.calorieCount;
         dietPlan.recipes.push(recipeId);
         await dietPlan.save();
 
@@ -50,7 +50,8 @@ const deleteRecipeFromDietPlan = async (req, res) => {
         if (recipeIndex === -1) {
             return res.status(404).json({ message: 'Recipe not found in diet plan' });
         }
-
+        
+        dietPlan.totalCalorieCount -= dietPlan.recipes[recipeIndex].calorieCount;
         dietPlan.recipes.splice(recipeIndex, 1);
         await dietPlan.save();
 

@@ -1,7 +1,4 @@
 const Recipe = require('../models/Recipe');
-
-// Unique key is ID
-
 //get all Recipes
 const getRecipes = async (req, res) => {
     try {
@@ -64,52 +61,11 @@ const deleteRecipe = async (req, res) => {
     }
 }
 
-const search = async (req, res) => {
-    const { q, skip = 0, limit = 10 } = req.query;
-
-    if (!q) {
-        return res.status(400).json({ message: 'Search key is required' });
-    }
-
-    try {
-        const results = await Recipe.aggregate([
-            {
-                $search: {
-                    index: 'default',
-                    text: {
-                        query: q,
-                        path: {
-                            wildcard: '*',
-                        },
-                    },
-                },
-            },
-            {
-                $facet: {
-                    data: [
-                        { $skip: parseInt(skip) },
-                        { $limit: parseInt(limit) },
-                    ],
-                },
-            },
-        ]);
-
-        if (!results || !results[0]?.data?.length) {
-            return res.status(204).json({ message: 'No results found' });
-        }
-
-        const { data } = results[0];
-        res.status(200).json(data);
-    } catch (error) {
-        res.status(500).json({ message: 'Server error', error: error.message });
-    }
-};
 
 module.exports = {
     getRecipes,
+    getRecipeById,
     createNewRecipe,
     updateRecipe,
     deleteRecipe,
-    getRecipeById,
-    search
 }

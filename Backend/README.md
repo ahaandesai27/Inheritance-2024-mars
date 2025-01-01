@@ -84,6 +84,9 @@ The backend for recipaura
   Example: /search?q=paneer&skip=4&limit=10
   By default skip = 0 and limit = 10
 
+- **`GET /autocomplete?q={query}**`
+  Gives recipe title suggestion based on keyword. 5 suggestions
+
 ### **2. Ingredient Categories Routes**
 **Base Path**: `/api/ingredients`
 

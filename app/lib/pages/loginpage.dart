@@ -1,3 +1,4 @@
+import 'package:app/utils/routes.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -67,7 +68,9 @@ class LoginPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, MyRoutes.userRoute);
+                  },
                   child: const Text(
                     'Login',
                     style: TextStyle(fontSize: 18),
@@ -133,4 +136,3 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-

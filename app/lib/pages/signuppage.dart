@@ -1,3 +1,4 @@
+import 'package:app/utils/routes.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -92,7 +93,9 @@ class SignUpPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, MyRoutes.loginRoute);
+                  },
                   child: const Text(
                     'Sign Up',
                     style: TextStyle(fontSize: 18),
@@ -110,7 +113,9 @@ class SignUpPage extends StatelessWidget {
                   children: [
                     const Text("Already have an account? "),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, MyRoutes.loginRoute);
+                      },
                       child: const Text('Login'),
                     ),
                   ],
@@ -123,4 +128,3 @@ class SignUpPage extends StatelessWidget {
     );
   }
 }
-

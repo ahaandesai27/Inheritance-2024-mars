@@ -28,7 +28,7 @@ class _RecipauraState extends State<Recipaura> {
           primarySwatch: Colors.blue,
         ),
         routes: {
-          "/": (context) => SignUpPage(),
+          "/": (context) => RecipePage(),
           MyRoutes.userRoute: (context) => UserPage(),
           MyRoutes.signUpRoute: (context) => SignUpPage(),
           MyRoutes.loginRoute: (context) => LoginPage(),

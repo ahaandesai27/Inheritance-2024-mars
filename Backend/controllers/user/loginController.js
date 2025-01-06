@@ -44,4 +44,35 @@ const handleLogin = async (req, res) => {
     }
 }
 
-module.exports =  handleLogin;
+const changePassword = async (req, res) => {
+    const { id, newPassword } = req.body;
+    if (!id || !newPassword) {
+        res.status(400).send('Missing id or newPassword');
+        return;
+    }
+
+    try {
+        const User = await User.findById(id).exec();
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        if (!hashedPassword) {
+            res.status(500).send('Error hashing password');
+            return;
+        }
+        if (hashedPassword == User.password) {
+            res.status(400).send('New password is the same as the old password');
+            return;
+        }
+        else {
+            User.password = hashedPassword;
+            await User.save();
+            res.status(200).send('Password changed successfully');
+        }
+    } catch (error) {
+        res.status(500).send(`error: ${error.message}`);
+    }
+}
+
+module.exports =  {
+    handleLogin,
+    changePassword
+}

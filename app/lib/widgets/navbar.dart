@@ -1,6 +1,9 @@
 // ignore: file_names
+import 'package:app/utils/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
@@ -11,10 +14,16 @@ class Navbar extends StatefulWidget {
 
 class _NavbarState extends State<Navbar> {
   int _curIn = 0;
+  final List<String> _routes = [
+    MyRoutes.recipeRoute,
+    MyRoutes.vegetableRoute,
+    MyRoutes.userRoute
+  ];
   void _onItemTapped(int index) {
     setState(() {
       _curIn = index;
     });
+    Navigator.pushNamed(context, _routes[index]);
   }
 
   @override
@@ -24,9 +33,8 @@ class _NavbarState extends State<Navbar> {
       onTap: _onItemTapped,
       type: BottomNavigationBarType.fixed,
       items: [
-        _buildBottomNavigationBarItem(Icons.cookie_outlined, 'Recipe', 0),
-        _buildBottomNavigationBarItem(
-            Icons.coffee_maker_outlined, 'Vegetable', 1),
+        _buildBottomNavigationBarItem(MdiIcons.food, 'Recipe', 0),
+        _buildBottomNavigationBarItem(LineAwesomeIcons.lemon, 'Vegetable', 1),
         _buildBottomNavigationBarItem(Icons.supervised_user_circle, 'User', 2),
       ],
       selectedItemColor: const Color.fromARGB(255, 70, 54, 74),

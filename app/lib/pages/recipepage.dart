@@ -1,3 +1,4 @@
+import 'package:app/widgets/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -114,6 +115,7 @@ class RecipePage extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: Navbar(),
     );
   }
 

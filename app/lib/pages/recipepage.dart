@@ -1,4 +1,5 @@
 import 'package:app/widgets/navbar.dart';
+import 'package:app/widgets/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -29,15 +30,7 @@ class RecipePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search Bar
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search for a recipe...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-            ),
+            Searchbar(),
             const SizedBox(height: 20),
 
             // Categories Section

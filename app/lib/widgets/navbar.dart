@@ -13,17 +13,20 @@ class Navbar extends StatefulWidget {
 }
 
 class _NavbarState extends State<Navbar> {
-  int _curIn = 0;
+  int get _curIn {
+    final String? currentRoute = ModalRoute.of(context)!.settings.name;
+    return _routes.indexOf(currentRoute ?? _routes[0]);
+  }
+
   final List<String> _routes = [
     MyRoutes.recipeRoute,
     MyRoutes.vegetableRoute,
-    MyRoutes.userRoute
+    MyRoutes.userRoute,
   ];
   void _onItemTapped(int index) {
-    setState(() {
-      _curIn = index;
-    });
-    Navigator.pushNamed(context, _routes[index]);
+    print('OIndex: $_curIn');
+    Navigator.pushReplacementNamed(context, _routes[index]);
+    print('NIndex: $_curIn');
   }
 
   @override
@@ -33,9 +36,10 @@ class _NavbarState extends State<Navbar> {
       onTap: _onItemTapped,
       type: BottomNavigationBarType.fixed,
       items: [
-        _buildBottomNavigationBarItem(MdiIcons.food, 'Recipe', 0),
-        _buildBottomNavigationBarItem(LineAwesomeIcons.lemon, 'Vegetable', 1),
-        _buildBottomNavigationBarItem(Icons.supervised_user_circle, 'User', 2),
+        _buildBottomNavigationBarItem(MdiIcons.food, '$_curIn', 0),
+        _buildBottomNavigationBarItem(LineAwesomeIcons.lemon, '$_curIn', 1),
+        _buildBottomNavigationBarItem(
+            Icons.supervised_user_circle, '$_curIn', 2),
       ],
       selectedItemColor: const Color.fromARGB(255, 70, 54, 74),
       unselectedItemColor: const Color.fromARGB(255, 152, 152, 152),

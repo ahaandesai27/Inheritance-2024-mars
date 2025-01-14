@@ -56,6 +56,7 @@ app.use('/api/recipes', require('./routes/api/recipes'));
 app.use('/api/getingredients', require('./routes/api/crawlers'));
 app.use('/api/ingredients', require('./routes/api/ingredients'));
 app.use('/api/dietplans', require('./routes/api/dietplans'));
+app.use('/api/feedback', require('./routes/api/feedback'));
 
 // User routes 
 app.use('/api/user', require('./routes/user/fetch'));

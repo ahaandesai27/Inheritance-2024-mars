@@ -157,6 +157,9 @@ Each crawler returns an array of objects with the following keys:
 - **`GET /blinkit`**  
   Fetches ingredients data from Blinkit.
 
+### **4. Feedback**
+- **`POST /api/feedback`**  
+  Must have title, description and user ID in request body.
 
 
 ## Troubleshooting

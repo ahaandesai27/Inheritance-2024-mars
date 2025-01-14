@@ -11,10 +11,13 @@ const mongoose = require('mongoose');
 const connectDB = require('./config/dbConnection');
 const session = require('express-session')
 const passport = require('passport');
+
 require('dotenv').config();
 const PORT = process.env.PORT || 3500;
+
 // Connect to DB
 connectDB();
+
 //custom middleware logger
 app.use(logger);
 

@@ -3,6 +3,7 @@ const blinkitScraper = require('../crawlers/blinkit');
 const zeptoScraper = require('../crawlers/zepto');
 const swiggyScraper = require('../crawlers/swiggy');
 const bigBasketScraper = require('../crawlers/bigbasket');
+const cache = require('../config/nodeCache');
 
 const getAmazonIngredients = async (req, res) => {
     try {
@@ -57,6 +58,10 @@ const getBigBasketIngredients = async (req, res) => {
 const getAllIngredients = async (req, res) => {
     try {
         const ingredient = req.query.q;
+        const cachedData = cache.get(ingredient);
+        if (cachedData) {
+            return res.json(cachedData)
+        }
         const [amazonProducts, bigBasketProducts, zeptoProducts, swiggyProducts] = await Promise.all([
             amazonScraper(ingredient),
             bigBasketScraper(ingredient),
@@ -72,13 +77,13 @@ const getAllIngredients = async (req, res) => {
             }
             return a.discountedPrice - b.discountedPrice;
         });
-
+        
+        cache.set(ingredient, allProducts)
         return res.json(allProducts);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch ingredients' });
     }
 }
-
 module.exports = {
     getAmazonIngredients,
     getBlinkitIngredients,

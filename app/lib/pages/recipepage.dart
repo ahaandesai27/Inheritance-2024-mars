@@ -1,5 +1,6 @@
 import 'package:app/widgets/navbar.dart';
 import 'package:app/widgets/searchbar.dart';
+import 'package:app/widgets/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -108,6 +109,7 @@ class RecipePage extends StatelessWidget {
           ],
         ),
       ),
+      drawer: AppDrawer(),
       bottomNavigationBar: Navbar(),
     );
   }

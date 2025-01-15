@@ -159,7 +159,7 @@ Each crawler returns an array of objects with the following keys:
 
 ### **4. Feedback**
 - **`POST /api/feedback`**  
-  Must have title, description and user ID in request body.
+  Must have fields title, description and user_id in request body.
 
 
 ## Troubleshooting

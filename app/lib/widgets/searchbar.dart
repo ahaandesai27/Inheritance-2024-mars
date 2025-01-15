@@ -65,15 +65,15 @@ class _SearchbarState extends State<Searchbar> {
               hintStyle: new TextStyle(color: Color(0xFFd0cece), fontSize: 18),
               hintText: "What would your like to buy?",
             ),
-            /*onChanged: (value) {
+            onChanged: (value) {
               setState(() {
                 searchQuery = value;
               });
               fetchRecipes(query: value);
-            },*/
+            },
           ),
-          //SizedBox(height: 10),
-          /*Expanded(
+          SizedBox(height: 10),
+          Expanded(
               child: recipes.isEmpty
                   ? Center(child: Text('No recipes found'))
                   : ListView.builder(
@@ -87,7 +87,7 @@ class _SearchbarState extends State<Searchbar> {
                               ? Image.network(recipe['imageUrl'], width: 50)
                               : Icon(Icons.fastfood),
                         );
-                      }))*/
+                      })),
         ],
       ),
     );

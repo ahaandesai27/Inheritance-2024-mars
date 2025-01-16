@@ -51,6 +51,10 @@ const search = async (req, res) => {
                         path: {
                             wildcard: '*',
                         },
+                        fuzzy: {
+                            maxEdits: 2,
+                            prefixLength: q.length
+                        },
                     },
                 },
             },

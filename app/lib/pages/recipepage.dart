@@ -31,7 +31,7 @@ class RecipePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search Bar
-            //Searchbar(),
+            SizedBox(height: 200, child: Searchbar()),
             const SizedBox(height: 20),
 
             // Categories Section
@@ -43,7 +43,7 @@ class RecipePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            Expanded(
+            Flexible(
               flex: 2,
               child: GridView.count(
                 crossAxisCount: 5,

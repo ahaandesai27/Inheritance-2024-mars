@@ -1,3 +1,4 @@
+import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -6,53 +7,17 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 173, 114, 196),
-            ),
-            child: Text(
-              'RecipAura',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
-            ),
+        shape: BeveledRectangleBorder(),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colour.purpur,
+            border: Border(
+                right: BorderSide(
+                    color: Color.fromARGB(255, 122, 71, 142), width: 1)),
           ),
-          ListTile(
-            title: const Text('Favorites'),
-            onTap: () {
-              Navigator.pop(context);
-            },
+          child: Column(
+            children: [],
           ),
-          ListTile(
-            title: const Text('History'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const Text('Feedback'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const Text('Change Account'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const Text('Sign Out'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-    );
+        ));
   }
 }

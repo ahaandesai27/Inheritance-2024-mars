@@ -1,3 +1,4 @@
+import 'package:app/pages/ingredientpage.dart';
 import 'package:app/pages/loginpage.dart';
 import 'package:app/pages/recipepage.dart';
 import 'package:app/pages/signuppage.dart';
@@ -28,7 +29,7 @@ class _RecipauraState extends State<Recipaura> {
           primarySwatch: Colors.blue,
         ),
         routes: {
-          "/": (context) => SignUpPage(),
+          "/": (context) => IngredientPage(),
           MyRoutes.userRoute: (context) => UserPage(),
           MyRoutes.signUpRoute: (context) => SignUpPage(),
           MyRoutes.loginRoute: (context) => LoginPage(),

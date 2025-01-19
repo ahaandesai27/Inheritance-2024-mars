@@ -52,7 +52,7 @@ const changePassword = async (req, res) => {
     }
 
     try {
-        const User = await User.findById(id).exec();
+        const user = await User.findById(id).exec();
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         if (!hashedPassword) {
             res.status(500).send('Error hashing password');
@@ -63,8 +63,8 @@ const changePassword = async (req, res) => {
             return;
         }
         else {
-            User.password = hashedPassword;
-            await User.save();
+            user.password = hashedPassword;
+            await user.save();
             res.status(200).send('Password changed successfully');
         }
     } catch (error) {

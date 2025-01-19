@@ -38,6 +38,8 @@ dependencies:
   http: ^1.1.0
   line_awesome_flutter: ^3.0.1
   flutter_material_design_icons: ^1.1.7447
+  jwt_decoder: ^2.0.1
+  shared_preferences: ^2.0.11
 dev_dependencies:
   flutter_test:
     sdk: flutter

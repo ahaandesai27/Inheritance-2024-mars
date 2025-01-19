@@ -1,8 +1,17 @@
 import 'package:app/utils/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:app/api/signup.dart';
+import 'package:app/utils/snackbar.dart';
+
 
 class SignUpPage extends StatelessWidget {
-  const SignUpPage({super.key});
+  SignUpPage({super.key});
+  final TextEditingController usrnameController = TextEditingController();
+  final TextEditingController fnameController = TextEditingController();
+  final TextEditingController lnameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +43,33 @@ class SignUpPage extends StatelessWidget {
 
               // Name Input Field
               TextField(
+                controller: usrnameController,
                 decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: 'Username',
+                  prefixIcon: const Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              TextField(
+                controller: fnameController,
+                decoration: InputDecoration(
+                  labelText: 'First name',
+                  prefixIcon: const Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              TextField(
+                controller: lnameController,
+                decoration: InputDecoration(
+                  labelText: 'Last name',
                   prefixIcon: const Icon(Icons.person),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -46,6 +80,7 @@ class SignUpPage extends StatelessWidget {
 
               // Email Input Field
               TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   prefixIcon: const Icon(Icons.email),
@@ -59,6 +94,7 @@ class SignUpPage extends StatelessWidget {
 
               // Phone Number Input Field
               TextField(
+                controller: phoneController,
                 decoration: InputDecoration(
                   labelText: 'Phone Number',
                   prefixIcon: const Icon(Icons.phone),
@@ -72,6 +108,7 @@ class SignUpPage extends StatelessWidget {
 
               // Password Input Field
               TextField(
+                controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -93,8 +130,26 @@ class SignUpPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, MyRoutes.loginRoute);
+                  onPressed: () async {
+                    final username = usrnameController.text;
+                    final firstName = fnameController.text;
+                    final lastName = lnameController.text;
+                    final email = emailController.text;
+                    final phoneNumber = phoneController.text;
+                    final password = passwordController.text;
+
+                    // Await the result of the registration API call
+                    final bool result = await registerUser(username, firstName,
+                        lastName, email, phoneNumber, password);
+
+                    // If the registration is successful, navigate to login
+                    if (result) {
+                      showCustomSnackbar(context, "Sign Up Successful", Colors.blue, seconds: 1);
+                      Navigator.pushNamed(context, MyRoutes.loginRoute);
+                    } else {
+                      // Handle failure (e.g., show a Snackbar or dialog)
+                      showCustomSnackbar(context, "An error occured!", Colors.red);
+                    }
                   },
                   child: const Text(
                     'Sign Up',

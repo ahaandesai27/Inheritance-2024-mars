@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  runApp(Recipaura());
+  runApp(const Recipaura());
 }
 
 class Recipaura extends StatefulWidget {
-  Recipaura({super.key});
+  const Recipaura({super.key});
 
   @override
   State<Recipaura> createState() => _RecipauraState();
@@ -29,7 +29,7 @@ class _RecipauraState extends State<Recipaura> {
           primarySwatch: Colors.blue,
         ),
         routes: {
-          "/": (context) => IngredientPage(),
+          "/": (context) => SignUpPage(),
           MyRoutes.userRoute: (context) => UserPage(),
           MyRoutes.signUpRoute: (context) => SignUpPage(),
           MyRoutes.loginRoute: (context) => LoginPage(),

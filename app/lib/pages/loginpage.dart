@@ -1,8 +1,12 @@
 import 'package:app/utils/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:app/api/login.dart';
+import 'package:app/utils/snackbar.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
+  final TextEditingController usrnameController = TextEditingController();
+  final TextEditingController passwdController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +38,10 @@ class LoginPage extends StatelessWidget {
 
               // Phone Number Input Field
               TextField(
+                controller: usrnameController,
                 decoration: InputDecoration(
-                  labelText: 'Phone Number',
-                  prefixIcon: const Icon(Icons.phone),
+                  labelText: 'Username',
+                  prefixIcon: const Icon(Icons.person),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -47,6 +52,7 @@ class LoginPage extends StatelessWidget {
 
               // Password Input Field
               TextField(
+                controller: passwdController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -68,8 +74,18 @@ class LoginPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, MyRoutes.userRoute);
+                  onPressed: () async {
+                    final username = usrnameController.text;
+                    final password = passwdController.text;
+                    final result = await login(username, password);
+                    if (result.success) {
+                      showCustomSnackbar(
+                          context, "Login Successful", Colors.blue);
+                      Navigator.pushNamed(context, MyRoutes.userRoute);
+                    } else {
+                      showCustomSnackbar(
+                          context, result.messageOrToken, Colors.red);
+                    }
                   },
                   child: const Text(
                     'Login',
@@ -123,7 +139,9 @@ class LoginPage extends StatelessWidget {
                   children: [
                     const Text("Don't have an account? "),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       child: const Text('Sign Up'),
                     ),
                   ],

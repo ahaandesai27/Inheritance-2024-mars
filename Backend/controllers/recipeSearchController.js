@@ -21,7 +21,7 @@ const autocomplete = async (req, res) => {
                 },
             },
             { $limit: parseInt(limit) }, 
-            { $project: { TranslatedRecipeName: 1, veg: 1} }, 
+            { $project: { TranslatedRecipeName: 1, veg: 1, 'image-url': 1} }, 
         ]);
 
         if (suggestions.length === 0) {

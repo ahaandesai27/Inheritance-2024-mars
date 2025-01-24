@@ -95,30 +95,6 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Login with Google Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: const BorderSide(color: Colors.grey),
-                    ),
-                  ),
-                  onPressed: () {},
-                  icon: Image.asset(
-                    'assets/google.png', // Replace with actual path
-                    height: 24,
-                  ),
-                  label: const Text(
-                    'Login with Google',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
               const SizedBox(height: 20),
 
               // Forgot Password

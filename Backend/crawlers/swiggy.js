@@ -41,13 +41,13 @@ async function swiggyScraper(query) {
     const productImages = Array.from(document.querySelectorAll('img._1NxA5')).map(el => el.src);
 
     return productNames.map((name, index) => ({
-      productName: name || 'N/A',
+      productName: name || null,
       productPrice: {
-        discountedPrice: parseInt(discountedPrices[index]) || parseInt(productPrices[index]) || 'N/A',
-        originalPrice: parseInt(productPrices[index]) || 'N/A'
+        discountedPrice: parseInt(discountedPrices[index]) || parseInt(productPrices[index]) || null,
+        originalPrice: parseInt(productPrices[index]) || null
       },
-      productWeight: productWeights[index] || 'N/A',
-      productImage: productImages[index] || 'N/A',
+      productWeight: productWeights[index] || null,
+      productImage: productImages[index] || null,
       origin: "swiggy"
     }));
   });

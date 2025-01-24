@@ -50,12 +50,13 @@ async function blinkitScraper(query) {
 
                 return product_names.map((name, index) => ({
                     productName: name,
-                    productWeight: product_weights[index] || 'N/A',
-                    productImage: product_images[index],
                     productPrice: {
                         discountedPrice: productDiscountedPrices[index] || 'N/A',
                         originalPrice: productOriginalPrices[index] || 'N/A'
                     },
+                    productWeight: product_weights[index] || 'N/A',
+                    productImage: product_images[index],
+                    productLink: null,
                     origin: "blinkit"
                 }));
             });

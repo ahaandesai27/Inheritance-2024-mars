@@ -49,8 +49,8 @@ async function bigBasketScraper(query) {
       return {
         productName: name,
         productPrice: {
-          discountedPrice: parseFloat(discountPrice) || 'N/A',
-          originalPrice: parseFloat(originalPrice) || 'N/A'
+          discountedPrice: parseFloat(discountPrice) || null,
+          originalPrice: parseFloat(originalPrice) || null,
         },
         productWeight: weight,
         productLink: productLink.startsWith('http') ? productLink : `https://www.bigbasket.com${productLink}`,

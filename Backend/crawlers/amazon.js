@@ -29,11 +29,11 @@ async function amazonScraper(query) {
       productName: name,
       productPrice: {
         discountedPrice: productPrices[index] || productMRPs[index],
-        originalPrice: productMRPs[index] || 'N/A'
+        originalPrice: productMRPs[index] || null,
       },
       productWeight: productWeights[index],
       productImage: productImages[index],
-      productLink: productLinks[index] || 'No-link',
+      productLink: productLinks[index] || null,
       origin: "amazon"
     }));
   });

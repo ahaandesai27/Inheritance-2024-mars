@@ -84,6 +84,10 @@ The backend for recipaura
   Example: /search?q=paneer&skip=4&limit=10
   By default skip = 0 and limit = 10
 
+- **`GET /autocomplete?q={query}&limit={limit}`**
+Autocomplete for the searching 
+Default limit 5
+
 ### **2. Ingredient Categories Routes**
 **Base Path**: `/api/ingredients`
 
@@ -138,7 +142,7 @@ Each crawler returns an array of objects with the following keys:
 - **`productImage`**: URL to the product image.  
 - **`productLink`**: Link to the product page.  
 - **`origin`**: Source platform (e.g., "amazon").
-<br> **Note**: Some crawlers may return less information than mentioned above.
+<br> **Note**: Some crawlers may return less information than mentioned above. Null is returned if not there, but still check if the data exists for all fields or not to avoid errors. 
 
 #### **Endpoints**:
 - **`GET /amazon`**  
@@ -155,13 +159,42 @@ Each crawler returns an array of objects with the following keys:
   Fetches ingredients data from BigBasket.
   <br>[**Note**: `productImage` not available yet]
 
-[**Note**: the following routes need fixing.]
+[**Note**: the following does not work properly]
 - **`GET /blinkit`**  
   Fetches ingredients data from Blinkit.
 
 ### **4. Feedback**
 - **`POST /api/feedback`**  
   Must have fields title, description and user_id in request body.
+
+### **5. Diet Plans**
+Note: Everything must be added in request parameters.
+- POST /:userId
+Create a new diet plan for a user.
+Request Body:
+
+name (String, required): Name of the diet plan.
+description (String, optional): Description of the diet plan.
+
+- GET /:userId
+Fetch all diet plans for a user.
+
+- PUT /:dietPlanId
+Update a diet plan by its ID.
+Request Body:
+
+Fields to update (e.g., name, description).
+- DELETE /:userId/:dietPlanId
+Delete a diet plan by its ID for a user.
+
+- POST /:dietPlanId/recipes/:recipeId
+Add a recipe to a diet plan.
+
+- DELETE /:dietPlanId/recipes/:recipeId
+Remove a recipe from a diet plan.
+
+- GET /:dietPlanId/recipes
+Fetch all recipes in a diet plan.
 
 
 ## Troubleshooting

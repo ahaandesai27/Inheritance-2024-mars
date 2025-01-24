@@ -51,15 +51,17 @@ The backend for recipaura
 **Base Path**: `/api/recipes`
 
 ### **Recipe Schema**
-- **`translatedRecipeName`**: Name of the recipe (String, required).  
-- **`translatedIngredients`**: Ingredients as a string (String, required).  
-- **`totalTimeInMins`**: Total time required to prepare the recipe (Number, required, minimum value: 1).  
-- **`cuisine`**: Cuisine type (String, required).  
-- **`translatedInstructions`**: Instructions for preparation (String, required).  
-- **`url`**: URL to the recipe (String, optional).  
-- **`cleanedIngredients`**: Processed ingredient details (String, required).  
-- **`imageUrl`**: URL to the recipe's image (String, required).  
-- **`ingredientCount`**: Number of ingredients used (Number, required, minimum value: 1).
+- **`TranslatedRecipeName`**: Name of the recipe (String, required).  
+- **`TranslatedIngredients`**: Ingredients as a string (String, required).  
+- **`TotalTimeInMins`**: Total time required to prepare the recipe (Number, required, minimum value: 1).  
+- **`Cuisine`**: Cuisine type (String, required).  
+- **`TranslatedInstructions`**: Instructions for preparation (String, required).  
+- **`URL`**: URL to the recipe (String, optional).  
+- **`Cleaned-Ingredients`**: Processed ingredient details (String, required).  
+- **`image-url`**: URL to the recipe's image (String, required).  
+- **`Ingredient-count`**: Number of ingredients used (Number, required, minimum value: 1).
+- **`calorieCount`**: Calorie count of recipe
+- **`veg`**: Boolean, true if veg dish else false 
 
 #### **Endpoints**:
 - **`GET /`**  

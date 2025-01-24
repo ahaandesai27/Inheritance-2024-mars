@@ -136,8 +136,12 @@ class _SearchbarState extends State<Searchbar> {
       shrinkWrap: true,
       itemCount: recipes.length + (isLoading ? 1 : 0),
       itemBuilder: (context, index) {
+        print('Recipes received: ${recipes.length}');
+        print('Raw recipe data: $recipes');
+
         if (index < recipes.length) {
           final recipe = recipes[index];
+          print('Recipe Keys for index $index: ${recipe.keys}');
           return InkWell(
             onTap: () {
               _removeOverlay();
@@ -148,19 +152,23 @@ class _SearchbarState extends State<Searchbar> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(4),
-                    child: recipe['imageUrl'] != null
+                    child: recipe['ImageUrl'] != null
                         ? Image.network(
                             recipe['imageUrl'],
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, _) {
+                              print('Image load error: $error');
+                              return const Icon(Icons.food_bank, size: 40);
+                            },
                           )
                         : const Icon(Icons.food_bank, size: 40),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      recipe['translatedRecipeName'] ?? '',
+                      recipe['TranslatedRecipeName'] ?? 'Check',
                       style: const TextStyle(fontSize: 14),
                       overflow: TextOverflow.ellipsis,
                     ),

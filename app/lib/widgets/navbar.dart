@@ -13,9 +13,15 @@ class Navbar extends StatefulWidget {
 }
 
 class _NavbarState extends State<Navbar> {
-  int get _curIn {
-    final String? currentRoute = ModalRoute.of(context)!.settings.name;
-    return _routes.indexOf(currentRoute ?? _routes[0]);
+  late int _currentIndex = 0;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context)?.settings.name;
+    _currentIndex = _routes.indexWhere((r) => r == route);
+    if (_currentIndex == -1) {
+      _currentIndex = 0;
+    }
   }
 
   final List<String> _routes = [
@@ -23,23 +29,25 @@ class _NavbarState extends State<Navbar> {
     MyRoutes.vegetableRoute,
     MyRoutes.userRoute,
   ];
+
   void _onItemTapped(int index) {
-    print('OIndex: $_curIn');
-    Navigator.pushReplacementNamed(context, _routes[index]);
-    print('NIndex: $_curIn');
+    setState(() {
+      _currentIndex = index;
+      Navigator.pushReplacementNamed(context, _routes[index]);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      currentIndex: _curIn,
+      currentIndex: _currentIndex,
       onTap: _onItemTapped,
       type: BottomNavigationBarType.fixed,
       items: [
-        _buildBottomNavigationBarItem(MdiIcons.food, '$_curIn', 0),
-        _buildBottomNavigationBarItem(LineAwesomeIcons.lemon, '$_curIn', 1),
+        _buildBottomNavigationBarItem(MdiIcons.food, 'Recipes', 0),
+        _buildBottomNavigationBarItem(LineAwesomeIcons.lemon, 'Vegetables', 1),
         _buildBottomNavigationBarItem(
-            Icons.supervised_user_circle, '$_curIn', 2),
+            Icons.supervised_user_circle, 'Profiles', 2),
       ],
       selectedItemColor: const Color.fromARGB(255, 70, 54, 74),
       unselectedItemColor: const Color.fromARGB(255, 152, 152, 152),
@@ -53,7 +61,7 @@ class _NavbarState extends State<Navbar> {
   BottomNavigationBarItem _buildBottomNavigationBarItem(
       IconData icon, String label, int index) {
     return BottomNavigationBarItem(
-      icon: _curIn == index
+      icon: _currentIndex == index
           ? Container(
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 173, 114, 196),

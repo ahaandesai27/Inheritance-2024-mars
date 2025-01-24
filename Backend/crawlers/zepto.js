@@ -45,11 +45,11 @@ async function zeptoScraper(query) {
       return productNames.map((name, index) => ({
         productName: name,
         productPrice: productPrices[index] || {
-          originalPrice: 'N/A',
+          originalPrice: null,
           discountedPrice: null
         },
-        productWeight: productWeights[index] || 'N/A',
-        productImage: productImages[index] || 'N/A',
+        productWeight: productWeights[index] || null,
+        productImage: productImages[index] || null,
         productLink: productLinks[index] || null,
         origin: "zepto"
       })).sort((a, b) => a.productPrice.originalPrice - b.productPrice.originalPrice);

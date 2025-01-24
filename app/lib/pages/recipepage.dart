@@ -31,8 +31,8 @@ class RecipePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search Bar
-            SizedBox(height: 200, child: Searchbar()),
-            const SizedBox(height: 20),
+            Searchbar(),
+            SizedBox(height: 20),
 
             // Categories Section
             const Text(
@@ -109,8 +109,8 @@ class RecipePage extends StatelessWidget {
           ],
         ),
       ),
-      drawer: AppDrawer(),
-      bottomNavigationBar: Navbar(),
+      drawer: const AppDrawer(),
+      bottomNavigationBar: const Navbar(),
     );
   }
 

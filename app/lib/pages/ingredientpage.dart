@@ -7,15 +7,17 @@ class IngredientPage extends StatelessWidget {
     {'name': 'Cabbage', 'price': 1.8},
   ];
 
+  IngredientPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 173, 114, 196),
-        title: Text('RecipAura'),
+        title: const Text('RecipAura'),
         actions: [
           IconButton(
-            icon: Icon(Icons.nightlight_round),
+            icon: const Icon(Icons.nightlight_round),
             onPressed: () {
               // Add theme toggle functionality here
             },
@@ -24,7 +26,7 @@ class IngredientPage extends StatelessWidget {
       ),
       drawer: Drawer(
         child: ListView(
-          children: [DrawerHeader(child: Text('Menu'))],
+          children: const [DrawerHeader(child: Text('Menu'))],
         ),
       ),
       body: Padding(
@@ -42,16 +44,16 @@ class IngredientPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Broccoli Slaw',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
-            Text(
+            const SizedBox(height: 8),
+            const Text(
               'Ingredients:',
               style: TextStyle(fontSize: 18),
             ),
@@ -67,23 +69,24 @@ class IngredientPage extends StatelessWidget {
                 },
               ),
             ),
-            Text(
+            const Text(
               'Time for Recipe: 1 hr',
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Recipe:',
               style: TextStyle(fontSize: 18),
             ),
-            Text('1. Get stuff\n2. Cook'),
+            const Text('1. Get stuff\n2. Cook'),
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorites'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.favorite), label: 'Favorites'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),

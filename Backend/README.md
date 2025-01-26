@@ -64,10 +64,10 @@ The backend for recipaura
 - **`veg`**: Boolean, true if veg dish else false 
 
 #### **Endpoints**:
-- **`GET /`**  
-  Fetch all recipes.
+- **`GET ?skip={skip}&limit={limit}&cuisine={cuisine}`**  
+  Fetch all recipes, skips by skip, limits by limit and checks for cuisine.
 
-- **`POST /`**  
+- **`POST `**  
   Create a new recipe.
 
 - **`GET /:id`**  
@@ -168,7 +168,7 @@ Each crawler returns an array of objects with the following keys:
   Must have fields title, description and user_id in request body.
 
 ### **5. Diet Plans**
-Note: Everything must be added in request parameters.
+Note: Everything must be added in request parameters.~~
 - POST /:userId
 Create a new diet plan for a user.
 Request Body:

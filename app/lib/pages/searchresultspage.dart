@@ -74,24 +74,40 @@ class _SearchRecipesPageState extends State<SearchResultsRecipePage> {
                   return Container(
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
                     decoration: BoxDecoration(
-                      color:
-                          recipe['veg'] ? Colors.greenAccent : Colors.redAccent,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(
+                          color: recipe['veg'] ? Colors.green : Colors.red,
+                          width: 2.0),
                     ),
                     child: ListTile(
+                      leading: recipe['image-url'] != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Image.network(
+                                recipe['image-url'],
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(Icons.food_bank, size: 80);
+                                },
+                              ),
+                            )
+                          : Icon(Icons.food_bank, size: 80),
                       title: Text(
                         recipe['TranslatedRecipeName'] ?? 'Unknown Recipe',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: Colors.black87,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       subtitle: Text(
                         'Time: ${recipe['TotalTimeInMins']} mins | ${recipe['veg'] ? 'Vegetarian' : 'Non-Vegetarian'}',
-                        style: const TextStyle(color: Colors.white70),
+                        style: const TextStyle(color: Colors.black54),
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios,
-                          color: Colors.white),
+                          color: Colors.black54),
                       onTap: () {
                         // Navigate to recipe details page
                         // Navigator.push(context, MaterialPageRoute(
@@ -107,7 +123,7 @@ class _SearchRecipesPageState extends State<SearchResultsRecipePage> {
   }
 }
 
-// Update the _buildCategoryTile in RecipePage to navigate to SearchResultsRecipePage
+// Category tile remains the same as before
 Widget _buildCategoryTile(BuildContext context, String title) {
   return GestureDetector(
     onTap: () {

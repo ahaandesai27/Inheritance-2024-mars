@@ -2,6 +2,7 @@ import 'package:app/api/getservicesrecipes.dart';
 import 'dart:async';
 import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:app/pages/searchresultspage.dart';
 
 class Searchbar extends StatefulWidget {
   const Searchbar({super.key});
@@ -103,7 +104,7 @@ class _SearchbarState extends State<Searchbar> {
       _createOverlay();
     }
 
-    _debounceTimer = Timer(const Duration(milliseconds: 500), fetchRecipes);
+    _debounceTimer = Timer(const Duration(milliseconds: 100), fetchRecipes);
   }
 
   void _createOverlay() {
@@ -219,6 +220,16 @@ class _SearchbarState extends State<Searchbar> {
           hintText: 'Search for recipes',
         ),
         onChanged: _onSearchChanged,
+        onSubmitted: (value) {
+          if (value.trim().isNotEmpty) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchResultsRecipePage(query: value.trim()),
+              ),
+            );
+          }
+        },
       ),
     );
   }

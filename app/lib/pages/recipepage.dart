@@ -1,12 +1,10 @@
-import 'package:app/api/apiurl.dart';
-import 'package:app/pages/cuisinerecipe.dart';
-import 'package:app/widgets/navbar.dart';
+
+import 'package:app/pages/cuisinerecipe.dart';import 'package:app/widgets/navbar.dart';
 import 'package:app/widgets/searchbar.dart';
 import 'package:app/widgets/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+
 
 class RecipePage extends StatefulWidget {
   const RecipePage({super.key});

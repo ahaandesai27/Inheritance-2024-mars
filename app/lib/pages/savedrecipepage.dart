@@ -4,16 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class CuisineRecipesPage extends StatefulWidget {
-  final String cuisine;
+class SavedRecipesPage extends StatefulWidget {
+  final String userID;
 
-  const CuisineRecipesPage({super.key, required this.cuisine});
+  const SavedRecipesPage({super.key, required this.userID});
 
   @override
-  State<CuisineRecipesPage> createState() => _CuisineRecipesPageState();
+  State<SavedRecipesPage> createState() => _SavedRecipesPageState();
 }
 
-class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
+class _SavedRecipesPageState extends State<SavedRecipesPage> {
   List<dynamic> recipes = [];
   bool isLoading = true;
 
@@ -25,8 +25,8 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
 
   Future<void> _fetchRecipes() async {
     try {
-      final Uri url = Uri.parse(
-          '$apiUrl/api/recipes?skip=0&limit=50&cuisine=${widget.cuisine}');
+      final Uri url =
+          Uri.parse('$apiUrl/api/user/recipes/saved/${widget.userID}');
 
       final response = await http.get(url);
 
@@ -41,8 +41,8 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
         setState(() {
           isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Failed to load ${widget.cuisine} recipes')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Failed to load saved recipes"')));
       }
     } catch (e) {
       setState(() {
@@ -57,7 +57,7 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.cuisine} Recipes',
+        title: Text('Saved recipes',
             style:
                 GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -107,14 +107,14 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
   }
 }
 
-// Update the _buildCategoryTile in RecipePage to navigate to CuisineRecipesPage
+// Update the _buildCategoryTile in RecipePage to navigate to SavedRecipesPage
 Widget _buildCategoryTile(BuildContext context, String title) {
   return GestureDetector(
     onTap: () {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => CuisineRecipesPage(cuisine: title)));
+              builder: (context) => SavedRecipesPage(userID: title)));
     },
     child: Container(
       decoration: BoxDecoration(

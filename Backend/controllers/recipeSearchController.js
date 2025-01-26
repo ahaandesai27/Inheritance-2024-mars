@@ -9,19 +9,25 @@ const autocomplete = async (req, res) => {
     }
 
     try {
-        const suggestions = await Recipe.aggregate([
-            {
-                $search: {
-                    index: 'default',
-                    autocomplete: {
-                        query: q,
-                        path: 'TranslatedRecipeName', 
-                        fuzzy: { maxEdits: 1 }, // tolerates small typos
-                    },
+        let autocompleteStage = {
+            $search: {
+                index: 'default',
+                autocomplete: {
+                    query: q,
+                    path: 'TranslatedRecipeName',
                 },
             },
-            { $limit: parseInt(limit) }, 
-            { $project: { TranslatedRecipeName: 1, veg: 1, 'image-url': 1} }, 
+        };
+
+        // Apply fuzzy logic for longer strings
+        if (q.length >= 6) {
+            autocompleteStage.$search.autocomplete.fuzzy = { maxEdits: 1 }; // Enable fuzzy only for longer strings
+        }
+
+        const suggestions = await Recipe.aggregate([
+            autocompleteStage,
+            { $limit: parseInt(limit) },
+            { $project: { TranslatedRecipeName: 1, veg: 1, 'image-url': 1 } },
         ]);
 
         if (suggestions.length === 0) {

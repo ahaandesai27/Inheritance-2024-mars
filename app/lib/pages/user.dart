@@ -3,6 +3,7 @@ import 'package:app/widgets/NavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app/api/fetchuser.dart'; // Ensure this contains `fetchUserById` and `User` class.
+import 'package:app/pages/savedrecipepage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -113,19 +114,30 @@ class _UserPageState extends State<UserPage> {
                     style: GoogleFonts.raleway(),
                   ),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.food_bank),
-                  title: Text(
-                    'Diet Plan: ${user.dietPlans != null && user.dietPlans!.isNotEmpty ? user.dietPlans!.join(', ') : 'None'}',
-                    style: GoogleFonts.raleway(),
-                  ),
-                ),
+                // ListTile(
+                //   leading: const Icon(Icons.food_bank),
+                //   title: Text(
+                //     'Diet Plan: ${user.dietPlans != null && user.dietPlans!.isNotEmpty ? user.dietPlans!.join(', ') : 'None'}',
+                //     style: GoogleFonts.raleway(),
+                //   ),
+                // ),
                 ListTile(
                   leading: const Icon(Icons.bookmark),
                   title: Text(
                     'Saved Recipes: ${user.savedRecipes != null && user.savedRecipes!.isNotEmpty ? user.savedRecipes!.length : 'None'}',
                     style: GoogleFonts.raleway(),
                   ),
+                  onTap: () {
+                    // Navigate to Saved Recipes page
+                    if (user.id?.isNotEmpty ?? false) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SavedRecipesPage(userID: user.id!),
+                        ),
+                      );
+                    }
+                  },
                 ),
                 const Divider(),
                 ListTile(

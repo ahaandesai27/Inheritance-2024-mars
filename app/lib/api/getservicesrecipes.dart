@@ -1,40 +1,37 @@
-import 'package:http/http.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Getservices {
   final _baseUrl = 'http://localhost:4000/api/recipes';
 
   Future<List<dynamic>> search(String query, int skip, int limit) async {
     try {
-      final response = await get(
+      final response = await http.get(
         Uri.parse('$_baseUrl/search?q=$query&skip=$skip&limit=$limit'),
-      );
+        headers: {
+          'Connection': 'keep-alive',
+          'Accept-Encoding': 'gzip',
+        },
+      ).timeout(Duration(seconds: 5));
 
       if (response.statusCode == 200) {
-        print('=== API Response Debug ===');
-        print('Raw response: ${response.body}');
         final decodedData = jsonDecode(response.body);
-        print('Decoded data: $decodedData');
-        print('Data type: ${decodedData.runtimeType}');
-        print('========================');
-
-        // Check if response is already a list or needs to be extracted
-        if (decodedData is Map) {
-          // If the API returns an object with a data/recipes field
-          final recipes = decodedData['data'] ?? decodedData['recipes'] ?? [];
-          return recipes;
-        } else if (decodedData is List) {
-          return decodedData;
-        }
-        return [];
+        return _extractRecipes(decodedData);
       } else {
-        print(
-            'API Error: Status ${response.statusCode}, Body: ${response.body}');
         throw Exception('Failed to load recipes');
       }
     } catch (e) {
       print('Search error: $e');
       rethrow;
     }
+  }
+
+  List<dynamic> _extractRecipes(dynamic decodedData) {
+    if (decodedData is Map) {
+      return decodedData['data'] ?? decodedData['recipes'] ?? [];
+    } else if (decodedData is List) {
+      return decodedData;
+    }
+    return [];
   }
 }

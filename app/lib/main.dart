@@ -29,12 +29,12 @@ class _RecipauraState extends State<Recipaura> {
           primarySwatch: Colors.blue,
         ),
         routes: {
-          "/": (context) => RecipePage(),
-          MyRoutes.userRoute: (context) => UserPage(),
+          "/": (context) => const RecipePage(),
+          MyRoutes.userRoute: (context) => const UserPage(),
           MyRoutes.signUpRoute: (context) => SignUpPage(),
           MyRoutes.loginRoute: (context) => LoginPage(),
-          MyRoutes.vegetableRoute: (context) => GroceryPage(),
-          MyRoutes.recipeRoute: (context) => RecipePage(),
+          MyRoutes.vegetableRoute: (context) => const GroceryPage(),
+          MyRoutes.recipeRoute: (context) => const RecipePage(),
         });
   }
 }

@@ -1,4 +1,6 @@
 import 'package:app/api/getservicesrecipes.dart';
+import 'dart:async';
+import 'package:app/services/getservicesrecipes.dart';
 import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +12,8 @@ class Searchbar extends StatefulWidget {
 }
 
 class _SearchbarState extends State<Searchbar> {
+  final Map<String, List<dynamic>> _searchCache = {};
+  Timer? _debounceTimer;
   final _getServices = Getservices();
   final LayerLink _layerLink = LayerLink();
   List<dynamic> recipes = [];
@@ -30,6 +34,8 @@ class _SearchbarState extends State<Searchbar> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _debounceTimer?.cancel();
+    _removeOverlay();
     super.dispose();
   }
 
@@ -37,9 +43,7 @@ class _SearchbarState extends State<Searchbar> {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       if (!isLoading && hasMore) {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          fetchRecipes();
-        });
+        Future.delayed(const Duration(milliseconds: 100), fetchRecipes);
       }
     }
   }
@@ -50,43 +54,57 @@ class _SearchbarState extends State<Searchbar> {
   }
 
   Future<void> fetchRecipes() async {
-    if (isLoading || searchQuery.isEmpty) {
-      return;
+    if (isLoading || searchQuery.isEmpty) return;
+
+    if (_searchCache.containsKey(searchQuery) && skip == 0) {
+      setState(() {
+        recipes = _searchCache[searchQuery]!;
+        isLoading = false;
+      });
     }
-    setState(() {
-      isLoading = true;
-    });
+
+    setState(() => isLoading = true);
+
     try {
       final newRecipes = await _getServices.search(searchQuery, skip, limit);
+
       setState(() {
-        recipes.addAll(newRecipes);
+        if (skip == 0) {
+          _searchCache[searchQuery] = newRecipes;
+          recipes = newRecipes;
+        } else {
+          recipes.addAll(newRecipes);
+        }
+
         skip += limit;
-        // Check this one
         hasMore = newRecipes.length == limit;
         isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
+      setState(() => isLoading = false);
     }
   }
 
   void _onSearchChanged(String value) {
+    _debounceTimer?.cancel();
+
     setState(() {
-      searchQuery = value;
+      searchQuery = value.trim(); //HERE
       recipes = [];
       skip = 0;
       hasMore = true;
     });
+
     if (value.isEmpty) {
       _removeOverlay();
       return;
     }
+
     if (_overlayEntry == null) {
       _createOverlay();
     }
-    fetchRecipes();
+
+    _debounceTimer = Timer(const Duration(milliseconds: 500), fetchRecipes);
   }
 
   void _createOverlay() {
@@ -118,13 +136,15 @@ class _SearchbarState extends State<Searchbar> {
     Overlay.of(context).insert(_overlayEntry!);
   }
 
-  void _updateOverlay() {
-    if (_overlayEntry != null) {
-      _overlayEntry?.markNeedsBuild();
-    }
-  }
-
   Widget _buildResultsList() {
+    if (isLoading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     if (recipes.isEmpty && !isLoading) {
       return const Padding(
         padding: EdgeInsets.all(16.0),
@@ -136,12 +156,8 @@ class _SearchbarState extends State<Searchbar> {
       shrinkWrap: true,
       itemCount: recipes.length + (isLoading ? 1 : 0),
       itemBuilder: (context, index) {
-        print('Recipes received: ${recipes.length}');
-        print('Raw recipe data: $recipes');
-
         if (index < recipes.length) {
           final recipe = recipes[index];
-          print('Recipe Keys for index $index: ${recipe.keys}');
           return InkWell(
             onTap: () {
               _removeOverlay();
@@ -152,14 +168,13 @@ class _SearchbarState extends State<Searchbar> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(4),
-                    child: recipe['ImageUrl'] != null
+                    child: recipe['image-url'] != null
                         ? Image.network(
-                            recipe['imageUrl'],
+                            recipe['image-url'],
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, _) {
-                              print('Image load error: $error');
                               return const Icon(Icons.food_bank, size: 40);
                             },
                           )
@@ -175,13 +190,6 @@ class _SearchbarState extends State<Searchbar> {
                   ),
                 ],
               ),
-            ),
-          );
-        } else if (isLoading) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(),
             ),
           );
         } else {

@@ -1,6 +1,6 @@
 import 'package:app/api/getservicesrecipes.dart';
 import 'dart:async';
-import 'package:app/services/getservicesrecipes.dart';
+import 'package:app/api/getservicesrecipes.dart';
 import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
 

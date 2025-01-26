@@ -1,13 +1,50 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class IngredientPage extends StatelessWidget {
-  final List<Map<String, dynamic>> ingredients = [
-    {'name': 'Carrot', 'price': 2.5},
-    {'name': 'Broccoli', 'price': 3.0},
-    {'name': 'Cabbage', 'price': 1.8},
-  ];
+class IngredientPage extends StatefulWidget {
+  const IngredientPage({Key? key}) : super(key: key);
 
-  IngredientPage({super.key});
+  @override
+  State<IngredientPage> createState() => _IngredientPageState();
+}
+
+class _IngredientPageState extends State<IngredientPage> {
+  List<Map<String, dynamic>> ingredients = [];
+  bool isLoading = true;
+  bool hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchIngredients();
+  }
+
+  Future<void> fetchIngredients() async {
+    const String url = 'http://localhost:3578/api/ingredients'; // Replace with your computer's IP if needed
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          ingredients = data.map((item) {
+            return {
+              'name': item['name'], // Adjust to match your backend response keys
+              'price': item['price'], // Adjust to match your backend response keys
+            };
+          }).toList();
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to fetch ingredients');
+      }
+    } catch (error) {
+      setState(() {
+        hasError = true;
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +68,13 @@ class IngredientPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : hasError
+            ? const Center(
+          child: Text('Failed to load ingredients.'),
+        )
+            : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
@@ -85,11 +128,11 @@ class IngredientPage extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: 'Favorites'),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorites'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
   }
 }
+

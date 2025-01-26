@@ -4,16 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class CuisineRecipesPage extends StatefulWidget {
-  final String cuisine;
+class SearchResultsRecipePage extends StatefulWidget {
+  final String query;
 
-  const CuisineRecipesPage({super.key, required this.cuisine});
+  const SearchResultsRecipePage({super.key, required this.query});
 
   @override
-  State<CuisineRecipesPage> createState() => _CuisineRecipesPageState();
+  State<SearchResultsRecipePage> createState() => _SearchRecipesPageState();
 }
 
-class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
+class _SearchRecipesPageState extends State<SearchResultsRecipePage> {
   List<dynamic> recipes = [];
   bool isLoading = true;
 
@@ -26,7 +26,7 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
   Future<void> _fetchRecipes() async {
     try {
       final Uri url = Uri.parse(
-          '$apiUrl/api/recipes?skip=0&limit=50&cuisine=${widget.cuisine}');
+          '$apiUrl/api/recipes/search?skip=0&limit=50&q=${widget.query}');
 
       final response = await http.get(url);
 
@@ -42,7 +42,7 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
           isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Failed to load ${widget.cuisine} recipes')));
+            content: Text('Failed to load results for "${widget.query}"')));
       }
     } catch (e) {
       setState(() {
@@ -57,7 +57,7 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.cuisine} Recipes',
+        title: Text('Results for "${widget.query}"',
             style:
                 GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -107,14 +107,14 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
   }
 }
 
-// Update the _buildCategoryTile in RecipePage to navigate to CuisineRecipesPage
+// Update the _buildCategoryTile in RecipePage to navigate to SearchResultsRecipePage
 Widget _buildCategoryTile(BuildContext context, String title) {
   return GestureDetector(
     onTap: () {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => CuisineRecipesPage(cuisine: title)));
+              builder: (context) => SearchResultsRecipePage(query: title)));
     },
     child: Container(
       decoration: BoxDecoration(

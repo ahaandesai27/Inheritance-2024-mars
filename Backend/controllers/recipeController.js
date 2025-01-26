@@ -20,6 +20,7 @@ const getRecipes = async (req, res) => {
         res.json(recipes);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch recipes' });
+        console.log(error)
     }
 };
 

@@ -1,12 +1,21 @@
+import 'package:app/api/apiurl.dart';
+import 'package:app/pages/cuisinerecipe.dart';
 import 'package:app/widgets/navbar.dart';
 import 'package:app/widgets/searchbar.dart';
 import 'package:app/widgets/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class RecipePage extends StatelessWidget {
+class RecipePage extends StatefulWidget {
   const RecipePage({super.key});
 
+  @override
+  State<RecipePage> createState() => _RecipePageState();
+}
+
+class _RecipePageState extends State<RecipePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,83 +27,80 @@ class RecipePage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 173, 114, 196),
         leading: Builder(
           builder: (BuildContext context) => IconButton(
-            icon: const Icon(Icons.menu), // Three-bar icon
+            icon: const Icon(Icons.menu),
             onPressed: () {
-              Scaffold.of(context).openDrawer(); // Open the drawer
+              Scaffold.of(context).openDrawer();
             },
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search Bar
-            Searchbar(),
-            SizedBox(height: 20),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Search Bar
+              Searchbar(),
+              SizedBox(height: 20),
 
-            // Categories Section
-            const Text(
-              'Categories',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+              // Categories Section
+              const Text(
+                'Cuisines',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Flexible(
-              flex: 2,
-              child: GridView.count(
+              SizedBox(height: 10),
+              GridView.count(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 5,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 children: [
-                  _buildCategoryTile('Burger'),
-                  _buildCategoryTile('Chicken'),
-                  _buildCategoryTile('Salad'),
-                  _buildCategoryTile('Soup'),
-                  _buildCategoryTile('Cake'),
-                  _buildCategoryTile('Pasta'),
-                  _buildCategoryTile('Pizza'),
-                  _buildCategoryTile('Rolls'),
-                  _buildCategoryTile('Rice'),
-                  _buildCategoryTile('Dessert'),
+                  _buildCategoryTile('Indian'),
+                  _buildCategoryTile('Continental'),
+                  _buildCategoryTile('Chinese'),
+                  _buildCategoryTile('Asian'),
+                  _buildCategoryTile('French'),
+                  _buildCategoryTile('Middle Eastern'),
+                  _buildCategoryTile('Japanese'),
+                  _buildCategoryTile('Italian Recipes'),
+                  _buildCategoryTile('Fusion'),
+                  _buildCategoryTile('Thai'),
                 ],
               ),
-            ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            // Recommended for You Section
-            const Text(
-              'Recommended for you',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+              // Recommended for You Section
+              const Text(
+                'Recommended for you',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              flex: 3,
-              child: ListView.builder(
-                itemCount: 5, // Placeholder for 5 items
+              const SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: 5,
                 itemBuilder: (context, index) {
                   return Container(
                     margin: const EdgeInsets.symmetric(vertical: 5.0),
                     height: 60,
                     decoration: BoxDecoration(
-                      color: index % 2 ==
-                              0 //Put Condition here asking for veg nonveg
+                      color: index % 2 == 0
                           ? Colors.greenAccent
                           : Colors.redAccent,
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Center(
                       child: Text(
-                        index == 0
-                            ? 'Most recommended'
-                            : 'Recommendation', //Sort by most recommended
+                        index == 0 ? 'Most recommended' : 'Recommendation',
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.white,
@@ -105,8 +111,8 @@ class RecipePage extends StatelessWidget {
                   );
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       drawer: const AppDrawer(),
@@ -115,17 +121,26 @@ class RecipePage extends StatelessWidget {
   }
 
   Widget _buildCategoryTile(String title) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10.0),
-        border: Border.all(color: Colors.grey),
-      ),
-      child: Center(
-        child: Text(
-          title,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          textAlign: TextAlign.center,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CuisineRecipesPage(cuisine: title),
+            ));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(10.0),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:app/api/apiurl.dart';
+import 'package:app/pages/ingredientpage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -126,10 +127,12 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
                             trailing: const Icon(Icons.arrow_forward_ios,
                                 color: Colors.black54),
                             onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RecipeDetailsPage(
+                                          recipeData: recipe)));
                               // Navigate to recipe details page
-                              // Navigator.push(context, MaterialPageRoute(
-                              //   builder: (context) => RecipeDetailPage(recipe: recipe)
-                              // ));
                             },
                           ),
                         );

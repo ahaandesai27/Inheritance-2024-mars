@@ -1,12 +1,71 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
+import 'package:app/api/apiurl.dart';
+import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+
+class ProductPrice {
+  final String productName;
+  final double discountedPrice;
+  final double? originalPrice;
+  final String productWeight;
+  final String? productImage;
+  final String origin;
+
+  ProductPrice({
+    required this.productName,
+    required this.discountedPrice,
+    this.originalPrice,
+    required this.productWeight,
+    this.productImage,
+    required this.origin,
+  });
+
+  factory ProductPrice.fromJson(Map<String, dynamic> json) {
+    return ProductPrice(
+      productName: json['productName'] ?? '',
+      discountedPrice: (json['discountedPrice'] ?? 0.0).toDouble(),
+      originalPrice: json['productPrice']?['originalPrice']?.toDouble(),
+      productWeight: json['productWeight'] ?? '',
+      productImage: json['productImage'],
+      origin: json['origin'] ?? '',
+    );
+  }
+}
+
+class PriceTrackingService {
+  static const _baseUrl = '$apiUrl/api/getingredients';
+  static Future<List<ProductPrice>> getPricesForIngredient(
+      String ingredient) async {
+    List<ProductPrice> allPrices = [];
+    List<String> platforms = ['amazon', 'bigBasket', 'swiggy', 'zepto'];
+    for (String platform in platforms) {
+      try {
+        final response = await http.get(Uri.parse(
+            '$_baseUrl/$platform?q=${Uri.encodeComponent(ingredient)}'));
+        if (response.statusCode == 200) {
+          List<dynamic> data = json.decode(response.body);
+          allPrices
+              .addAll(data.map((item) => ProductPrice.fromJson(item)).toList());
+        }
+      } catch (e) {
+        print('Error fetching prices from $platform: $e');
+      }
+    }
+
+    return allPrices;
+  }
+}
 
 class Recipe {
   final String translatedRecipeName;
   final String translatedIngredients;
   final int totalTimeInMins;
   final String cuisine;
-  final String translatedInstructions;
+  final List<String> translatedInstructions;
   final String imageUrl;
   final int ingredientCount;
   final int calorieCount;
@@ -27,12 +86,25 @@ class Recipe {
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
+    List<String> parseInstructions(dynamic instructions) {
+      if (instructions is List) {
+        return instructions.map((step) => step.toString()).toList();
+      } else if (instructions is String) {
+        return instructions
+            .split('\n')
+            .where((step) => step.trim().isNotEmpty)
+            .map((step) => step.trim())
+            .toList();
+      }
+      return [];
+    }
+
     return Recipe(
       translatedRecipeName: json['TranslatedRecipeName'] ?? 'Unknown Recipe',
       translatedIngredients: json['TranslatedIngredients'] ?? '',
       totalTimeInMins: json['TotalTimeInMins'] ?? 0,
       cuisine: json['Cuisine'] ?? '',
-      translatedInstructions: json['TranslatedInstructions'] ?? '',
+      translatedInstructions: parseInstructions(json['TranslatedInstructions']),
       imageUrl: json['image-url'] ?? '',
       ingredientCount: json['Ingredient-count'] ?? 0,
       calorieCount: json['calorieCount'] ?? 0,
@@ -43,41 +115,53 @@ class Recipe {
   }
 }
 
-class RecipeDetailsPage extends StatelessWidget {
+class RecipeDetailsPage extends StatefulWidget {
   final Map<String, dynamic> recipeData;
 
   const RecipeDetailsPage({super.key, required this.recipeData});
+  @override
+  State<RecipeDetailsPage> createState() => _RecipeDetailsPageState();
+}
 
-  List<String> _formatInstructions(String instructions) {
-    var steps = instructions.split('\n');
-    if (steps.length <= 1) {
-      steps = instructions
-          .split(RegExp(r'\d+\.\s*'))
-          .where((step) => step.trim().isNotEmpty)
-          .toList();
-    }
-    if (steps.length <= 1) {
-      steps = instructions
-          .split('.')
-          .where((step) => step.trim().isNotEmpty)
-          .toList();
-    }
+class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
+  final Map<String, List<ProductPrice>> _ingredientPrices = {};
+  final Map<String, bool> _loadingStates = {};
 
-    return steps.map((step) {
-      step = step.replaceFirst(RegExp(r'^\d+\.\s*'), '');
-      step = step.trim();
-      if (step.isNotEmpty) {
-        step = step[0].toUpperCase() + step.substring(1);
+  @override
+  void initState() {
+    super.initState();
+    _fetchAllPrices();
+  }
+
+  Future<void> _fetchAllPrices() async {
+    final recipe = Recipe.fromJson(widget.recipeData);
+
+    for (String ingredient in recipe.cleanedIngredients) {
+      if (ingredient.trim().isEmpty) continue;
+
+      setState(() {
+        _loadingStates[ingredient] = true;
+      });
+
+      try {
+        final prices =
+            await PriceTrackingService.getPricesForIngredient(ingredient);
+        setState(() {
+          _ingredientPrices[ingredient] = prices;
+          _loadingStates[ingredient] = false;
+        });
+      } catch (e) {
+        print('Error fetching prices for $ingredient: $e');
+        setState(() {
+          _loadingStates[ingredient] = false;
+        });
       }
-      return step;
-    }).toList();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final recipe = Recipe.fromJson(recipeData);
-    final formattedInstructions =
-        _formatInstructions(recipe.translatedInstructions);
+    final recipe = Recipe.fromJson(widget.recipeData);
 
     return Scaffold(
       appBar: AppBar(
@@ -85,7 +169,7 @@ class RecipeDetailsPage extends StatelessWidget {
             style:
                 GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 173, 114, 196),
+        backgroundColor: Colour.purpur,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -235,7 +319,7 @@ class RecipeDetailsPage extends StatelessWidget {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: formattedInstructions.length,
+                    itemCount: recipe.translatedInstructions.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16),
@@ -267,7 +351,7 @@ class RecipeDetailsPage extends StatelessWidget {
                             ),
                             Expanded(
                               child: Text(
-                                formattedInstructions[index],
+                                recipe.translatedInstructions[index],
                                 style: GoogleFonts.raleway(
                                   fontSize: 16,
                                   height: 1.5,
@@ -292,28 +376,186 @@ class RecipeDetailsPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Card(
-                    elevation: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Best prices from online stores',
-                            style: GoogleFonts.raleway(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: recipe.cleanedIngredients.length,
+                    itemBuilder: (context, index) {
+                      final ingredient =
+                          recipe.cleanedIngredients[index].trim();
+                      if (ingredient.isEmpty) return const SizedBox.shrink();
+
+                      final prices = _ingredientPrices[ingredient] ?? [];
+                      final isLoading = _loadingStates[ingredient] ?? false;
+
+                      // Sort prices by discounted price
+                      prices.sort((a, b) =>
+                          a.discountedPrice.compareTo(b.discountedPrice));
+                      final bestPrice = prices.isNotEmpty ? prices.first : null;
+
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      ingredient,
+                                      style: GoogleFonts.raleway(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  if (bestPrice != null)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.shade100,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        'Best Price',
+                                        style: GoogleFonts.raleway(
+                                          color: Colors.green.shade700,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              if (isLoading)
+                                const Center(child: CircularProgressIndicator())
+                              else if (prices.isEmpty)
+                                Center(
+                                  child: Text(
+                                    'No price information available',
+                                    style: GoogleFonts.raleway(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                )
+                              else ...[
+                                // Best Price Section
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        bestPrice!.origin.toUpperCase(),
+                                        style: GoogleFonts.raleway(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          bestPrice.productWeight,
+                                          style: GoogleFonts.raleway(),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '₹${bestPrice.discountedPrice.toStringAsFixed(2)}',
+                                              style: GoogleFonts.raleway(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.deepPurple,
+                                              ),
+                                            ),
+                                            if (bestPrice.originalPrice !=
+                                                null) ...[
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                '₹${bestPrice.originalPrice!.toStringAsFixed(2)}',
+                                                style: GoogleFonts.raleway(
+                                                  decoration: TextDecoration
+                                                      .lineThrough,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+
+                                // Other Options
+                                if (prices.length > 1) ...[
+                                  const SizedBox(height: 8),
+                                  const Divider(),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Other Options',
+                                    style: GoogleFonts.raleway(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ...prices.skip(1).take(3).map((price) =>
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(6),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey.shade100,
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                              ),
+                                              child: Text(
+                                                price.origin.toUpperCase(),
+                                                style: GoogleFonts.raleway(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Text(
+                                              price.productWeight,
+                                              style: GoogleFonts.raleway(),
+                                            ),
+                                            const Spacer(),
+                                            Text(
+                                              '₹${price.discountedPrice.toStringAsFixed(2)}',
+                                              style: GoogleFonts.raleway(
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )),
+                                ],
+                              ],
+                            ],
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Coming soon: Price comparisons from Amazon, Zepto, Swiggy, and BigBasket',
-                            style: GoogleFonts.raleway(),
-                          ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

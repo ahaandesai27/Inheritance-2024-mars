@@ -69,18 +69,12 @@ const getAllIngredients = async (req, res) => {
             swiggyScraper(ingredient)
         ]);
 
-        const allProducts = [...amazonProducts, ...bigBasketProducts, ...zeptoProducts, ...swiggyProducts];
-
-        allProducts.sort((a, b) => {
-            if (a.discountedPrice === b.discountedPrice) {
-                return a.originalPrice - b.originalPrice;
-            }
-            return a.discountedPrice - b.discountedPrice;
-        });
+        const allProducts = [amazonProducts, bigBasketProducts, zeptoProducts, swiggyProducts];
         
         cache.set(ingredient, allProducts)
         return res.json(allProducts);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Failed to fetch ingredients' });
     }
 }

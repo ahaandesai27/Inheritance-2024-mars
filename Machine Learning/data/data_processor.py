@@ -48,7 +48,7 @@ class DataProcessor:
         self.df = pd.read_csv(self.config.DATA_PATH)
         self.df['Cleaned-Ingredients'] = self.df['Cleaned-Ingredients'].apply(self.clean_ingredients)
         self.df['ingredients_text'] = self.df['Cleaned-Ingredients'].apply(lambda x: ' '.join(x))
-        self.save_data('../../recipes.csv')  # Save after ingredients_text is created
+        self.save_data('./recipes.csv')  # Save after ingredients_text is created
         
         cuisines = self.df['Cuisine'].tolist()
         total_time = self.df['TotalTimeInMins'].tolist()

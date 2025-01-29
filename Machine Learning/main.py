@@ -24,12 +24,12 @@ def main():
     print("model trained")
     recommender = RecipeRecommender(model, df)
     
-    query_ingredients = "paneer tomatoes"
-    recommendations = recommender.find_similar_recipes(query_ingredients, n_recommendations=5)
+    # query_ingredients = "paneer tomatoes"
+    # recommendations = recommender.find_similar_recipes(query_ingredients, n_recommendations=5)
     
-    print("\nRecommendations based on ingredients:")
-    for recipe_name, score in recommendations:
-        print(f"{recipe_name}: {score:.4f}")
+    # print("\nRecommendations based on ingredients:")
+    # for recipe_name, score in recommendations:
+    #     print(f"{recipe_name}: {score:.4f}")
 
 if __name__ == "__main__":
     main()

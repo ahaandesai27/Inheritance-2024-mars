@@ -7,22 +7,25 @@ from typing import List
 from config.config import Config
 from models.model import RecipeEmbeddingModel, RecipeRecommender
 
-
 app = FastAPI(title="Recipe Recommendation API")
 
+# Initialize model and device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 config = Config()
 model = RecipeEmbeddingModel(config)
 model.load_state_dict(torch.load('saved_models/model_epoch_10.pt', map_location=device, weights_only=True))
 model.eval()
 model = model.to(device)
+
+# Load recipe data
 recipe_df = pd.read_csv('./recipes.csv')
 recommender = RecipeRecommender(model, df=recipe_df)
 
 class RecipeQuery(BaseModel):
     ingredients: str
     num_recommendations: int = 5
-
+    filter_results: bool = True  # New parameter to control filtering
+    
 class RecipeRecommendation(BaseModel):
     TranslatedRecipeName: str
     TranslatedIngredients: str
@@ -30,7 +33,7 @@ class RecipeRecommendation(BaseModel):
     Cuisine: str
     TranslatedInstructions: str
     URL: str = None
-    Cleaned_Ingredients: str
+    Cleaned_Ingredients: str = Field(..., alias='Cleaned-Ingredients')
     image_url: str = Field(..., alias='image-url')
     Ingredient_count: int = Field(..., alias='Ingredient-count')
     calorieCount: int
@@ -39,7 +42,7 @@ class RecipeRecommendation(BaseModel):
     class Config:
         allow_population_by_field_name = True
 
-@app.post("/recommend/", response_model=List[RecipeRecommendation])
+@app.get("/recommend/", response_model=List[RecipeRecommendation])
 async def get_recipe_recommendations(query: RecipeQuery):
     if not query.ingredients.strip():
         raise HTTPException(status_code=400, detail="Ingredients list cannot be empty")
@@ -47,14 +50,34 @@ async def get_recipe_recommendations(query: RecipeQuery):
         raise HTTPException(status_code=400, detail="Number of recommendations must be positive")
     
     try:
-        recommendations = recommender.find_similar_recipes(
-            query.ingredients, 
-            n_recommendations=query.num_recommendations
-        )
+        # Filter dataset if requested
+        if query.filter_results:
+            filtered_df = recipe_df[
+                recipe_df['TranslatedRecipeName'].str.contains(query.ingredients, case=False, na=False) | 
+                recipe_df['Cleaned-Ingredients'].str.contains(query.ingredients, case=False, na=False)
+            ]
+            
+            if not filtered_df.empty:
+                filtered_recommender = RecipeRecommender(model, filtered_df)
+                recommendations = filtered_recommender.find_similar_recipes(
+                    query.ingredients, 
+                    n_recommendations=query.num_recommendations
+                )
+            else:
+                recommendations = recommender.find_similar_recipes(
+                    query.ingredients, 
+                    n_recommendations=query.num_recommendations
+                )
+        else:
+            recommendations = recommender.find_similar_recipes(
+                query.ingredients, 
+                n_recommendations=query.num_recommendations
+            )
         
         recommendation_list = []
         for recipe in recommendations:
-            recipe_data = {key: (float(value) if isinstance(value, np.float32) else value) for key, value in recipe.items()}
+            recipe_data = {key: (float(value) if isinstance(value, np.float32) else value) 
+                          for key, value in recipe.items()}
             recommendation_list.append(
                 RecipeRecommendation(
                     TranslatedRecipeName=recipe_data['TranslatedRecipeName'],

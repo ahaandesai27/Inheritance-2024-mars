@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const express = require('express');
+const findCheapestProduct = require('./findsmallest');
 const fs = require('fs').promises;
 
 const app = express();
@@ -80,7 +81,10 @@ async function blinkitScraper(query) {
             return null;
         }
         console.log(`Scraped ${products.length} products`);
-        return products;
+        const cheapestProduct = products.reduce((minProduct, currentProduct) => {
+            return currentProduct.productPrice.originalPrice < minProduct.productPrice.originalPrice ? currentProduct : minProduct;
+          });
+        return findCheapestProduct(products, query);
 
     } catch (error) {
         console.error("Error occurred during scraping:", error);

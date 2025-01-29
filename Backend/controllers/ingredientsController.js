@@ -1,60 +1,26 @@
-const express = require('express');
-const Category = require('../models/IngredientCategory');
+const Ingredients = require('../models/Ingredients.js');
 
-const createCategory = async (req, res) => {
-  const newCategory = new Category(req.body);
-  try {
-    const savedCategory = await newCategory.save();
-    res.status(201).json(savedCategory);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-const getAllCategories = async (req, res) => {
-  try {
-    const categories = await Category.find();
-    res.status(200).json(categories);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const getCategoryById = async (req, res) => {
-  try {
-    const category = await Category.findById(req.params.id);
-    if (!category) return res.status(404).json({ message: 'Category not found' });
-    res.status(200).json(category);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const updateCategoryById = async (req, res) => {
-  try {
-    const updatedCategory = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedCategory) return res.status(404).json({ message: 'Category not found' });
-    res.status(200).json(updatedCategory);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-const deleteCategoryById = async (req, res) => {
-  try {
-    const deletedCategory = await Category.findByIdAndDelete(req.params.id);
-    if (!deletedCategory) return res.status(404).json({ message: 'Category not found' });
-    res.status(204).send();
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-
-module.exports = {
-    createCategory,
-    getAllCategories,
-    getCategoryById,
-    updateCategoryById,
-    deleteCategoryById
+const getIngredients = async (req, res) => {
+    const query = req.query.q.toLowerCase();
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 50;
+    
+    try {
+        const ingredient = await Ingredients.findOne({"name": query});
+        if (ingredient) {
+            const category = ingredient["category"]
+            const other_ingredients = await Ingredients.find({"category": category}).skip(skip).limit(limit);
+            res.status(200).json(other_ingredients);
+        }
+        else {
+            const random_ingredients = await Ingredients.aggregate([{ $sample: { size: limit } }])
+            // if not found, just return a random set of ingredients
+            res.status(200).json(random_ingredients);
+        }
+    }
+    catch (error) {
+        res.status(500).json("An error occured");
+    }
 }
+
+module.exports = { getIngredients }

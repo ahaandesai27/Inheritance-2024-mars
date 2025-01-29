@@ -88,45 +88,12 @@ The backend for recipaura
 Autocomplete for the searching 
 Default limit 5
 
-### **2. Ingredient Categories Routes**
-**Base Path**: `/api/ingredients`
-
-These routes manage ingredient categories and subcategories.
-
+### **2. Ingredient Routes**
 #### **Endpoints**:
-- **`POST /`**  
-  Create a new category.
+- **`GET /api/ingredients?q={query}&skip={skip}&limit={limit}`**  
+  Fetches all ingredients in a given category. Default limit 50.
+  It will return **`name`**, **`category`**, **`_id`**
 
-- **`GET /`**  
-  Fetch all categories.
-
-- **`GET /:id`**  
-  Fetch a category by its ID.
-
-- **`PUT /:id`**  
-  Update a category by its ID.
-
-- **`DELETE /:id`**  
-  Delete a category by its ID.
-
-
-### **Category Schema**
-
-#### **Category Fields**:
-- **`category`**: Name of the category (String, required, unique).  
-- **`subcategories`**: Array of subcategory objects.
-
-#### **Subcategory Fields**:
-- **`name`**: Name of the subcategory (String, required).  
-- **`ingredients`**: Array of ingredient objects.
-
-#### **Ingredient Fields**:
-- **`name`**: Name of the ingredient (String).  
-- **`nutritionalInfo`**: Object containing:
-  - `calories`: Number of calories.
-  - `protein`: Protein content.
-  - `fat`: Fat content.
-  - `carbohydrates`: Carbohydrate content.  
 
 ### **3. Routes for getting ingredient prices and other data from crawlers**
 **Base Path**: `/api/getingredients/<platform>?q=<item>`<br>
@@ -162,40 +129,6 @@ Each crawler returns an array of objects with the following keys:
 [**Note**: the following does not work properly]
 - **`GET /blinkit`**  
   Fetches ingredients data from Blinkit.
-
-### **4. Feedback**
-- **`POST /api/feedback`**  
-  Must have fields title, description and user_id in request body.
-
-### **5. Diet Plans**
-Note: Everything must be added in request parameters.~~
-- POST /:userId
-Create a new diet plan for a user.
-Request Body:
-
-name (String, required): Name of the diet plan.
-description (String, optional): Description of the diet plan.
-
-- GET /:userId
-Fetch all diet plans for a user.
-
-- PUT /:dietPlanId
-Update a diet plan by its ID.
-Request Body:
-
-Fields to update (e.g., name, description).
-- DELETE /:userId/:dietPlanId
-Delete a diet plan by its ID for a user.
-
-- POST /:dietPlanId/recipes/:recipeId
-Add a recipe to a diet plan.
-
-- DELETE /:dietPlanId/recipes/:recipeId
-Remove a recipe from a diet plan.
-
-- GET /:dietPlanId/recipes
-Fetch all recipes in a diet plan.
-
 
 ## Troubleshooting
 

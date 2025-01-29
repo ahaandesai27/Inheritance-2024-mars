@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const findCheapestProduct = require('./findsmallest.js');
 const { URL } = require('url');
 // https://www.amazon.in/s?k=almonds&page=1 - for testing
 
@@ -43,7 +44,7 @@ async function amazonScraper(query) {
   }
 
   await browser.close();
-  return products;
+  return findCheapestProduct(products, query);
 }
 
 module.exports = amazonScraper;

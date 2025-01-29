@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const findCheapestProduct = require('./findsmallest.js')
 
 async function swiggyScraper(query) {
   const browser = await puppeteer.launch({ headless: true });
@@ -57,7 +58,7 @@ async function swiggyScraper(query) {
   }
 
   await browser.close();
-  return products;
+  return findCheapestProduct(products, query);
 }
 
 module.exports = swiggyScraper;

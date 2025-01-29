@@ -3,17 +3,9 @@ const router = express.Router();
 const ingredientsController = require('../../controllers/ingredientsController');
 
 const {
-    createCategory,
-    getAllCategories,
-    getCategoryById,
-    updateCategoryById,
-    deleteCategoryById
+    getIngredients
 } = ingredientsController;
 
-router.post('/', createCategory);
-router.get('/', getAllCategories);
-router.get('/:id', getCategoryById);
-router.put('/:id', updateCategoryById);
-router.delete('/:id', deleteCategoryById);
+router.get('/', getIngredients);
 
 module.exports = router;

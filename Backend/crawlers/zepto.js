@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer');
 const {
   URL
 } = require('url');
+const findCheapestProduct = require('./findsmallest');
 // https://www.zeptonow.com/search?query=almonds - for testing
 async function zeptoScraper(query) {
   try {
@@ -60,7 +61,7 @@ async function zeptoScraper(query) {
     }
 
     await browser.close();
-    return products;
+    return findCheapestProduct(products, query);
   } catch (error) {
     console.log(error);
   }

@@ -1,5 +1,5 @@
 import 'package:app/api/apiurl.dart';
-import 'package:app/pages/ingredientpage.dart';
+import 'package:app/pages/recipedetail.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -79,7 +79,7 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
           ),
           Expanded(
             child: isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: ListView.builder(
@@ -107,15 +107,16 @@ class _CuisineRecipesPageState extends State<CuisineRecipesPage> {
                                       fit: BoxFit.cover,
                                       errorBuilder:
                                           (context, error, stackTrace) {
-                                        return Icon(Icons.food_bank, size: 80);
+                                        return const Icon(Icons.food_bank,
+                                            size: 80);
                                       },
                                     ),
                                   )
-                                : Icon(Icons.food_bank, size: 80),
+                                : const Icon(Icons.food_bank, size: 80),
                             title: Text(
                               recipe['TranslatedRecipeName'] ??
                                   'Unknown Recipe',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.black87,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -174,7 +175,7 @@ Widget _buildCategoryTile(
                 height: 60,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Icon(Icons.food_bank, size: 60);
+                  return const Icon(Icons.food_bank, size: 60);
                 },
               ),
             ),

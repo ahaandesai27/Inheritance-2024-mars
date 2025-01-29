@@ -1,5 +1,5 @@
 import 'package:app/api/apiurl.dart';
-import 'package:app/pages/ingredientpage.dart';
+import 'package:app/pages/recipedetail.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;

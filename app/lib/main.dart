@@ -1,4 +1,4 @@
-import 'package:app/pages/ingredientpage.dart';
+import 'package:app/pages/recipedetail.dart';
 import 'package:app/pages/loginpage.dart';
 import 'package:app/pages/recipepage.dart';
 import 'package:app/pages/signuppage.dart';

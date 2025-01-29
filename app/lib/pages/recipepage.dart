@@ -1,4 +1,5 @@
 import 'package:app/pages/cuisinerecipe.dart';
+import 'package:app/utils/colors.dart';
 import 'package:app/widgets/navbar.dart';
 import 'package:app/widgets/searchbar.dart';
 import 'package:app/widgets/sidebar.dart';
@@ -18,10 +19,12 @@ class _RecipePageState extends State<RecipePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('RecipAura',
-            style:
-                GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold)),
+            style: GoogleFonts.raleway(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            )),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 173, 114, 196),
+        backgroundColor: Colour.purpur,
         leading: Builder(
           builder: (BuildContext context) => IconButton(
             icon: const Icon(Icons.menu),

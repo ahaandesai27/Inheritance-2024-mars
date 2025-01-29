@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:app/utils/colors.dart';
 import 'package:app/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
@@ -65,7 +66,7 @@ class _NavbarState extends State<Navbar> {
       icon: _currentIndex == index
           ? Container(
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 173, 114, 196),
+                color: Colour.purpur,
                 borderRadius: BorderRadius.circular(10),
               ),
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),

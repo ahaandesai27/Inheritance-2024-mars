@@ -3,7 +3,7 @@ import 'package:app/pages/loginpage.dart';
 import 'package:app/pages/recipepage.dart';
 import 'package:app/pages/signuppage.dart';
 import 'package:app/pages/user.dart';
-import 'package:app/pages/vegetable.dart';
+import 'package:app/pages/ingredientselector.dart';
 import 'package:app/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,6 +20,10 @@ class Recipaura extends StatefulWidget {
 }
 
 class _RecipauraState extends State<Recipaura> {
+  get onIngredientsChanged => null;
+
+  get apiBaseUrl => null;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,11 +33,11 @@ class _RecipauraState extends State<Recipaura> {
           primarySwatch: Colors.blue,
         ),
         routes: {
-          "/": (context) => RecipePage(),
+          "/": (context) => IngredientSelector(),
           MyRoutes.userRoute: (context) => const UserPage(),
           MyRoutes.signUpRoute: (context) => SignUpPage(),
           MyRoutes.loginRoute: (context) => LoginPage(),
-          MyRoutes.vegetableRoute: (context) => const GroceryPage(),
+          MyRoutes.vegetableRoute: (context) => const IngredientSelector(),
           MyRoutes.recipeRoute: (context) => const RecipePage(),
         });
   }

@@ -50,30 +50,58 @@ async def get_recipe_recommendations(query: RecipeQuery):
         raise HTTPException(status_code=400, detail="Number of recommendations must be positive")
     
     try:
-        # Filter dataset if requested
-        if query.filter_results:
-            filtered_df = recipe_df[
-                recipe_df['TranslatedRecipeName'].str.contains(query.ingredients, case=False, na=False) | 
-                recipe_df['Cleaned-Ingredients'].str.contains(query.ingredients, case=False, na=False)
-            ]
-            
-            if not filtered_df.empty:
-                filtered_recommender = RecipeRecommender(model, filtered_df)
-                recommendations = filtered_recommender.find_similar_recipes(
-                    query.ingredients, 
-                    n_recommendations=query.num_recommendations
-                )
+        # Split the input ingredients by space
+        ingredients_list = query.ingredients.split()
+        
+        # Filter dataset based on individual ingredients if input length < 10
+        if len(query.ingredients) <= 5:
+            if query.filter_results:
+                filtered_df = recipe_df[
+                    recipe_df['Cleaned-Ingredients'].apply(
+                        lambda x: all(ingredient.lower() in x.lower() for ingredient in ingredients_list)
+                    )
+                ]
+                
+                if not filtered_df.empty:
+                    filtered_recommender = RecipeRecommender(model, filtered_df)
+                    recommendations = filtered_recommender.find_similar_recipes(
+                        query.ingredients, 
+                        n_recommendations=query.num_recommendations
+                    )
+                else:
+                    recommendations = recommender.find_similar_recipes(
+                        query.ingredients, 
+                        n_recommendations=query.num_recommendations
+                    )
             else:
                 recommendations = recommender.find_similar_recipes(
                     query.ingredients, 
                     n_recommendations=query.num_recommendations
                 )
         else:
-            recommendations = recommender.find_similar_recipes(
-                query.ingredients, 
-                n_recommendations=query.num_recommendations
-            )
-        
+            if query.filter_results:
+                filtered_df = recipe_df[
+                    recipe_df['TranslatedRecipeName'].str.contains(query.ingredients, case=False, na=False) | 
+                    recipe_df['Cleaned-Ingredients'].str.contains(query.ingredients, case=False, na=False)
+                ]
+                
+                if not filtered_df.empty:
+                    filtered_recommender = RecipeRecommender(model, filtered_df)
+                    recommendations = filtered_recommender.find_similar_recipes(
+                        query.ingredients, 
+                        n_recommendations=query.num_recommendations
+                    )
+                else:
+                    recommendations = recommender.find_similar_recipes(
+                        query.ingredients, 
+                        n_recommendations=query.num_recommendations
+                    )
+            else:
+                recommendations = recommender.find_similar_recipes(
+                    query.ingredients, 
+                    n_recommendations=query.num_recommendations
+                )
+
         recommendation_list = []
         for recipe in recommendations:
             recipe_data = {key: (float(value) if isinstance(value, np.float32) else value) 
@@ -98,6 +126,7 @@ async def get_recipe_recommendations(query: RecipeQuery):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
 
 if __name__ == "__main__":
     import uvicorn

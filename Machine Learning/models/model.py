@@ -42,6 +42,7 @@ class RecipeRecommender:
         self.compute_all_embeddings()
         
     def compute_all_embeddings(self):
+        print("Computing embeddings...")
         with torch.no_grad():
             self.recipe_embeddings = self.model(self.df['ingredients_text'].tolist())      
             # compute embeddings for all recipes

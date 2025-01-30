@@ -82,7 +82,7 @@ class _UserPageState extends State<UserPage> {
               children: [
                 const CircleAvatar(
                   radius: 50,
-                  backgroundImage: AssetImage('assets/pfp.jpg'),
+                  backgroundImage: AssetImage('assets/Raw_Nuck.jpg'),
                 ),
                 const SizedBox(height: 16),
                 ListTile(

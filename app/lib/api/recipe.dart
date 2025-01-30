@@ -1,4 +1,5 @@
 class Recipe {
+  final String id;
   final String translatedRecipeName;
   final String translatedIngredients;
   final int totalTimeInMins;
@@ -11,6 +12,7 @@ class Recipe {
   final List<String> cleanedIngredients;
 
   Recipe({
+    required this.id,
     required this.translatedRecipeName,
     required this.translatedIngredients,
     required this.totalTimeInMins,
@@ -38,6 +40,7 @@ class Recipe {
     }
 
     return Recipe(
+      id: json['_id'] ?? '',
       translatedRecipeName: json['TranslatedRecipeName'] ?? 'Unknown Recipe',
       translatedIngredients: json['TranslatedIngredients'] ?? '',
       totalTimeInMins: json['TotalTimeInMins'] ?? 0,

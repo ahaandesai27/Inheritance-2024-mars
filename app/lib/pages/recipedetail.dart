@@ -2,9 +2,10 @@
 import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app/api/fetchproductprices.dart';
 import 'package:app/api/recipe.dart';
 import 'package:app/pages/ingredient_prices_page.dart';
+import 'package:app/api/saverecipe.dart';
+import 'package:app/api/localstorage.dart';
 
 class RecipeDetailsPage extends StatefulWidget {
   final Map<String, dynamic> recipeData;
@@ -15,42 +16,15 @@ class RecipeDetailsPage extends StatefulWidget {
 }
 
 class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
-  final Map<String, List<ProductPrice>> _ingredientPrices = {};
-  final Map<String, bool> _loadingStates = {};
-
   @override
   void initState() {
     super.initState();
-    // _fetchAllPrices();
-  }
-
-  Future<void> _fetchAllPrices() async {
-    final recipe = Recipe.fromJson(widget.recipeData);
-    for (String ingredient in recipe.cleanedIngredients) {
-      if (ingredient.trim().isEmpty) continue;
-      setState(() {
-        _loadingStates[ingredient] = true;
-      });
-
-      try {
-        final prices =
-            await PriceTrackingService.getPricesForIngredient(ingredient);
-        setState(() {
-          _ingredientPrices[ingredient] = prices;
-          _loadingStates[ingredient] = false;
-        });
-      } catch (e) {
-        print('Error fetching prices for $ingredient: $e');
-        setState(() {
-          _loadingStates[ingredient] = false;
-        });
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     final recipe = Recipe.fromJson(widget.recipeData);
+    final saver = SaveRecipeService();
 
     return Scaffold(
       appBar: AppBar(
@@ -59,6 +33,21 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                 GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colour.purpur,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.favorite_border),
+            onPressed: () async {
+              // Call your save function here
+              try {
+                String? userId = await fetchStoredUserId();
+                String? recipeId = recipe.id;
+                bool result = await saver.saveRecipe(userId, recipeId);
+              } catch (error) {
+                print('An error occured');
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

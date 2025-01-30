@@ -6,9 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../api/apiurl.dart';
 import '../utils/colors.dart';
+import '../widgets/navbar.dart';
+import '../widgets/sidebar.dart';
 
 class IngredientSelector extends StatefulWidget {
-  const IngredientSelector({Key? key}) : super(key: key);
+  const IngredientSelector({super.key});
 
   @override
   State<IngredientSelector> createState() => _IngredientSelectorState();
@@ -23,14 +25,22 @@ class _IngredientSelectorState extends State<IngredientSelector> {
   final String apiBaseUrl = apiUrl;
   String _selectedCategory = "All";
   final List<String> _categories = [
-    "All", "Vegetables", "Fruits", "Dairy", "Meat", "Spices"
+    "All",
+    "Vegetables",
+    "Fruits",
+    "Dairy",
+    "Meat",
+    "Spices"
   ];
 
   String capitalizeWords(String text) {
     if (text.isEmpty) return text;
-    return text.split(' ').map((word) =>
-    word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : ''
-    ).join(' ');
+    return text
+        .split(' ')
+        .map((word) => word.isNotEmpty
+            ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+            : '')
+        .join(' ');
   }
 
   @override
@@ -62,16 +72,19 @@ class _IngredientSelectorState extends State<IngredientSelector> {
 
     try {
       final response = await http.get(
-        Uri.parse('$apiBaseUrl/api/ingredients?q=$query&category=$_selectedCategory&limit=5'),
+        Uri.parse(
+            '$apiBaseUrl/api/ingredients?q=$query&category=$_selectedCategory&limit=5'),
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         setState(() {
-          _suggestions = data.map((item) => {
-            'name': capitalizeWords(item['name'].toString()),
-            'category': capitalizeWords(item['category'].toString()),
-          }).toList();
+          _suggestions = data
+              .map((item) => {
+                    'name': capitalizeWords(item['name'].toString()),
+                    'category': capitalizeWords(item['category'].toString()),
+                  })
+              .toList();
         });
       }
     } catch (e) {
@@ -102,6 +115,35 @@ class _IngredientSelectorState extends State<IngredientSelector> {
     super.dispose();
   }
 
+  Widget _buildCategoryTile(String title) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedCategory = title;
+          _fetchSuggestions(_searchController.text);
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: _selectedCategory == title ? Colour.purpur : Colors.grey[200],
+          borderRadius: BorderRadius.circular(10.0),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: _selectedCategory == title ? Colors.white : Colors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,138 +154,153 @@ class _IngredientSelectorState extends State<IngredientSelector> {
         ),
         centerTitle: true,
         backgroundColor: Colour.purpur,
+        leading: Builder(
+          builder: (BuildContext context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search Bar
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search ingredients...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _isLoading
-                    ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-                    : null,
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Search Bar (Matching RecipePage style)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search ingredients...',
+                    border: InputBorder.none,
+                    icon: const Icon(Icons.search),
+                    suffixIcon: _isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : null,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-            // Dropdown for selected ingredients
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.green[100],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  hint: Text("Selected Ingredients"),
-                  isExpanded: true,
-                  items: _selectedIngredients.map((ingredient) {
-                    return DropdownMenuItem<String>(
-                      value: ingredient,
-                      child: Text(capitalizeWords(ingredient)),
-                    );
-                  }).toList(),
-                  onChanged: (value) {},
+              // Categories Section (Matching RecipePage style)
+              const Text(
+                'Categories',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 5,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                children: _categories
+                    .map((category) => _buildCategoryTile(category))
+                    .toList(),
+              ),
+              const SizedBox(height: 20),
 
-            // Category Selection Buttons
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _categories.map((category) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: ChoiceChip(
-                      label: Text(category),
-                      selected: _selectedCategory == category,
-                      onSelected: (selected) {
-                        setState(() {
-                          _selectedCategory = category;
-                          _fetchSuggestions(_searchController.text);
-                        });
-                      },
-                      selectedColor: Colour.purpur,
-                      backgroundColor: Colors.grey[200],
-                      labelStyle: TextStyle(
-                        color: _selectedCategory == category ? Colors.white : Colors.black,
+              // Selected Ingredients Section
+              const Text(
+                'Selected Ingredients',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              if (_selectedIngredients.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _selectedIngredients.map((ingredient) {
+                      return Chip(
+                        label: Text(capitalizeWords(ingredient)),
+                        onDeleted: () => _toggleIngredient(ingredient),
+                        backgroundColor: Colour.purpur,
+                        labelStyle: const TextStyle(color: Colors.white),
+                        deleteIconColor: Colors.white,
+                      );
+                    }).toList(),
+                  ),
+                ),
+              const SizedBox(height: 20),
+
+              // Suggestions List
+              if (_suggestions.isNotEmpty) ...[
+                const Text(
+                  'Suggestions',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ..._suggestions.map((suggestion) {
+                  final ingredient = suggestion['name'];
+                  final category = suggestion['category'];
+                  final isSelected = _selectedIngredients.contains(ingredient);
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(
+                        color: isSelected ? Colour.purpur : Colors.grey,
+                        width: 2.0,
                       ),
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        ingredient,
+                        style: GoogleFonts.raleway(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      subtitle: Text(
+                        category,
+                        style: GoogleFonts.raleway(
+                            fontSize: 14, color: Colors.grey[700]),
+                      ),
+                      trailing: Checkbox(
+                        value: isSelected,
+                        onChanged: (_) => _toggleIngredient(ingredient),
+                        activeColor: Colour.purpur,
+                      ),
+                      onTap: () => _toggleIngredient(ingredient),
                     ),
                   );
                 }).toList(),
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // Ingredients List
-            Expanded(
-              child: ListView.builder(
-                itemCount: _suggestions.length,
-                itemBuilder: (context, index) {
-                  final ingredient = _suggestions[index]['name'];
-                  final category = _suggestions[index]['category'];
-                  final isSelected = _selectedIngredients.contains(ingredient);
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Card(
-                      elevation: 2,
-                      color: isSelected ? Colors.green[100] : Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(
-                          color: Colour.purpur,
-                          width: 1.0,
-                        ),
-                      ),
-                      child: ListTile(
-                        title: Text(
-                          ingredient,
-                          style: GoogleFonts.raleway(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        subtitle: Text(
-                          category,
-                          style: GoogleFonts.raleway(fontSize: 14, color: Colors.grey[700]),
-                        ),
-                        trailing: Checkbox(
-                          value: isSelected,
-                          onChanged: (_) => _toggleIngredient(ingredient),
-                          activeColor: Colour.purpur,
-                        ),
-                        onTap: () => _toggleIngredient(ingredient),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+              ],
+            ],
+          ),
         ),
       ),
+      drawer: const AppDrawer(),
+      bottomNavigationBar: const Navbar(),
     );
   }
 }

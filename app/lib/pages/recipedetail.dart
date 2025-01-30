@@ -1,51 +1,69 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app/api/recipe.dart';
-import 'package:app/pages/ingredient_prices_page.dart';
 import 'package:app/api/saverecipe.dart';
 import 'package:app/api/localstorage.dart';
+import 'package:app/utils/colors.dart';
+import 'package:app/pages/ingredient_prices_page.dart';
 
 class RecipeDetailsPage extends StatefulWidget {
   final Map<String, dynamic> recipeData;
-
   const RecipeDetailsPage({super.key, required this.recipeData});
   @override
   State<RecipeDetailsPage> createState() => _RecipeDetailsPageState();
 }
 
 class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
+  late Recipe recipe;
+  final saver = SaveRecipeService();
+  bool isSaved = false;
+
   @override
   void initState() {
     super.initState();
+    recipe = Recipe.fromJson(widget.recipeData);
+    _checkIfSaved();
+  }
+
+  Future<void> _checkIfSaved() async {
+    try {
+      String? userId = await fetchStoredUserId();
+      if (userId != null) {
+        bool saved = await saver.isRecipeSaved(userId, recipe.id);
+        setState(() => isSaved = saved);
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _toggleSaveRecipe() async {
+    try {
+      String? userId = await fetchStoredUserId();
+      if (userId == null) return;
+
+      if (isSaved) {
+        await saver.deleteSavedRecipe(userId, recipe.id);
+      } else {
+        await saver.saveRecipe(userId, recipe.id);
+      }
+      setState(() => isSaved = !isSaved);
+    } catch (_) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    final recipe = Recipe.fromJson(widget.recipeData);
-    final saver = SaveRecipeService();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('RecipAura',
-            style:
-                GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold)),
+        title: Text(
+          'RecipAura',
+          style: GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         backgroundColor: Colour.purpur,
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite_border),
-            onPressed: () async {
-              // Call your save function here
-              try {
-                String? userId = await fetchStoredUserId();
-                String? recipeId = recipe.id;
-                bool result = await saver.saveRecipe(userId, recipeId);
-              } catch (error) {
-                print('An error occured');
-              }
-            },
+            icon: Icon(isSaved ? Icons.favorite : Icons.favorite_border,
+                color: isSaved ? Colors.red : Colors.white),
+            onPressed: _toggleSaveRecipe,
           ),
         ],
       ),

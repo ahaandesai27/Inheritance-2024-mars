@@ -55,7 +55,7 @@ async function bigBasketScraper(query) {
         },
         productWeight: weight,
         productLink: productLink.startsWith('http') ? productLink : `https://www.bigbasket.com${productLink}`,
-        origin: "bigbasket"
+        origin: "big basket"
       };
     });
   });

@@ -1,4 +1,3 @@
-import 'package:app/pages/recipedetail.dart';
 import 'package:app/pages/loginpage.dart';
 import 'package:app/pages/recipepage.dart';
 import 'package:app/pages/signuppage.dart';
@@ -27,6 +26,7 @@ class _RecipauraState extends State<Recipaura> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Recipaura',
         theme: ThemeData(
           fontFamily: GoogleFonts.raleway().fontFamily,

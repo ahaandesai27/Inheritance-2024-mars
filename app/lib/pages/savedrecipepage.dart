@@ -117,7 +117,7 @@ class _SavedRecipesPageState extends State<SavedRecipesPage> {
                                     RecipeDetailsPage(recipeData: recipe)));
                         // Navigate to recipe details page
                         // Navigator.push(context, MaterialPageRoute(
-                        //   builder: (context) => RecipeDetailPage(recipe: recipe)
+                        //   builder: (context) => IngredientPage(recipe: recipe)
                         // ));
                       },
                     ),

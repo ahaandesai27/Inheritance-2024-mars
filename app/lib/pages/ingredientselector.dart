@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../api/apiurl.dart';
+import '../utils/colors.dart';
 
 class IngredientSelector extends StatefulWidget {
   const IngredientSelector({Key? key}) : super(key: key);
@@ -19,6 +21,17 @@ class _IngredientSelectorState extends State<IngredientSelector> {
   Timer? _debounceTimer;
   bool _isLoading = false;
   final String apiBaseUrl = apiUrl;
+  String _selectedCategory = "All";
+  final List<String> _categories = [
+    "All", "Vegetables", "Fruits", "Dairy", "Meat", "Spices"
+  ];
+
+  String capitalizeWords(String text) {
+    if (text.isEmpty) return text;
+    return text.split(' ').map((word) =>
+    word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : ''
+    ).join(' ');
+  }
 
   @override
   void initState() {
@@ -49,15 +62,15 @@ class _IngredientSelectorState extends State<IngredientSelector> {
 
     try {
       final response = await http.get(
-        Uri.parse('$apiBaseUrl/api/ingredients?q=$query&limit=5'),
+        Uri.parse('$apiBaseUrl/api/ingredients?q=$query&category=$_selectedCategory&limit=5'),
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         setState(() {
           _suggestions = data.map((item) => {
-            'name': item['name'].toString(),
-            'category': item['category'].toString(),
+            'name': capitalizeWords(item['name'].toString()),
+            'category': capitalizeWords(item['category'].toString()),
           }).toList();
         });
       }
@@ -92,12 +105,21 @@ class _IngredientSelectorState extends State<IngredientSelector> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Select Ingredients")),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
+      appBar: AppBar(
+        title: Text(
+          "Select Ingredients",
+          style: GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: Colour.purpur,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Search Bar
+            TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search ingredients...',
@@ -121,42 +143,106 @@ class _IngredientSelectorState extends State<IngredientSelector> {
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _suggestions.length,
-              itemBuilder: (context, index) {
-                final ingredient = _suggestions[index]['name'];
-                final category = _suggestions[index]['category'];
-                final isSelected = _selectedIngredients.contains(ingredient);
+            const SizedBox(height: 10),
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 4.0,
-                  ),
-                  child: Card(
-                    elevation: 0,
-                    color: isSelected ? Colors.green[100] : Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      title: Text(ingredient),
-                      subtitle: Text(category),
-                      trailing: Checkbox(
-                        value: isSelected,
-                        onChanged: (_) => _toggleIngredient(ingredient),
-                        activeColor: Colors.green,
-                      ),
-                      onTap: () => _toggleIngredient(ingredient),
-                    ),
-                  ),
-                );
-              },
+            // Dropdown for selected ingredients
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.green[100],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  hint: Text("Selected Ingredients"),
+                  isExpanded: true,
+                  items: _selectedIngredients.map((ingredient) {
+                    return DropdownMenuItem<String>(
+                      value: ingredient,
+                      child: Text(capitalizeWords(ingredient)),
+                    );
+                  }).toList(),
+                  onChanged: (value) {},
+                ),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+
+            // Category Selection Buttons
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: _categories.map((category) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ChoiceChip(
+                      label: Text(category),
+                      selected: _selectedCategory == category,
+                      onSelected: (selected) {
+                        setState(() {
+                          _selectedCategory = category;
+                          _fetchSuggestions(_searchController.text);
+                        });
+                      },
+                      selectedColor: Colour.purpur,
+                      backgroundColor: Colors.grey[200],
+                      labelStyle: TextStyle(
+                        color: _selectedCategory == category ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // Ingredients List
+            Expanded(
+              child: ListView.builder(
+                itemCount: _suggestions.length,
+                itemBuilder: (context, index) {
+                  final ingredient = _suggestions[index]['name'];
+                  final category = _suggestions[index]['category'];
+                  final isSelected = _selectedIngredients.contains(ingredient);
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Card(
+                      elevation: 2,
+                      color: isSelected ? Colors.green[100] : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(
+                          color: Colour.purpur,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          ingredient,
+                          style: GoogleFonts.raleway(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        subtitle: Text(
+                          category,
+                          style: GoogleFonts.raleway(fontSize: 14, color: Colors.grey[700]),
+                        ),
+                        trailing: Checkbox(
+                          value: isSelected,
+                          onChanged: (_) => _toggleIngredient(ingredient),
+                          activeColor: Colour.purpur,
+                        ),
+                        onTap: () => _toggleIngredient(ingredient),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

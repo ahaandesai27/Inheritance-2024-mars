@@ -5,7 +5,7 @@ const recipeSchema = new mongoose.Schema({
   TranslatedIngredients: { type: String, required: true },
   TotalTimeInMins: { type: Number, required: true, min: [1, 'Total time must be greater than 0'] },
   Cuisine: { type: String, required: true },
-  TranslatedInstructions: { type: String, required: true },
+  TranslatedInstructions: { type: [String], required: true },
   URL: { type: String },
   "Cleaned-Ingredients": { type: String, required: true },
   "image-url": { type: String, required: true },

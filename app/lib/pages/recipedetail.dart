@@ -1,51 +1,69 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app/api/recipe.dart';
-import 'package:app/pages/ingredient_prices_page.dart';
 import 'package:app/api/saverecipe.dart';
 import 'package:app/api/localstorage.dart';
+import 'package:app/utils/colors.dart';
+import 'package:app/pages/ingredient_prices_page.dart';
 
 class RecipeDetailsPage extends StatefulWidget {
   final Map<String, dynamic> recipeData;
-
   const RecipeDetailsPage({super.key, required this.recipeData});
   @override
   State<RecipeDetailsPage> createState() => _RecipeDetailsPageState();
 }
 
 class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
+  late Recipe recipe;
+  final saver = SaveRecipeService();
+  bool isSaved = false;
+
   @override
   void initState() {
     super.initState();
+    recipe = Recipe.fromJson(widget.recipeData);
+    _checkIfSaved();
+  }
+
+  Future<void> _checkIfSaved() async {
+    try {
+      String? userId = await fetchStoredUserId();
+      if (userId != null) {
+        bool saved = await saver.isRecipeSaved(userId, recipe.id);
+        setState(() => isSaved = saved);
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _toggleSaveRecipe() async {
+    try {
+      String? userId = await fetchStoredUserId();
+      if (userId == null) return;
+
+      if (isSaved) {
+        await saver.deleteSavedRecipe(userId, recipe.id);
+      } else {
+        await saver.saveRecipe(userId, recipe.id);
+      }
+      setState(() => isSaved = !isSaved);
+    } catch (_) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    final recipe = Recipe.fromJson(widget.recipeData);
-    final saver = SaveRecipeService();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('RecipAura',
-            style:
-                GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold)),
+        title: Text(
+          'RecipAura',
+          style: GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         backgroundColor: Colour.purpur,
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite_border),
-            onPressed: () async {
-              // Call your save function here
-              try {
-                String? userId = await fetchStoredUserId();
-                String? recipeId = recipe.id;
-                bool result = await saver.saveRecipe(userId, recipeId);
-              } catch (error) {
-                print('An error occured');
-              }
-            },
+            icon: Icon(isSaved ? Icons.favorite : Icons.favorite_border,
+                color: isSaved ? Colors.red : Colors.white),
+            onPressed: _toggleSaveRecipe,
           ),
         ],
       ),
@@ -199,42 +217,17 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: recipe.translatedInstructions.length,
                     itemBuilder: (context, index) {
+                      final instruction =
+                          recipe.translatedInstructions[index].trim();
+                      if (instruction.isEmpty) return const SizedBox.shrink();
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              width: 24,
-                              height: 24,
-                              margin: const EdgeInsets.only(right: 8),
-                              decoration: const BoxDecoration(
-                                color: Colors.deepPurple,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    '${index + 1}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      height: 1.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            const SizedBox(width: 8),
                             Expanded(
-                              child: Text(
-                                recipe.translatedInstructions[index],
-                                style: GoogleFonts.raleway(
-                                  fontSize: 16,
-                                  height: 1.5,
-                                ),
-                              ),
+                              child: Text('${index+1}. ${instruction}',
+                                  style: GoogleFonts.raleway(fontSize: 16)),
                             ),
                           ],
                         ),

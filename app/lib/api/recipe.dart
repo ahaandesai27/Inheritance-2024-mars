@@ -26,32 +26,23 @@ class Recipe {
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
-    List<String> parseInstructions(dynamic instructions) {
-      if (instructions is List) {
-        return instructions.map((step) => step.toString()).toList();
-      } else if (instructions is String) {
-        return instructions
-            .split('\n')
-            .where((step) => step.trim().isNotEmpty)
-            .map((step) => step.trim())
-            .toList();
-      }
-      return [];
-    }
-
     return Recipe(
       id: json['_id'] ?? '',
       translatedRecipeName: json['TranslatedRecipeName'] ?? 'Unknown Recipe',
       translatedIngredients: json['TranslatedIngredients'] ?? '',
       totalTimeInMins: json['TotalTimeInMins'] ?? 0,
       cuisine: json['Cuisine'] ?? '',
-      translatedInstructions: parseInstructions(json['TranslatedInstructions']),
+      translatedInstructions: List<String>.from(json['TranslatedInstructions'] ?? []),
       imageUrl: json['image-url'] ?? '',
       ingredientCount: json['Ingredient-count'] ?? 0,
       calorieCount: json['calorieCount'] ?? 0,
       isVeg: json['veg'] ?? false,
-      cleanedIngredients:
-          (json['Cleaned-Ingredients'] as String? ?? '').split(','),
+      cleanedIngredients: (json['Cleaned-Ingredients'] as String? ?? '').split(','),
     );
+  }
+
+  @override
+  String toString() {
+    return 'Recipe{id: $id, translatedRecipeName: $translatedRecipeName, translatedIngredients: $translatedIngredients, totalTimeInMins: $totalTimeInMins, cuisine: $cuisine, translatedInstructions: $translatedInstructions, imageUrl: $imageUrl, ingredientCount: $ingredientCount, calorieCount: $calorieCount, isVeg: $isVeg, cleanedIngredients: $cleanedIngredients}';
   }
 }

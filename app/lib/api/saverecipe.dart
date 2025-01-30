@@ -6,7 +6,6 @@ class SaveRecipeService {
   Future<bool> saveRecipe(String? userId, String? recipeId) async {
     if (userId == null || recipeId == null) {
       throw Exception('User ID and recipe ID are required');
-      return false;
     }
     final url = Uri.parse('$apiUrl/api/user/recipes/saved');
     final response = await http.post(
@@ -46,4 +45,23 @@ class SaveRecipeService {
 
     return response.statusCode == 200;
   }
+
+  Future<bool> isRecipeSaved(String userId, String recipeId) async {
+    final url = Uri.parse(
+        '$apiUrl/api/user/recipes/isSaved?userId=$userId&recipeId=$recipeId');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data['isSaved'] == true;
+    }
+    return false;
+  }
 }
+
+// //unit test isRecipeSaved
+// void main() async {
+//   final saveRecipeService = SaveRecipeService();
+//   bool result = await saveRecipeService.isRecipeSaved(
+//       "6767feee8e2f7487e2d699db", "6798e0e81370ed3f77bf28bf");
+//   print(result);
+// }

@@ -21,6 +21,21 @@ const getSavedRecipes = async (req, res) => {
     }
 }
 
+const getIfSaved = async (req, res) => {
+    const { userId, recipeId } = req.query;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const isSaved = user.savedRecipes.includes(recipeId);
+        res.status(200).json({ isSaved });
+        } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+        
+    }
+}
+
 const deleteSavedRecipe = async (req, res) => {
     const { recipeId, userId } = req.body;
     try {
@@ -114,4 +129,5 @@ module.exports = {
     deleteSavedRecipe,
     addToHistory,
     getHistory,
+    getIfSaved
 }

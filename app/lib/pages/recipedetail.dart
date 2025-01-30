@@ -217,42 +217,17 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: recipe.translatedInstructions.length,
                     itemBuilder: (context, index) {
+                      final instruction =
+                          recipe.translatedInstructions[index].trim();
+                      if (instruction.isEmpty) return const SizedBox.shrink();
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              width: 24,
-                              height: 24,
-                              margin: const EdgeInsets.only(right: 8),
-                              decoration: const BoxDecoration(
-                                color: Colors.deepPurple,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    '${index + 1}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      height: 1.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            const SizedBox(width: 8),
                             Expanded(
-                              child: Text(
-                                recipe.translatedInstructions[index],
-                                style: GoogleFonts.raleway(
-                                  fontSize: 16,
-                                  height: 1.5,
-                                ),
-                              ),
+                              child: Text('${index+1}. ${instruction}',
+                                  style: GoogleFonts.raleway(fontSize: 16)),
                             ),
                           ],
                         ),

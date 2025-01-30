@@ -1,56 +1,83 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app/api/fetchproductprices.dart';
-import 'package:app/api/recipe.dart';
-import 'package:app/pages/ingredient_prices_page.dart';
 
-class RecipeDetailsPage extends StatefulWidget {
+class Recipe {
+  final String translatedRecipeName;
+  final String translatedIngredients;
+  final int totalTimeInMins;
+  final String cuisine;
+  final String translatedInstructions;
+  final String imageUrl;
+  final int ingredientCount;
+  final int calorieCount;
+  final bool isVeg;
+  final List<String> cleanedIngredients;
+
+  Recipe({
+    required this.translatedRecipeName,
+    required this.translatedIngredients,
+    required this.totalTimeInMins,
+    required this.cuisine,
+    required this.translatedInstructions,
+    required this.imageUrl,
+    required this.ingredientCount,
+    required this.calorieCount,
+    required this.isVeg,
+    required this.cleanedIngredients,
+  });
+
+  factory Recipe.fromJson(Map<String, dynamic> json) {
+    return Recipe(
+      translatedRecipeName: json['TranslatedRecipeName'] ?? 'Unknown Recipe',
+      translatedIngredients: json['TranslatedIngredients'] ?? '',
+      totalTimeInMins: json['TotalTimeInMins'] ?? 0,
+      cuisine: json['Cuisine'] ?? '',
+      translatedInstructions: json['TranslatedInstructions'] ?? '',
+      imageUrl: json['image-url'] ?? '',
+      ingredientCount: json['Ingredient-count'] ?? 0,
+      calorieCount: json['calorieCount'] ?? 0,
+      isVeg: json['veg'] ?? false,
+      cleanedIngredients:
+          (json['Cleaned-Ingredients'] as String? ?? '').split(','),
+    );
+  }
+}
+
+class RecipeDetailsPage extends StatelessWidget {
   final Map<String, dynamic> recipeData;
 
   const RecipeDetailsPage({super.key, required this.recipeData});
-  @override
-  State<RecipeDetailsPage> createState() => _RecipeDetailsPageState();
-}
 
-class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
-  final Map<String, List<ProductPrice>> _ingredientPrices = {};
-  final Map<String, bool> _loadingStates = {};
-
-  @override
-  void initState() {
-    super.initState();
-    // _fetchAllPrices();
-  }
-
-  Future<void> _fetchAllPrices() async {
-    final recipe = Recipe.fromJson(widget.recipeData);
-    for (String ingredient in recipe.cleanedIngredients) {
-      if (ingredient.trim().isEmpty) continue;
-      setState(() {
-        _loadingStates[ingredient] = true;
-      });
-
-      try {
-        final prices =
-            await PriceTrackingService.getPricesForIngredient(ingredient);
-        setState(() {
-          _ingredientPrices[ingredient] = prices;
-          _loadingStates[ingredient] = false;
-        });
-      } catch (e) {
-        print('Error fetching prices for $ingredient: $e');
-        setState(() {
-          _loadingStates[ingredient] = false;
-        });
-      }
+  List<String> _formatInstructions(String instructions) {
+    var steps = instructions.split('\n');
+    if (steps.length <= 1) {
+      steps = instructions
+          .split(RegExp(r'(\d+\.\s*)'))
+          .where((step) => step.trim().isNotEmpty)
+          .toList();
     }
+    if (steps.length <= 1) {
+      steps = instructions
+          .split('.')
+          .where((step) => step.trim().isNotEmpty)
+          .toList();
+    }
+
+    return steps.map((step) {
+      step = step.replaceFirst(RegExp(r'^\d+\.\s*'), '');
+      step = step.trim();
+      if (step.isNotEmpty) {
+        step = step[0].toUpperCase() + step.substring(1);
+      }
+      return step;
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final recipe = Recipe.fromJson(widget.recipeData);
+    final recipe = Recipe.fromJson(recipeData);
+    final formattedInstructions =
+        _formatInstructions(recipe.translatedInstructions);
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +85,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
             style:
                 GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: Colour.purpur,
+        backgroundColor: const Color.fromARGB(255, 173, 114, 196),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -208,7 +235,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: recipe.translatedInstructions.length,
+                    itemCount: formattedInstructions.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16),
@@ -240,7 +267,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                             ),
                             Expanded(
                               child: Text(
-                                recipe.translatedInstructions[index],
+                                formattedInstructions[index],
                                 style: GoogleFonts.raleway(
                                   fontSize: 16,
                                   height: 1.5,
@@ -256,9 +283,8 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                   const SizedBox(height: 24),
 
                   // Shopping Section
-                  // Shopping Section
                   Text(
-                    'Ingredients Pricing',
+                    'Where to Buy Ingredients',
                     style: GoogleFonts.raleway(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -266,39 +292,28 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: recipe.cleanedIngredients.length,
-                    itemBuilder: (context, index) {
-                      final ingredient =
-                          recipe.cleanedIngredients[index].trim();
-                      if (ingredient.isEmpty) return const SizedBox.shrink();
-
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        child: ListTile(
-                          title: Text(
-                            ingredient,
+                  Card(
+                    elevation: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Best prices from online stores',
                             style: GoogleFonts.raleway(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => IngredientPricesPage(
-                                  ingredient: ingredient,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
+                          const SizedBox(height: 8),
+                          Text(
+                            'Coming soon: Price comparisons from Amazon, Zepto, Swiggy, and BigBasket',
+                            style: GoogleFonts.raleway(),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),

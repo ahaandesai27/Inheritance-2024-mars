@@ -62,14 +62,12 @@ const getAllIngredients = async (req, res) => {
         if (cachedData) {
             return res.json(cachedData)
         }
-        const [amazonProducts, bigBasketProducts, zeptoProducts, swiggyProducts] = await Promise.all([
+        const allProducts = await Promise.all([
             amazonScraper(ingredient),
             bigBasketScraper(ingredient),
             zeptoScraper(ingredient),
             swiggyScraper(ingredient)
         ]);
-
-        const allProducts = [amazonProducts, bigBasketProducts, zeptoProducts, swiggyProducts];
         
         cache.set(ingredient, allProducts)
         return res.json(allProducts);

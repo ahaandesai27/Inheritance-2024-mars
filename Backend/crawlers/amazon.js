@@ -1,10 +1,8 @@
 const puppeteer = require('puppeteer');
 const findCheapestProduct = require('./findsmallest.js');
 const { URL } = require('url');
-// https://www.amazon.in/s?k=almonds&page=1 - for testing
 
 async function amazonScraper(query) {
-  // Start a headless browser
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
@@ -21,7 +19,7 @@ async function amazonScraper(query) {
     const productWeights = Array.from(document.querySelectorAll('.a-price+ .a-color-secondary')).map((el) => {
       el = el.innerText
       let result = el.split('\n')[2].replace(')', '');
-      return result
+      return result;
     });
     const productImages = Array.from(document.querySelectorAll('img.s-image')).map(el => el.src);
     const productLinks = Array.from(document.querySelectorAll('.a-color-base.a-text-normal')).map(el => el.closest('a').href);
@@ -39,12 +37,14 @@ async function amazonScraper(query) {
     }));
   });
 
-  if (products.length === 0) {
-    console.warn("No product names found. Check your selectors.");
+  const filteredProducts = products.filter(product => product.productPrice.discountedPrice <= product.productPrice.originalPrice);
+
+  if (filteredProducts.length === 0) {
+    console.warn("No valid products found. Check your selectors or filter criteria.");
   }
 
   await browser.close();
-  return findCheapestProduct(products, query);
+  return findCheapestProduct(filteredProducts, query);
 }
 
 module.exports = amazonScraper;

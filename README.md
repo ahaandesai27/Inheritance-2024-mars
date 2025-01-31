@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="">
+  <a href="https://github.com/CommunityOfCoders/Inheritance2k24/tree/main">
     COC Inheritance 2024
   </a>
   <br>
@@ -7,8 +7,7 @@
 </h1>
 
 <div align="center">
-   A next generation virtual group study platform<br>
-  CoC Inheritance 2024 || MARS <br> <br>
+   RecipAura - An all inclusive app designed to enhance your culinary experience<br>
 </div>
 <hr>
 
@@ -27,19 +26,21 @@ RecipAura is an all inclusive app designed to enhance your culinary experience. 
 ## 🔗Links
 
 - [GitHub Repository](https://github.com/ahaandesai27/Inheritance-2024-mars/)
+- [Drive Link With Images]()
+- [Demo Video]()
 
 ## 🤖Tech-Stack
 
-#### Front-end
+#### Frontend
 
 - Flutter
 - Dart
 
-#### Back-end
+#### Backend
 
 - NodeJS
 - ExpressJS
-- FastAPI 
+- FastAPI for ML
 
 #### Database
 
@@ -67,15 +68,24 @@ List down all the fully implemented features in your project
 List down all the partially implemented features in your project
 
 - [ ] Ability for user to create and manage diet plans.
-- [ ] Sign up using google
+- [ ] Recipe viewing history
 
 ## 🔮Future Scope
 
-List down all the future plans for the project here
-
 - Filtration of recipes based on any allergy the user has
 - Text generation of new recipes based on given ingredients, keeping in mind allergies.
+- Integration with smart fridges to find out what ingredients you have and suggesting recipes based on it.
 
+## 💸Applications
+
+RecipAura is a comprehensive solution designed to revolutionize home cooking by integrating ingredient-based recipe discovery, seamless grocery ordering, and real-time price tracking. <br><br> 
+RecipAura helps users maximize their existing pantry by suggesting curated recipes based on available ingredients. This feature minimizes food waste, encourages creativity in cooking, and simplifies meal planning, making home cooking more accessible and enjoyable for all skill levels. <br><br> 
+For missing ingredients, RecipAura seamlessly connects users with online grocery retailers, enabling quick and hassle-free ordering. This eliminates the inconvenience of last-minute shopping trips and ensures that users always have the necessary ingredients to prepare their chosen recipes. <br><br> 
+By aggregating price data from various online retailers, RecipAura provides users with the best deals on food ingredients. This cost-saving feature allows users to make budget-conscious shopping decisions, ensuring affordability while maintaining quality.
+<br><br>
+<b>Monetization Opportunities:</b>
+- By collaborating with grocery stores and online food retailers, RecipAura can earn ommissions on ingredient purchases made through the app. 
+- The app can incorporate famous cooking personalities in a variety of ways to enhance engagement and credibility
 
 ## 🛠Project Setup
 
@@ -86,7 +96,7 @@ List down all the future plans for the project here
 - Execute `flutter pub get` to install all dependencies.
 - Execute `flutter run` and select your preferred platform.
 
-<b>Note:</b> Instructions to run backend and machine learning APIs are in their respective README files.
+<b>Note:</b> Instructions to run Backend and Machine Learning APIs are in their respective README files.
 
 
 
@@ -99,6 +109,6 @@ List down all the future plans for the project here
 
 ## 👨‍🏫Mentors
 
-- Veeransh Shah
-- Moksh Shah
+- [Veeransh Shah](https://github.com/Veeransh14)
+- [Moksh Shah](https://github.com/Moksh01)
 

@@ -33,10 +33,14 @@ class SaveRecipeService {
   }
 
   Future<bool> deleteSavedRecipe(String userId, String recipeId) async {
-    final url = Uri.parse('$apiUrl/api/user/recipes/saved/$userId/$recipeId');
+    final url = Uri.parse('$apiUrl/api/user/recipes/saved');
     final response = await http.delete(
       url,
       headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'userId': userId,
+        'recipeId': recipeId,
+      }),
     );
     if (response.statusCode == 200) return true;
     throw Exception('Failed to delete saved recipe');

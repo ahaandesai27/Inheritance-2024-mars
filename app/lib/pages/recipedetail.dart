@@ -36,18 +36,22 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
   }
 
   Future<void> _toggleSaveRecipe() async {
-    try {
-      String? userId = await fetchStoredUserId();
-      if (userId == '') return;
+  try {
+    String? userId = await fetchStoredUserId();
+    if (userId == '') return;
 
-      if (isSaved) {
-        await saver.deleteSavedRecipe(userId, recipe.id);
-      } else {
-        await saver.saveRecipe(userId, recipe.id);
-      }
-      setState(() => isSaved = !isSaved);
-    } catch (_) {}
-  }
+    if (isSaved) {
+      await saver.deleteSavedRecipe(userId, recipe.id);
+    } else {
+      await saver.saveRecipe(userId, recipe.id);
+    }
+    setState(() {
+      isSaved = !isSaved;
+      // Reload the entire page by setting the recipe again or triggering a refresh
+      recipe = Recipe.fromJson(widget.recipeData); // Or fetch the updated recipe data if needed
+    });
+  } catch (_) {}
+}
 
   @override
   Widget build(BuildContext context) {

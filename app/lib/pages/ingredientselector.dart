@@ -36,7 +36,7 @@ class _IngredientSelectorState extends State<IngredientSelector> {
     'Grains & Flours',
     'Herbs & Spices',
     'Meat & Seafood',
-    'Miscellaneous',
+    'Misc',
     'Oils & Fats',
     'Vegetables'
   ];
@@ -80,8 +80,7 @@ class _IngredientSelectorState extends State<IngredientSelector> {
 
     try {
       final response = await http.get(
-        Uri.parse(
-            '$apiBaseUrl/api/ingredients?q=$query&category=$_selectedCategory&limit=5'),
+        Uri.parse('$apiBaseUrl/api/ingredients?q=$query&limit=5'),
       );
 
       if (response.statusCode == 200) {

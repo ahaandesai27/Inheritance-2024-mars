@@ -32,4 +32,18 @@ const getIngredients = async (req, res) => {
     }
 };
 
-module.exports = { getIngredients };
+const getIngredientsByCategory = async (req, res) => {
+    const { category } = req.params;
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 50;
+    
+    try {
+        const ingredients = await Ingredients.find({ "category": category }).skip(skip).limit(limit);
+        ingredients.forEach(item => item.name = capitalizeWords(item.name)); // Capitalize names of ingredients
+        res.status(200).json(ingredients);
+    } catch (error) {
+        res.status(500).json("An error occured");
+    }
+}
+
+module.exports = { getIngredients, getIngredientsByCategory };

@@ -2,7 +2,7 @@ from pathlib import Path
 
 class Config:
     # Data parameters
-    DATA_PATH = "recipes.csv"
+    DATA_PATH = "recipes.json"
     TRAIN_SIZE = 0.8
     
     # Model parameters

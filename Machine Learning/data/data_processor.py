@@ -6,20 +6,6 @@ from torch.utils.data import Dataset, DataLoader
 from config.config import Config
 
 class RecipeDataset(Dataset):
-    def __init__(self, texts: List[str], labels: List[str] = None):
-        self.texts = texts
-        self.labels = labels
-
-    def __len__(self):
-        return len(self.texts)
-
-    def __getitem__(self, idx):
-        item = {'text': self.texts[idx]}
-        if self.labels is not None:
-            item['label'] = self.labels[idx]
-        return item
-
-class RecipeDataset(Dataset):
     def __init__(self, texts: List[str], labels: List[Tuple[str, int]] = None):
         self.texts = texts
         self.labels = labels
@@ -45,10 +31,11 @@ class DataProcessor:
         return ingredients
         
     def load_and_preprocess_data(self) -> Tuple[RecipeDataset, RecipeDataset]:
-        self.df = pd.read_csv(self.config.DATA_PATH)
+        self.df = pd.read_json(self.config.DATA_PATH)  # Reading data from a JSON file
         self.df['Cleaned-Ingredients'] = self.df['Cleaned-Ingredients'].apply(self.clean_ingredients)
         self.df['ingredients_text'] = self.df['Cleaned-Ingredients'].apply(lambda x: ' '.join(x))
-        self.save_data('./recipes.csv')  # Save after ingredients_text is created
+        self.df['Cleaned-Ingredients'] = self.df['Cleaned-Ingredients'].apply(lambda x: ', '.join(x))
+        self.save_data('./recipes.json')  # Save after ingredients_text is created
         
         cuisines = self.df['Cuisine'].tolist()
         total_time = self.df['TotalTimeInMins'].tolist()
@@ -80,5 +67,5 @@ class DataProcessor:
         return train_loader, val_loader
 
     def save_data(self, file_path: str) -> None:
-        self.df.to_csv(file_path, index=False)
+        self.df.to_json(file_path, orient='records', lines=True)  # Saving as JSON
         print(f"Data saved to {file_path}")

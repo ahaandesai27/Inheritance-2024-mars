@@ -1,3 +1,4 @@
+import 'package:app/pages/reciperecommendationspage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -8,6 +9,7 @@ import '../api/apiurl.dart';
 import '../utils/colors.dart';
 import '../widgets/navbar.dart';
 import '../widgets/sidebar.dart';
+import 'categoryingredientspage.dart';
 
 class IngredientSelector extends StatefulWidget {
   const IngredientSelector({super.key});
@@ -38,8 +40,8 @@ class _IngredientSelectorState extends State<IngredientSelector> {
     return text
         .split(' ')
         .map((word) => word.isNotEmpty
-            ? word[0].toUpperCase() + word.substring(1).toLowerCase()
-            : '')
+        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+        : '')
         .join(' ');
   }
 
@@ -81,9 +83,9 @@ class _IngredientSelectorState extends State<IngredientSelector> {
         setState(() {
           _suggestions = data
               .map((item) => {
-                    'name': capitalizeWords(item['name'].toString()),
-                    'category': capitalizeWords(item['category'].toString()),
-                  })
+            'name': capitalizeWords(item['name'].toString()),
+            'category': capitalizeWords(item['category'].toString()),
+          })
               .toList();
         });
       }
@@ -117,11 +119,23 @@ class _IngredientSelectorState extends State<IngredientSelector> {
 
   Widget _buildCategoryTile(String title) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedCategory = title;
-          _fetchSuggestions(_searchController.text);
-        });
+      onTap: () async {
+        final result = await Navigator.push<List<String>>(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CategoryIngredientsPage(
+              category: title,
+              currentlySelected: _selectedIngredients, // Pass current selections
+            ),
+          ),
+        );
+
+        if (result != null) {
+          setState(() {
+            _selectedIngredients.clear(); // Clear existing selections
+            _selectedIngredients.addAll(result); // Add new selections
+          });
+        }
       },
       child: Container(
         decoration: BoxDecoration(
@@ -169,7 +183,7 @@ class _IngredientSelectorState extends State<IngredientSelector> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Search Bar (Matching RecipePage style)
+              // Search Bar
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
@@ -184,17 +198,17 @@ class _IngredientSelectorState extends State<IngredientSelector> {
                     icon: const Icon(Icons.search),
                     suffixIcon: _isLoading
                         ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
                         : null,
                   ),
                 ),
               ),
               const SizedBox(height: 20),
 
-              // Categories Section (Matching RecipePage style)
+              // Categories Section
               const Text(
                 'Categories',
                 style: TextStyle(
@@ -224,7 +238,7 @@ class _IngredientSelectorState extends State<IngredientSelector> {
                 ),
               ),
               const SizedBox(height: 10),
-              if (_selectedIngredients.isNotEmpty)
+              if (_selectedIngredients.isNotEmpty) ...[
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -245,6 +259,35 @@ class _IngredientSelectorState extends State<IngredientSelector> {
                     }).toList(),
                   ),
                 ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RecipeRecommendationsPage(
+                            selectedIngredients: _selectedIngredients,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colour.purpur,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      'Get Recommendations',
+                      style: GoogleFonts.raleway(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 20),
 
               // Suggestions List

@@ -1,5 +1,4 @@
 import 'package:app/api/localstorage.dart';
-import 'package:app/api/saverecipeapi.dart';
 import 'package:app/pages/cuisinerecipe.dart';
 import 'package:app/pages/recipedetail.dart';
 import 'package:app/utils/colors.dart';
@@ -8,6 +7,7 @@ import 'package:app/widgets/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/searchbar.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:app/api/reccapi.dart';
 
 class RecipePage extends StatefulWidget {
   const RecipePage({
@@ -30,27 +30,27 @@ class _RecipePageState extends State<RecipePage> {
   }
 
   Future<void> _loadUserId() async {
-    String? id = await fetchStoredUserId();
-    if (mounted) {
-      setState(() {
-        userId = id;
-      });
+      String? id = await fetchStoredUserId();
+      if (mounted) {
+        setState(() {
+          userId = id;
+        });
+      }
+      if (id != '') {
+        _fetchPersonalizedRecommendations(id);
+      }
     }
-    if (id != null) {
-      _fetchPersonalizedRecommendations(id);
-    }
-  }
 
-  Future<void> _fetchPersonalizedRecommendations(String userId) async {
+    Future<void> _fetchPersonalizedRecommendations(String userId) async {
     setState(() {
       isLoading = true;
     });
 
     try {
-      // 1. First get saved recipes
-      final savedRecipes = await RecipeService.getSavedRecipes(userId);
+      // 1. Get personalized recommendations from the saved recipes
+      final recommendedRecipes = await getRecommendationsFromSaved(userId);
 
-      if (savedRecipes.isEmpty) {
+      if (recommendedRecipes!.isEmpty) {
         setState(() {
           recommendations = [];
           isLoading = false;
@@ -58,34 +58,8 @@ class _RecipePageState extends State<RecipePage> {
         return;
       }
 
-      // 2. Extract unique ingredients from saved recipes
-      final Set<String> uniqueIngredients = {};
-      for (var recipe in savedRecipes) {
-        // Split and clean ingredients
-        final ingredients = recipe['Cleaned_Ingredients']
-            .toString()
-            .split(',')
-            .map((e) => e.trim())
-            .where((e) => e.isNotEmpty)
-            .toList();
-        uniqueIngredients.addAll(ingredients);
-      }
-
-      // 3. Get recommendations based on ingredients
-      final recommendedRecipes =
-          await RecipeService.getRecommendationsFromIngredients(
-        uniqueIngredients.toList(),
-      );
-
-      // 4. Filter out recipes that are already saved
-      final savedRecipeIds = savedRecipes.map((r) => r['_id']).toSet();
-      final filteredRecommendations = recommendedRecipes
-          .where((recipe) => !savedRecipeIds.contains(recipe['_id']))
-          .take(5)
-          .toList();
-
       setState(() {
-        recommendations = filteredRecommendations;
+        recommendations = recommendedRecipes;
         isLoading = false;
       });
     } catch (e) {

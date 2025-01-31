@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:app/pages/reciperecommendationspage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +27,7 @@ class _IngredientSelectorState extends State<IngredientSelector> {
   Timer? _debounceTimer;
   bool _isLoading = false;
   final String apiBaseUrl = apiUrl;
-  String _selectedCategory = "All";
+  String? _selectedCategory;
   final List<String> _categories = [
     'Beverages',
     'Dairy & Cheese',
@@ -78,8 +80,7 @@ class _IngredientSelectorState extends State<IngredientSelector> {
 
     try {
       final response = await http.get(
-        Uri.parse(
-            '$apiBaseUrl/api/ingredients?q=$query&limit=5'),
+        Uri.parse('$apiBaseUrl/api/ingredients?q=$query&limit=5'),
       );
 
       if (response.statusCode == 200) {
@@ -341,7 +342,7 @@ class _IngredientSelectorState extends State<IngredientSelector> {
                       onTap: () => _toggleIngredient(ingredient),
                     ),
                   );
-                }).toList(),
+                }),
               ],
             ],
           ),

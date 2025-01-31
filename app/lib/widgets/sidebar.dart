@@ -14,15 +14,15 @@ class AppDrawer extends StatelessWidget {
           color: Colour.purpur,
           border: Border(
             right: BorderSide(
-              color: Color.fromARGB(255, 122, 71, 142), 
+              color: Color.fromARGB(255, 122, 71, 142),
               width: 1,
             ),
           ),
         ),
         child: Column(
           children: [
-            SizedBox(height: 40), // Add more spacing at the top
-            Text(
+            const SizedBox(height: 40), // Add more spacing at the top
+            const Text(
               'Recipaura',
               style: TextStyle(
                 fontSize: 24, // Larger font size for the header
@@ -30,7 +30,7 @@ class AppDrawer extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 20), // Add spacing below the header
+            const SizedBox(height: 20), // Add spacing below the header
             SidebarButton(
               icon: Icons.favorite,
               label: 'Favorites',
@@ -38,7 +38,7 @@ class AppDrawer extends StatelessWidget {
                 // Handle Favorites button press
               },
             ),
-            SizedBox(height: 20), // Add more spacing between buttons
+            const SizedBox(height: 20), // Add more spacing between buttons
             SidebarButton(
               icon: Icons.history,
               label: 'History',
@@ -46,7 +46,7 @@ class AppDrawer extends StatelessWidget {
                 // Handle History button press
               },
             ),
-            SizedBox(height: 20), // Add more spacing between buttons
+            const SizedBox(height: 20), // Add more spacing between buttons
             SidebarButton(
               icon: Icons.feedback,
               label: 'Feedback',

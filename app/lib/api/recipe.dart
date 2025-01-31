@@ -32,12 +32,14 @@ class Recipe {
       translatedIngredients: json['TranslatedIngredients'] ?? '',
       totalTimeInMins: json['TotalTimeInMins'] ?? 0,
       cuisine: json['Cuisine'] ?? '',
-      translatedInstructions: List<String>.from(json['TranslatedInstructions'] ?? []),
+      translatedInstructions:
+          List<String>.from(json['TranslatedInstructions'] ?? []),
       imageUrl: json['image-url'] ?? '',
       ingredientCount: json['Ingredient-count'] ?? 0,
       calorieCount: json['calorieCount'] ?? 0,
       isVeg: json['veg'] ?? false,
-      cleanedIngredients: (json['Cleaned-Ingredients'] as String? ?? '').split(','),
+      cleanedIngredients:
+          (json['Cleaned-Ingredients'] as String? ?? '').split(','),
     );
   }
 

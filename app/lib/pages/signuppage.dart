@@ -1,8 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:app/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:app/api/signup.dart';
 import 'package:app/utils/snackbar.dart';
-
 
 class SignUpPage extends StatelessWidget {
   SignUpPage({super.key});
@@ -144,11 +145,14 @@ class SignUpPage extends StatelessWidget {
 
                     // If the registration is successful, navigate to login
                     if (result) {
-                      showCustomSnackbar(context, "Sign Up Successful", Colors.blue, seconds: 1);
+                      showCustomSnackbar(
+                          context, "Sign Up Successful", Colors.blue,
+                          seconds: 1);
                       Navigator.pushNamed(context, MyRoutes.loginRoute);
                     } else {
                       // Handle failure (e.g., show a Snackbar or dialog)
-                      showCustomSnackbar(context, "An error occured!", Colors.red);
+                      showCustomSnackbar(
+                          context, "An error occured!", Colors.red);
                     }
                   },
                   child: const Text(

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, unused_element
+
 import 'package:app/api/apiurl.dart';
 import 'package:app/pages/recipedetail.dart';
 import 'package:flutter/material.dart';

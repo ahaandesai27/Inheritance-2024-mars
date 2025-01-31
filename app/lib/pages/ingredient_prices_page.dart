@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app/api/fetchproductprices.dart';
@@ -25,7 +27,8 @@ class _IngredientPricesPageState extends State<IngredientPricesPage> {
 
   Future<void> _fetchPrices() async {
     try {
-      final prices = await PriceTrackingService.getPricesForIngredient(widget.ingredient);
+      final prices =
+          await PriceTrackingService.getPricesForIngredient(widget.ingredient);
       setState(() {
         _prices = prices.toList();
         _isLoading = false;
@@ -66,7 +69,8 @@ class _IngredientPricesPageState extends State<IngredientPricesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Prices for ${widget.ingredient}',
-            style: GoogleFonts.raleway(fontSize: 20, fontWeight: FontWeight.bold)),
+            style:
+                GoogleFonts.raleway(fontSize: 20, fontWeight: FontWeight.bold)),
         backgroundColor: Colour.purpur,
       ),
       body: _isLoading
@@ -85,8 +89,9 @@ class _IngredientPricesPageState extends State<IngredientPricesPage> {
                     final price = _prices[index];
 
                     // Skip rendering this product if discountedPrice or originalPrice is infinity
-                    if (price.discountedPrice == double.infinity || price.originalPrice == double.infinity) {
-                      return SizedBox.shrink();
+                    if (price.discountedPrice == double.infinity ||
+                        price.originalPrice == double.infinity) {
+                      return const SizedBox.shrink();
                     }
 
                     return GestureDetector(
@@ -106,7 +111,8 @@ class _IngredientPricesPageState extends State<IngredientPricesPage> {
                               Row(
                                 children: [
                                   ClipRRect(
-                                    borderRadius: BorderRadius.circular(8), // Adjust the radius for rounding
+                                    borderRadius: BorderRadius.circular(
+                                        8), // Adjust the radius for rounding
                                     child: Image.asset(
                                       _getOriginImage(price.origin),
                                       height: 40,
@@ -151,7 +157,8 @@ class _IngredientPricesPageState extends State<IngredientPricesPage> {
                                 ],
                               ),
                               const SizedBox(height: 12),
-                              Text(price.productWeight, style: GoogleFonts.raleway()),
+                              Text(price.productWeight,
+                                  style: GoogleFonts.raleway()),
                               const SizedBox(height: 4),
                               Row(
                                 children: [
@@ -163,17 +170,17 @@ class _IngredientPricesPageState extends State<IngredientPricesPage> {
                                       color: Colors.deepPurple,
                                     ),
                                   ),
-                                  if (price.originalPrice != double.infinity)
-                                    ...[
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        '₹${price.originalPrice.toStringAsFixed(2)}',
-                                        style: GoogleFonts.raleway(
-                                          decoration: TextDecoration.lineThrough,
-                                          color: Colors.grey,
-                                        ),
+                                  if (price.originalPrice !=
+                                      double.infinity) ...[
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '₹${price.originalPrice.toStringAsFixed(2)}',
+                                      style: GoogleFonts.raleway(
+                                        decoration: TextDecoration.lineThrough,
+                                        color: Colors.grey,
                                       ),
-                                    ],
+                                    ),
+                                  ],
                                 ],
                               ),
                             ],

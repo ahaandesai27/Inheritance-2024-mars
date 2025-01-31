@@ -64,61 +64,61 @@ class _RecipeRecommendationsPageState extends State<RecipeRecommendationsPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-                itemCount: recipes.length,
-                itemBuilder: (context, index) {
-                  final recipe = recipes[index];
-                  return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(
-                          color: recipe['veg'] ? Colors.green : Colors.red,
-                          width: 2.0),
-                    ),
-                    child: ListTile(
-                      leading: recipe['image-url'] != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(10.0),
-                              child: Image.network(
-                                recipe['image-url'],
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Icon(Icons.food_bank, size: 80);
-                                },
-                              ),
-                            )
-                          : Icon(Icons.food_bank, size: 80),
-                      title: Text(
-                        recipe['TranslatedRecipeName'] ?? 'Unknown Recipe',
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.bold,
-                        ),
+              itemCount: recipes.length,
+              itemBuilder: (context, index) {
+                final recipe = recipes[index];
+                return Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(
+                        color: recipe['veg'] ? Colors.green : Colors.red,
+                        width: 2.0),
+                  ),
+                  child: ListTile(
+                    leading: recipe['image-url'] != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: Image.network(
+                              recipe['image-url'],
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(Icons.food_bank, size: 80);
+                              },
+                            ),
+                          )
+                        : Icon(Icons.food_bank, size: 80),
+                    title: Text(
+                      recipe['TranslatedRecipeName'] ?? 'Unknown Recipe',
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
                       ),
-                      subtitle: Text(
-                        'Time: ${recipe['TotalTimeInMins']} mins | ${recipe['veg'] ? 'Vegetarian' : 'Non-Vegetarian'}',
-                        style: const TextStyle(color: Colors.black54),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios,
-                          color: Colors.black54),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    RecipeDetailsPage(recipeData: recipe)));
-                        // Navigate to recipe details page
-                        // Navigator.push(context, MaterialPageRoute(
-                        //   builder: (context) => RecipeDetailPage(recipe: recipe)
-                        // ));
-                      },
                     ),
-                  );
-                },
-              ),
+                    subtitle: Text(
+                      'Time: ${recipe['TotalTimeInMins']} mins | ${recipe['veg'] ? 'Vegetarian' : 'Non-Vegetarian'}',
+                      style: const TextStyle(color: Colors.black54),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios,
+                        color: Colors.black54),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  RecipeDetailsPage(recipeData: recipe)));
+                      // Navigate to recipe details page
+                      // Navigator.push(context, MaterialPageRoute(
+                      //   builder: (context) => RecipeDetailPage(recipe: recipe)
+                      // ));
+                    },
+                  ),
+                );
+              },
+            ),
       bottomNavigationBar: const Navbar(),
     );
   }

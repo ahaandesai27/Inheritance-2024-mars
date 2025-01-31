@@ -37,14 +37,7 @@ class _UserPageState extends State<UserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Builder(
-          builder: (BuildContext context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ),
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(255, 173, 114, 196),
         title: Text(
           'User Page',

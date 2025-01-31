@@ -3,7 +3,6 @@ import 'package:app/pages/cuisinerecipe.dart';
 import 'package:app/pages/recipedetail.dart';
 import 'package:app/utils/colors.dart';
 import 'package:app/widgets/navbar.dart';
-import 'package:app/widgets/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/searchbar.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -162,21 +161,14 @@ class _RecipePageState extends State<RecipePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('RecipAura',
+        title: Text('Select a Recipe',
             style: GoogleFonts.raleway(
               fontSize: 24,
               fontWeight: FontWeight.bold,
             )),
         centerTitle: true,
         backgroundColor: Colour.purpur,
-        leading: Builder(
-          builder: (BuildContext context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -204,16 +196,16 @@ class _RecipePageState extends State<RecipePage> {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 children: [
-                  _buildCategoryTile('Indian'),
-                  _buildCategoryTile('Continental'),
-                  _buildCategoryTile('Chinese'),
-                  _buildCategoryTile('Asian'),
-                  _buildCategoryTile('French'),
-                  _buildCategoryTile('Middle Eastern'),
-                  _buildCategoryTile('Japanese'),
-                  _buildCategoryTile('Italian'),
-                  _buildCategoryTile('Fusion'),
-                  _buildCategoryTile('Thai'),
+                  _buildCategoryTile('Indian', 'assets/Indian.jpg'),
+                  _buildCategoryTile('Cont\'l', 'assets/Continental.jpg'),
+                  _buildCategoryTile('Chinese', 'assets/Chinese.jpeg'),
+                  _buildCategoryTile('Asian', 'assets/Asian.jpg'),
+                  _buildCategoryTile('French', 'assets/French.jpg'),
+                  _buildCategoryTile('Mid East', 'assets/MiddleEastern.jpg'),
+                  _buildCategoryTile('Japanese', 'assets/Japanese.jpg'),
+                  _buildCategoryTile('Italian', 'assets/Italian.jpg'),
+                  _buildCategoryTile('Fusion', 'assets/Fusion.jpg'),
+                  _buildCategoryTile('Thai', 'assets/Thai.jpg'),
                 ],
               ),
 
@@ -245,33 +237,64 @@ class _RecipePageState extends State<RecipePage> {
           ),
         ),
       ),
-      drawer: const AppDrawer(),
       bottomNavigationBar: const Navbar(),
     );
   }
 
-  Widget _buildCategoryTile(String title) {
+  Widget _buildCategoryTile(String title, String imagePath) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CuisineRecipesPage(cuisine: title),
+            builder: (context) => CuisineRecipesPage(
+                cuisine: title == 'Mid East'
+                    ? 'Middle Eastern'
+                    : title == 'Cont\'l'
+                        ? 'Continental'
+                        : title),
           ),
         );
       },
       child: Container(
+        height: 80, // Precise height to remove overflow
         decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(10.0),
-          border: Border.all(color: Colors.grey),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
-        child: Center(
-          child: Text(
-            title,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            textAlign: TextAlign.center,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              imagePath,
+              height: 35,
+              width: 60,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       ),
     );

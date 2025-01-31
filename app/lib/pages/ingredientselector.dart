@@ -10,7 +10,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../api/apiurl.dart';
 import '../utils/colors.dart';
 import '../widgets/navbar.dart';
-import '../widgets/sidebar.dart';
 import 'categoryingredientspage.dart';
 
 class IngredientSelector extends StatefulWidget {
@@ -123,6 +122,18 @@ class _IngredientSelectorState extends State<IngredientSelector> {
   }
 
   Widget _buildCategoryTile(String title) {
+    final Map<String, String> categoryImages = {
+      'Beverages': 'assets/Beverages.jpg',
+      'Dairy & Cheese': 'assets/DairyAndCheese.jpg',
+      'Fermented & Pickled Items': 'assets/Fermenting.jpg',
+      'Fruits': 'assets/Fruits.jpg',
+      'Grains & Flours': 'assets/GrainsAndFlours.jpg',
+      'Herbs & Spices': 'assets/HerbsAndSpices.png',
+      'Meat & Seafood': 'assets/MeatAndFish.jpg',
+      'Misc': 'assets/Misc.jpg',
+      'Oils & Fats': 'assets/OilsAndFats.jpg',
+      'Vegetables': 'assets/Vegetables.jpg',
+    };
     return GestureDetector(
       onTap: () async {
         final result = await Navigator.push<List<String>>(
@@ -149,16 +160,28 @@ class _IngredientSelectorState extends State<IngredientSelector> {
           borderRadius: BorderRadius.circular(10.0),
           border: Border.all(color: Colors.grey),
         ),
-        child: Center(
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: _selectedCategory == title ? Colors.white : Colors.black,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Display the image for the category
+            Image.asset(
+              categoryImages[title] ??
+                  'assets/images/default.png', // Fallback to default
+              width: 40,
+              height: 40,
+              color: _selectedCategory == title ? Colors.white : null,
             ),
-            textAlign: TextAlign.center,
-          ),
+            const SizedBox(height: 2),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: _selectedCategory == title ? Colors.white : Colors.black,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
@@ -172,16 +195,9 @@ class _IngredientSelectorState extends State<IngredientSelector> {
           "Select Ingredients",
           style: GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold),
         ),
+        automaticallyImplyLeading: false,
         centerTitle: true,
         backgroundColor: Colour.purpur,
-        leading: Builder(
-          builder: (BuildContext context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -348,7 +364,6 @@ class _IngredientSelectorState extends State<IngredientSelector> {
           ),
         ),
       ),
-      drawer: const AppDrawer(),
       bottomNavigationBar: const Navbar(),
     );
   }

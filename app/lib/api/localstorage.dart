@@ -7,6 +7,13 @@ Future<String> fetchStoredUserId() async {
   return userId;
 }
 
+Future<bool> isUserLoggedIn() async {
+  final prefs = await SharedPreferences.getInstance();
+  final userId = prefs.getString('userId') ?? '';
+
+  return userId.isNotEmpty;
+}
+
 Future<void> logoutUser() async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.clear();

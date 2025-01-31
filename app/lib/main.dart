@@ -20,26 +20,36 @@ class Recipaura extends StatefulWidget {
 }
 
 class _RecipauraState extends State<Recipaura> {
-  get onIngredientsChanged => null;
-
   get apiBaseUrl => null;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Recipaura',
-        theme: ThemeData(
-          fontFamily: GoogleFonts.raleway().fontFamily,
-          primarySwatch: Colors.blue,
+      debugShowCheckedModeBanner: false,
+      title: 'Recipaura',
+      theme: ThemeData(
+        fontFamily: GoogleFonts.raleway().fontFamily,
+        primarySwatch: Colors.blue,
+      ),
+      routes: {
+        "/": (context) => FutureBuilder<bool>(
+          future: isUserLoggedIn(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            return snapshot.data == true ? const RecipePage() : LoginPage();
+          },
         ),
-        routes: {
-          "/": (context) => SignUpPage(),
-          MyRoutes.userRoute: (context) => const UserPage(),
-          MyRoutes.signUpRoute: (context) => SignUpPage(),
-          MyRoutes.loginRoute: (context) => LoginPage(),
-          MyRoutes.vegetableRoute: (context) => const IngredientSelector(),
-          MyRoutes.recipeRoute: (context) => const RecipePage(),
-        });
+        MyRoutes.userRoute: (context) => const UserPage(),
+        MyRoutes.signUpRoute: (context) => SignUpPage(),
+        MyRoutes.loginRoute: (context) => LoginPage(),
+        MyRoutes.vegetableRoute: (context) => const IngredientSelector(),
+        MyRoutes.recipeRoute: (context) => const RecipePage(),
+      },
+    );
   }
 }

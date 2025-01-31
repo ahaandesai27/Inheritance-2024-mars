@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:app/api/apiurl.dart';
 import 'package:app/utils/colors.dart';
 import 'package:app/widgets/navbar.dart';
-import 'package:app/widgets/sidebar.dart';
 
 class CategoryIngredientsPage extends StatefulWidget {
   final String category;
@@ -18,7 +17,8 @@ class CategoryIngredientsPage extends StatefulWidget {
   });
 
   @override
-  State<CategoryIngredientsPage> createState() => _CategoryIngredientsPageState();
+  State<CategoryIngredientsPage> createState() =>
+      _CategoryIngredientsPageState();
 }
 
 class _CategoryIngredientsPageState extends State<CategoryIngredientsPage> {
@@ -39,25 +39,32 @@ class _CategoryIngredientsPageState extends State<CategoryIngredientsPage> {
     return text
         .split(' ')
         .map((word) => word.isNotEmpty
-        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
-        : '')
+            ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+            : '')
         .join(' ');
   }
 
   Future<void> _fetchIngredients() async {
     try {
-      final response = await http.get(
-        Uri.parse('$apiBaseUrl/api/ingredients?category=${widget.category}'),
-      );
+      var response;
+      if (widget.category == "Misc") {
+        response = await http.get(
+          Uri.parse('$apiBaseUrl/api/ingredients/Miscellaneous'),
+        );
+      } else {
+        response = await http.get(
+          Uri.parse('$apiBaseUrl/api/ingredients/${widget.category}'),
+        );
+      }
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         setState(() {
           _ingredients = data
               .map((item) => {
-            'name': capitalizeWords(item['name'].toString()),
-            'category': capitalizeWords(item['category'].toString()),
-          })
+                    'name': capitalizeWords(item['name'].toString()),
+                    'category': capitalizeWords(item['category'].toString()),
+                  })
               .toList();
         });
       }
@@ -93,7 +100,8 @@ class _CategoryIngredientsPageState extends State<CategoryIngredientsPage> {
         appBar: AppBar(
           title: Text(
             widget.category,
-            style: GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold),
+            style:
+                GoogleFonts.raleway(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
           backgroundColor: Colour.purpur,
@@ -107,47 +115,48 @@ class _CategoryIngredientsPageState extends State<CategoryIngredientsPage> {
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
-          padding: const EdgeInsets.all(16.0),
-          itemCount: _ingredients.length,
-          itemBuilder: (context, index) {
-            final ingredient = _ingredients[index];
-            final isSelected = _selectedIngredients.contains(ingredient['name']);
+                padding: const EdgeInsets.all(16.0),
+                itemCount: _ingredients.length,
+                itemBuilder: (context, index) {
+                  final ingredient = _ingredients[index];
+                  final isSelected =
+                      _selectedIngredients.contains(ingredient['name']);
 
-            return Container(
-              margin: const EdgeInsets.only(bottom: 8.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: isSelected ? Colour.purpur : Colors.grey,
-                  width: 2.0,
-                ),
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(
+                        color: isSelected ? Colour.purpur : Colors.grey,
+                        width: 2.0,
+                      ),
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        ingredient['name'],
+                        style: GoogleFonts.raleway(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        ingredient['category'],
+                        style: GoogleFonts.raleway(
+                          fontSize: 14,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      trailing: Checkbox(
+                        value: isSelected,
+                        onChanged: (_) => _toggleIngredient(ingredient['name']),
+                        activeColor: Colour.purpur,
+                      ),
+                      onTap: () => _toggleIngredient(ingredient['name']),
+                    ),
+                  );
+                },
               ),
-              child: ListTile(
-                title: Text(
-                  ingredient['name'],
-                  style: GoogleFonts.raleway(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                subtitle: Text(
-                  ingredient['category'],
-                  style: GoogleFonts.raleway(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                  ),
-                ),
-                trailing: Checkbox(
-                  value: isSelected,
-                  onChanged: (_) => _toggleIngredient(ingredient['name']),
-                  activeColor: Colour.purpur,
-                ),
-                onTap: () => _toggleIngredient(ingredient['name']),
-              ),
-            );
-          },
-        ),
         bottomNavigationBar: const Navbar(),
       ),
     );

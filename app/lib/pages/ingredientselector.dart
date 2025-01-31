@@ -27,12 +27,16 @@ class _IngredientSelectorState extends State<IngredientSelector> {
   final String apiBaseUrl = apiUrl;
   String _selectedCategory = "All";
   final List<String> _categories = [
-    "All",
-    "Vegetables",
-    "Fruits",
-    "Dairy",
-    "Meat",
-    "Spices"
+    'Beverages',
+    'Dairy & Cheese',
+    'Fermented & Pickled Items',
+    'Fruits',
+    'Grains & Flours',
+    'Herbs & Spices',
+    'Meat & Seafood',
+    'Misc',
+    'Oils & Fats',
+    'Vegetables'
   ];
 
   String capitalizeWords(String text) {
@@ -40,8 +44,8 @@ class _IngredientSelectorState extends State<IngredientSelector> {
     return text
         .split(' ')
         .map((word) => word.isNotEmpty
-        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
-        : '')
+            ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+            : '')
         .join(' ');
   }
 
@@ -75,7 +79,7 @@ class _IngredientSelectorState extends State<IngredientSelector> {
     try {
       final response = await http.get(
         Uri.parse(
-            '$apiBaseUrl/api/ingredients?q=$query&category=$_selectedCategory&limit=5'),
+            '$apiBaseUrl/api/ingredients?q=$query&limit=5'),
       );
 
       if (response.statusCode == 200) {
@@ -83,9 +87,9 @@ class _IngredientSelectorState extends State<IngredientSelector> {
         setState(() {
           _suggestions = data
               .map((item) => {
-            'name': capitalizeWords(item['name'].toString()),
-            'category': capitalizeWords(item['category'].toString()),
-          })
+                    'name': capitalizeWords(item['name'].toString()),
+                    'category': capitalizeWords(item['category'].toString()),
+                  })
               .toList();
         });
       }
@@ -125,7 +129,8 @@ class _IngredientSelectorState extends State<IngredientSelector> {
           MaterialPageRoute(
             builder: (context) => CategoryIngredientsPage(
               category: title,
-              currentlySelected: _selectedIngredients, // Pass current selections
+              currentlySelected:
+                  _selectedIngredients, // Pass current selections
             ),
           ),
         );
@@ -198,10 +203,10 @@ class _IngredientSelectorState extends State<IngredientSelector> {
                     icon: const Icon(Icons.search),
                     suffixIcon: _isLoading
                         ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
                         : null,
                   ),
                 ),

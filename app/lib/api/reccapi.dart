@@ -49,3 +49,11 @@ Future<List<Map<String, dynamic>>?> getRecommendationsFromSaved(String userId) a
     return null;
   }
 }
+// void main() async {
+//   try {
+//     List<Map<String, dynamic>> recommendations = await getRecommendations("tomato chicken", 10);
+//     print(recommendations[0]);
+//   } catch (e) {
+//     print('Error: $e');
+//   }
+// }

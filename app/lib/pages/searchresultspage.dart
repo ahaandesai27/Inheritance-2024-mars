@@ -99,7 +99,7 @@ class _SearchRecipesPageState extends State<SearchResultsRecipePage> {
                           : Icon(Icons.food_bank, size: 80),
                       title: Text(
                         recipe['TranslatedRecipeName'] ?? 'Unknown Recipe',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black87,
                           fontWeight: FontWeight.bold,
                         ),

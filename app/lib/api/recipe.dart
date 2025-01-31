@@ -42,6 +42,14 @@ class Recipe {
   }
 
   @override
+  bool operator ==(Object other) {
+    return identical(this, other) || (other is Recipe && other.id == id);
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
   String toString() {
     return 'Recipe{id: $id, translatedRecipeName: $translatedRecipeName, translatedIngredients: $translatedIngredients, totalTimeInMins: $totalTimeInMins, cuisine: $cuisine, translatedInstructions: $translatedInstructions, imageUrl: $imageUrl, ingredientCount: $ingredientCount, calorieCount: $calorieCount, isVeg: $isVeg, cleanedIngredients: $cleanedIngredients}';
   }

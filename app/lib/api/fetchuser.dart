@@ -86,7 +86,7 @@ Future<User?> fetchUserById() async {
   try {
     final id = await fetchStoredUserId(); // Fetch the stored user ID
 
-    if (id == null || id.isEmpty) {
+    if (id == '' || id.isEmpty) {
       print('Error: No user ID found in storage.');
       return null;
     }

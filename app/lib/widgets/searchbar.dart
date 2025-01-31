@@ -225,7 +225,8 @@ class _SearchbarState extends State<Searchbar> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SearchResultsRecipePage(query: value.trim()),
+                builder: (context) =>
+                    SearchResultsRecipePage(query: value.trim()),
               ),
             );
           }

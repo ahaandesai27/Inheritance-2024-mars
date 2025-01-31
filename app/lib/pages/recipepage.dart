@@ -30,18 +30,18 @@ class _RecipePageState extends State<RecipePage> {
   }
 
   Future<void> _loadUserId() async {
-      String? id = await fetchStoredUserId();
-      if (mounted) {
-        setState(() {
-          userId = id;
-        });
-      }
-      if (id != '') {
-        _fetchPersonalizedRecommendations(id);
-      }
+    String? id = await fetchStoredUserId();
+    if (mounted) {
+      setState(() {
+        userId = id;
+      });
     }
+    if (id != '') {
+      _fetchPersonalizedRecommendations(id);
+    }
+  }
 
-    Future<void> _fetchPersonalizedRecommendations(String userId) async {
+  Future<void> _fetchPersonalizedRecommendations(String userId) async {
     setState(() {
       isLoading = true;
     });

@@ -33,17 +33,17 @@ class _RecipauraState extends State<Recipaura> {
       ),
       routes: {
         "/": (context) => FutureBuilder<bool>(
-          future: isUserLoggedIn(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            return snapshot.data == true ? const RecipePage() : LoginPage();
-          },
-        ),
+              future: isUserLoggedIn(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                return snapshot.data == true ? const RecipePage() : LoginPage();
+              },
+            ),
         MyRoutes.userRoute: (context) => const UserPage(),
         MyRoutes.signUpRoute: (context) => SignUpPage(),
         MyRoutes.loginRoute: (context) => LoginPage(),

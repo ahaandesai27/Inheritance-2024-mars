@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, unused_element
+
 import 'package:app/api/apiurl.dart';
 import 'package:app/pages/recipedetail.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +68,7 @@ class _SearchRecipesPageState extends State<SearchResultsRecipePage> {
         backgroundColor: const Color.fromARGB(255, 173, 114, 196),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView.builder(
@@ -92,14 +94,14 @@ class _SearchRecipesPageState extends State<SearchResultsRecipePage> {
                                 height: 80,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  return Icon(Icons.food_bank, size: 80);
+                                  return const Icon(Icons.food_bank, size: 80);
                                 },
                               ),
                             )
-                          : Icon(Icons.food_bank, size: 80),
+                          : const Icon(Icons.food_bank, size: 80),
                       title: Text(
                         recipe['TranslatedRecipeName'] ?? 'Unknown Recipe',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black87,
                           fontWeight: FontWeight.bold,
                         ),

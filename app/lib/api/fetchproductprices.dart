@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:app/api/apiurl.dart';
 import 'package:http/http.dart' as http;
@@ -25,9 +27,10 @@ class ProductPrice {
     return ProductPrice(
       productName: json['productName'] ?? '',
       discountedPrice:
-          (json['productPrice']?['discountedPrice'] ?? double.infinity).toDouble(),
-      originalPrice:
-          (json['productPrice']?['originalPrice'] ?? double.infinity).toDouble(),
+          (json['productPrice']?['discountedPrice'] ?? double.infinity)
+              .toDouble(),
+      originalPrice: (json['productPrice']?['originalPrice'] ?? double.infinity)
+          .toDouble(),
       productWeight: json['productWeight'] ?? '',
       productImage: json['productImage'] ?? '',
       productLink: json['productLink'] ?? '',
@@ -40,24 +43,22 @@ class PriceTrackingService {
   static const _baseUrl = '$apiUrl/api/getingredients';
 
   static Future<List<ProductPrice>> getPricesForIngredient(
-    String ingredient) async {
+      String ingredient) async {
     List<ProductPrice> allPrices = [];
 
     try {
-      final response = await http.get(Uri.parse(
-          '$_baseUrl?q=${Uri.encodeComponent(ingredient)}'));
+      final response = await http
+          .get(Uri.parse('$_baseUrl?q=${Uri.encodeComponent(ingredient)}'));
 
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body); // Ensure it's a list
         allPrices.addAll(data
-            .map(
-                (item) => ProductPrice.fromJson(item as Map<String, dynamic>))
+            .map((item) => ProductPrice.fromJson(item as Map<String, dynamic>))
             .toList());
       }
     } catch (e) {
-      print('An error occurred: ' + e.toString());
+      print('An error occurred: $e');
     }
-
 
     return allPrices;
   }

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:app/api/saverecipe.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -25,7 +27,8 @@ Future<List<Map<String, dynamic>>> getRecommendations(
   throw Exception('Failed to load recommendations');
 }
 
-Future<List<Map<String, dynamic>>?> getRecommendationsFromSaved(String userId) async {
+Future<List<Map<String, dynamic>>?> getRecommendationsFromSaved(
+    String userId) async {
   try {
     if (userId == '') {
       return [];

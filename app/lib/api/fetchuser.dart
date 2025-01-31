@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:app/api/localstorage.dart';
 import 'package:http/http.dart' as http;

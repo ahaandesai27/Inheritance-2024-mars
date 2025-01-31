@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:app/api/localstorage.dart';
 import 'package:app/widgets/NavBar.dart';
 import 'package:flutter/material.dart';
@@ -132,7 +134,8 @@ class _UserPageState extends State<UserPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SavedRecipesPage(userID: user.id!),
+                          builder: (context) =>
+                              SavedRecipesPage(userID: user.id!),
                         ),
                       );
                     }
@@ -187,7 +190,7 @@ class _UserPageState extends State<UserPage> {
           );
         },
       ),
-      bottomNavigationBar: Navbar(),
+      bottomNavigationBar: const Navbar(),
     );
   }
 }

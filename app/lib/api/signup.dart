@@ -26,7 +26,7 @@ Future<bool> registerUser(
         'vegetarian': false,
       }),
     );
-    
+
     if (response.statusCode == 201) {
       return true;
     } else {

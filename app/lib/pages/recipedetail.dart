@@ -226,7 +226,7 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                           children: [
                             const SizedBox(width: 8),
                             Expanded(
-                              child: Text('${index+1}. $instruction',
+                              child: Text('${index + 1}. $instruction',
                                   style: GoogleFonts.raleway(fontSize: 16)),
                             ),
                           ],
@@ -273,7 +273,12 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => IngredientPricesPage(
-                                  ingredient: ingredient.replaceAll(RegExp(r'\(.*?\)'), '').trim().split(' ').take(2).join(' '),
+                                  ingredient: ingredient
+                                      .replaceAll(RegExp(r'\(.*?\)'), '')
+                                      .trim()
+                                      .split(' ')
+                                      .take(2)
+                                      .join(' '),
                                 ),
                               ),
                             );

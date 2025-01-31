@@ -6,11 +6,11 @@ class SidebarButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const SidebarButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.label,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +21,11 @@ class SidebarButton extends StatelessWidget {
         icon: Icon(icon),
         label: Text(
           label,
-          style: TextStyle(fontSize: 18), // Larger font size for button labels
+          style: const TextStyle(
+              fontSize: 18), // Larger font size for button labels
         ),
         style: ElevatedButton.styleFrom(
-          minimumSize: Size(double.infinity, 40), // Full width buttons
+          minimumSize: const Size(double.infinity, 40), // Full width buttons
         ),
       ),
     );

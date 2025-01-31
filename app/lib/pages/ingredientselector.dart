@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:app/pages/reciperecommendationspage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -25,14 +27,18 @@ class _IngredientSelectorState extends State<IngredientSelector> {
   Timer? _debounceTimer;
   bool _isLoading = false;
   final String apiBaseUrl = apiUrl;
-  String _selectedCategory = "All";
+  String? _selectedCategory;
   final List<String> _categories = [
-    "All",
-    "Vegetables",
-    "Fruits",
-    "Dairy",
-    "Meat",
-    "Spices"
+    'Beverages',
+    'Dairy & Cheese',
+    'Fermented & Pickled Items',
+    'Fruits',
+    'Grains & Flours',
+    'Herbs & Spices',
+    'Meat & Seafood',
+    'Miscellaneous',
+    'Oils & Fats',
+    'Vegetables'
   ];
 
   String capitalizeWords(String text) {
@@ -40,8 +46,8 @@ class _IngredientSelectorState extends State<IngredientSelector> {
     return text
         .split(' ')
         .map((word) => word.isNotEmpty
-        ? word[0].toUpperCase() + word.substring(1).toLowerCase()
-        : '')
+            ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+            : '')
         .join(' ');
   }
 
@@ -83,9 +89,9 @@ class _IngredientSelectorState extends State<IngredientSelector> {
         setState(() {
           _suggestions = data
               .map((item) => {
-            'name': capitalizeWords(item['name'].toString()),
-            'category': capitalizeWords(item['category'].toString()),
-          })
+                    'name': capitalizeWords(item['name'].toString()),
+                    'category': capitalizeWords(item['category'].toString()),
+                  })
               .toList();
         });
       }
@@ -125,7 +131,8 @@ class _IngredientSelectorState extends State<IngredientSelector> {
           MaterialPageRoute(
             builder: (context) => CategoryIngredientsPage(
               category: title,
-              currentlySelected: _selectedIngredients, // Pass current selections
+              currentlySelected:
+                  _selectedIngredients, // Pass current selections
             ),
           ),
         );
@@ -198,10 +205,10 @@ class _IngredientSelectorState extends State<IngredientSelector> {
                     icon: const Icon(Icons.search),
                     suffixIcon: _isLoading
                         ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
                         : null,
                   ),
                 ),
@@ -336,7 +343,7 @@ class _IngredientSelectorState extends State<IngredientSelector> {
                       onTap: () => _toggleIngredient(ingredient),
                     ),
                   );
-                }).toList(),
+                }),
               ],
             ],
           ),

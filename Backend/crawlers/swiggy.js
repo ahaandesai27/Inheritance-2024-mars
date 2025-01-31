@@ -54,7 +54,7 @@ async function swiggyScraper(query) {
         },
         productWeight: productWeights[index] || null,
         productImage: productImages[index] || null,
-        origin: "swigg"
+        origin: "swiggy"
       }
     });
   });

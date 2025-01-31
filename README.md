@@ -26,8 +26,8 @@ RecipAura is an all inclusive app designed to enhance your culinary experience. 
 ## 🔗Links
 
 - [GitHub Repository](https://github.com/ahaandesai27/Inheritance-2024-mars/)
-- [Drive Link With Images]()
-- [Demo Video]()
+- [Drive Link With Images](https://drive.google.com/drive/folders/1lK0WO_84jMTitClY9AbI8sLon2v8lIqr)
+- [Demo Video](https://drive.google.com/file/d/11qeJBG8gKJwyzs2Np_9zg-N3zV6tQvAk/view?usp=sharing)
 
 ## 🤖Tech-Stack
 

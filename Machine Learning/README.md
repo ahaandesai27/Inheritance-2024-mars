@@ -18,6 +18,7 @@ This project is an API for recommending recipes based on given ingredients using
 - **Response Model**: `List[RecipeRecommendation]`
 
 Each recommended recipe is returned with the following fields:
+- `_id` : ID of the recipe in the database
 - `TranslatedRecipeName`: Name of the recommended recipe.
 - `TranslatedIngredients`: Ingredients required for the recipe.
 - `TotalTimeInMins`: Total time (in minutes) required to make the recipe.

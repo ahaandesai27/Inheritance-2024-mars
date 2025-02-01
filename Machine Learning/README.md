@@ -7,7 +7,7 @@ This project is an API for recommending recipes based on given ingredients using
 ### `/recommend/` - Get Recipe Recommendations
 
 #### Request
-- **Method**: GET
+- **Method**: POST
 - **URL**: `/recommend/`
 - **Request Body Parameters**:
   - `ingredients` (string): A comma-separated list of ingredients to base the recommendations on.
@@ -18,15 +18,16 @@ This project is an API for recommending recipes based on given ingredients using
 - **Response Model**: `List[RecipeRecommendation]`
 
 Each recommended recipe is returned with the following fields:
+- `_id` : ID of the recipe in the database
 - `TranslatedRecipeName`: Name of the recommended recipe.
 - `TranslatedIngredients`: Ingredients required for the recipe.
 - `TotalTimeInMins`: Total time (in minutes) required to make the recipe.
 - `Cuisine`: The cuisine type of the recipe.
 - `TranslatedInstructions`: Cooking instructions for the recipe.
 - `URL`: Optional URL to the recipe (if available).
-- `Cleaned_Ingredients`: Cleaned ingredients list for processing.
-- `image_url`: URL of the recipe image.
-- `Ingredient_count`: Number of ingredients in the recipe.
+- `Cleaned-Ingredients`: Cleaned ingredients list for processing.
+- `image-url`: URL of the recipe image.
+- `Ingredient-count`: Number of ingredients in the recipe.
 - `calorieCount`: Estimated calorie count for the recipe.
 - `veg`: Boolean indicating whether the recipe is vegetarian.
 
@@ -51,4 +52,4 @@ python -m uvicorn app:app --reload
 The API will be available at `http://127.0.0.1:8000`.
 
 ## Notes
-- The recommendation system uses a pre-trained model (`model`) and a dataset (`recipes.csv`), which should be properly configured and preprocessed for optimal results. Contact me for access to the dataset.
+- The recommendation system uses a pre-trained model (`model`) and a dataset (`recipes.json`), which should be properly configured and preprocessed for optimal results. Contact me for access to the dataset.

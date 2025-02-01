@@ -49,7 +49,7 @@ class _RecipePageState extends State<RecipePage> {
       // 1. Get personalized recommendations from the saved recipes
       final recommendedRecipes = await getRecommendationsFromSaved(userId);
 
-      if (recommendedRecipes!.isEmpty) {
+      if (recommendedRecipes == null || recommendedRecipes.isEmpty) {
         setState(() {
           recommendations = [];
           isLoading = false;
@@ -266,7 +266,7 @@ class _RecipePageState extends State<RecipePage> {
               color: Colors.grey.withOpacity(0.2),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -280,12 +280,12 @@ class _RecipePageState extends State<RecipePage> {
               width: 60,
               fit: BoxFit.contain,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),

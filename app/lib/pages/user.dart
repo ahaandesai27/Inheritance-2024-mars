@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app/api/fetchuser.dart'; // Ensure this contains `fetchUserById` and `User` class.
 import 'package:app/pages/savedrecipepage.dart';
+import 'package:app/pages/loginpage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -164,9 +165,10 @@ class _UserPageState extends State<UserPage> {
                           TextButton(
                             onPressed: () async {
                               await logoutUser();
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              //once to remove logout confirmation, other to go back to login screen
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(builder: (context) => LoginPage()),
+                              );
                             },
                             child: Text(
                               'Logout',

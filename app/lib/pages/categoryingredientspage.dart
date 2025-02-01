@@ -48,7 +48,7 @@ class _CategoryIngredientsPageState extends State<CategoryIngredientsPage> {
 
   Future<void> _fetchIngredients() async {
     try {
-      var response;
+      http.Response response;
       if (widget.category == "Misc") {
         response = await http.get(
           Uri.parse('$apiBaseUrl/api/ingredients/Miscellaneous'),

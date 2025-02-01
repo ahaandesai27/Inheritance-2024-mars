@@ -86,11 +86,11 @@ class _RecipeRecommendationsPageState extends State<RecipeRecommendationsPage> {
                               height: 80,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
-                                return Icon(Icons.food_bank, size: 80);
+                                return const Icon(Icons.food_bank, size: 80);
                               },
                             ),
                           )
-                        : Icon(Icons.food_bank, size: 80),
+                        : const Icon(Icons.food_bank, size: 80),
                     title: Text(
                       recipe['TranslatedRecipeName'] ?? 'Unknown Recipe',
                       style: const TextStyle(

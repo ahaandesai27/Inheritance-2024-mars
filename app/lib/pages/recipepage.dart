@@ -202,7 +202,7 @@ class _RecipePageState extends State<RecipePage> {
                   _buildCategoryTile('Asian', 'assets/Asian.jpg'),
                   _buildCategoryTile('French', 'assets/French.jpg'),
                   _buildCategoryTile('Mid East', 'assets/MiddleEastern.jpg'),
-                  _buildCategoryTile('Japanese', 'assets/Japanese.jpg'),
+                  _buildCategoryTile('Punjabi', 'assets/Punjabi.jpg'),
                   _buildCategoryTile('Italian', 'assets/Italian.jpg'),
                   _buildCategoryTile('Fusion', 'assets/Fusion.jpg'),
                   _buildCategoryTile('Thai', 'assets/Thai.jpg'),

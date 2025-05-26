@@ -32,19 +32,21 @@ class _RecipeRecommendationsPageState extends State<RecipeRecommendationsPage> {
   }
 
   Future<void> _fetchRecommendations() async {
-    try {
-      recipes =
-          await getRecommendations(widget.selectedIngredients.join(" "), 10);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching recommendations: $e')),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+  try {
+    recipes = await getRecommendations(widget.selectedIngredients.join(" "), 10);
+  } catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error fetching recommendations: $e')),
+    );
+  } finally {
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

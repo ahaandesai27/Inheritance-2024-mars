@@ -40,7 +40,7 @@ class ProductPrice {
 }
 
 class PriceTrackingService {
-  static const _baseUrl = '$apiUrl/api/getingredients';
+  static final _baseUrl = '$apiUrl/api/getingredients';
 
   static Future<List<ProductPrice>> getPricesForIngredient(
       String ingredient) async {

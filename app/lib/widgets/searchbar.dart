@@ -61,13 +61,14 @@ class _SearchbarState extends State<Searchbar> {
         recipes = _searchCache[searchQuery]!;
         isLoading = false;
       });
+      _createOverlay(); // Ensure overlay updates
+      return;
     }
 
     setState(() => isLoading = true);
 
     try {
       final newRecipes = await _getServices.search(searchQuery, skip, limit);
-
       setState(() {
         if (skip == 0) {
           _searchCache[searchQuery] = newRecipes;
@@ -75,11 +76,12 @@ class _SearchbarState extends State<Searchbar> {
         } else {
           recipes.addAll(newRecipes);
         }
-
         skip += limit;
         hasMore = newRecipes.length == limit;
         isLoading = false;
       });
+
+      _createOverlay(); // Ensure overlay updates
     } catch (e) {
       setState(() => isLoading = false);
     }

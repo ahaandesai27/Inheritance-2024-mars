@@ -1,9 +1,13 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const findCheapestProduct = require('./findsmallest.js');
 const { URL } = require('url');
 
 async function amazonScraper(query) {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+    executablePath: '/usr/bin/google-chrome',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    headless: true
+  });
   const page = await browser.newPage();
 
   const startUrl = `https://www.amazon.in/s?k=${query}&page=1`;

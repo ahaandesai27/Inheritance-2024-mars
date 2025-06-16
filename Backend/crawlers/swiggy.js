@@ -1,8 +1,12 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const findCheapestProduct = require('./findsmallest.js')
 
 async function swiggyScraper(query) {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+      executablePath: '/usr/bin/google-chrome',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      headless: true
+    });
   const page = await browser.newPage();
   const startUrl = `https://www.swiggy.com/instamart/search?custom_back=true&query=${query}`;
 
@@ -41,22 +45,16 @@ async function swiggyScraper(query) {
     const productWeights = Array.from(document.querySelectorAll('._3eIPt')).map(el => el.innerText.trim());
     const productImages = Array.from(document.querySelectorAll('img._1NxA5')).map(el => el.src);
 
-    return productNames.map((name, index) => {
-      const ogprice = parseInt(productPrices[index])
-      const discprice = parseInt(discountedPrices[index])
-      return {
-        productName: name || null,
-        itemA: ogprice,
-        itemB: discprice,
-        productPrice: {
-          discountedPrice: Math.min(ogprice, discprice),
-          originalPrice: Math.max(ogprice, discprice)
-        },
-        productWeight: productWeights[index] || null,
-        productImage: productImages[index] || null,
-        origin: "swiggy"
-      }
-    });
+    return productNames.map((name, index) => ({
+      productName: name || null,
+      productPrice: {
+        discountedPrice: parseInt(discountedPrices[index]) || parseInt(productPrices[index]) || null,
+        originalPrice: parseInt(productPrices[index]) || null
+      },
+      productWeight: productWeights[index] || null,
+      productImage: productImages[index] || null,
+      origin: "swiggy"
+    }));
   });
 
   if (products.length === 0) {

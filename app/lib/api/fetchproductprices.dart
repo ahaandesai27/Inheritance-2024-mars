@@ -6,77 +6,72 @@ import 'package:http/http.dart' as http;
 
 class ProductPrice {
   final String productName;
-  final double discountedPrice;
-  final double originalPrice;
+  final Map<String, dynamic> productPrice;
   final String productWeight;
   final String productImage;
-  final String origin;
   final String productLink;
+  final String origin;
 
   ProductPrice({
     required this.productName,
-    required this.discountedPrice,
-    required this.originalPrice,
+    required this.productPrice,
     required this.productWeight,
     required this.productImage,
-    required this.origin,
     required this.productLink,
+    required this.origin,
   });
 
   factory ProductPrice.fromJson(Map<String, dynamic> json) {
     return ProductPrice(
-      productName: json['productName'] ?? '',
-      discountedPrice:
-          (json['productPrice']?['discountedPrice'] ?? double.infinity)
-              .toDouble(),
-      originalPrice: (json['productPrice']?['originalPrice'] ?? double.infinity)
-          .toDouble(),
-      productWeight: json['productWeight'] ?? '',
-      productImage: json['productImage'] ?? '',
-      productLink: json['productLink'] ?? '',
-      origin: json['origin'] ?? '',
+      productName: json['productName']?.toString() ?? '',
+      productPrice: {
+        'discountedPrice': json['productPrice']?['discountedPrice'] ?? 0,
+        'originalPrice': json['productPrice']?['originalPrice'] ?? 0,
+      },
+      productWeight: json['productWeight']?.toString() ?? '',
+      productImage: json['productImage']?.toString() ?? '',
+      productLink: json['productLink']?.toString() ?? '',
+      origin: json['origin']?.toString() ?? '',
     );
   }
+
+  double get discountedPrice =>
+      (productPrice['discountedPrice'] ?? 0).toDouble();
+
+  double get originalPrice =>
+      (productPrice['originalPrice'] ?? 0).toDouble();
 }
 
 class PriceTrackingService {
-  static final _baseUrl = '$apiUrl/api/getingredients';
+  static final _baseUrl = webscrapingUrl;
 
-  static Future<List<ProductPrice>> getPricesForIngredient(
-      String ingredient) async {
+  static Future<List<ProductPrice>> getPricesForIngredient(String ingredient) async {
+    final sources = ['bigbasket', 'zepto', 'starquik'];
     List<ProductPrice> allPrices = [];
 
     try {
-      final response = await http
-          .get(Uri.parse('$_baseUrl?q=${Uri.encodeComponent(ingredient)}'));
+      for (final source in sources) {
+        final url = Uri.parse('$_baseUrl?q=$ingredient&source=$source');
+        final response = await http.get(url);
 
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body); // Ensure it's a list
-        allPrices.addAll(data
-            .map((item) => ProductPrice.fromJson(item as Map<String, dynamic>))
-            .toList());
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          if (data is Map<String, dynamic>) {
+            try {
+              allPrices.add(ProductPrice.fromJson(data));
+            } catch (e) {
+              print('Error parsing product from $source: $e');
+            }
+          }
+        } else {
+          print('Failed to fetch from $source: ${response.statusCode}');
+        }
       }
     } catch (e) {
-      print('An error occurred: $e');
+      print('Error fetching prices: $e');
     }
 
     return allPrices;
   }
 }
 
-// // Unit testing 
-// void main() async {
-//   final ingredient = 'apple';
-//   final response = await http.get(Uri.parse(
-//       '${PriceTrackingService._baseUrl}?q=${Uri.encodeComponent(ingredient)}'));
-
-//   if (response.statusCode == 200) {
-//     print('Raw JSON Response: ${response.body}');
-//     List<ProductPrice> prices = (json.decode(response.body) as List)
-//         .map((item) => ProductPrice.fromJson(item))
-//         .toList();
-//     print('Parsed Product Prices: $prices');
-//   } else {
-//     print('Failed to fetch data: ${response.statusCode}');
-//   }
-// }

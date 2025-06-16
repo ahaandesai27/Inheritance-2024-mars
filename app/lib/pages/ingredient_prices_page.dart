@@ -55,8 +55,8 @@ class _IngredientPricesPageState extends State<IngredientPricesPage> {
         return 'assets/amazon.jpg';
       case 'zepto':
         return 'assets/zepto.jpg';
-      case 'swiggy':
-        return 'assets/swiggy.jpg';
+      case 'starquik':
+        return 'assets/starquik.png';
       case 'big basket':
         return 'assets/bigbasket.jpg';
       default:

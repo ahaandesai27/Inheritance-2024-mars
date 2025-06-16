@@ -28,7 +28,7 @@ class SaveRecipeService {
   Future<List<String>> getSavedRecipeIngredients(String userId) async {
     final List<Recipe> recipes = await getSavedRecipes(userId);
     return recipes
-        .map((recipe) => recipe.cleanedIngredients.join(' '))
+        .map((recipe) => recipe.cleanedIngredients.join(','))
         .toList();
   }
 

@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const {
   URL
 } = require('url');
@@ -8,8 +8,10 @@ async function zeptoScraper(query) {
   try {
     // Start a headless browser
     const browser = await puppeteer.launch({
-      headless: true
-    });
+        executablePath: '/usr/bin/google-chrome',
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        headless: true
+      });
     const page = await browser.newPage();
 
     const context = browser.defaultBrowserContext();

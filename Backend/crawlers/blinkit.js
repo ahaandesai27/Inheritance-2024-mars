@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const express = require('express');
 const findCheapestProduct = require('./findsmallest');
 const fs = require('fs').promises;
@@ -17,7 +17,11 @@ async function getRandomUserAgent() {
 async function blinkitScraper(query) {
     let browser;
     try {
-        browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({
+            executablePath: '/usr/bin/google-chrome',
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            headless: true
+          });
         const page = await browser.newPage();
 
         // Set up to capture console logs

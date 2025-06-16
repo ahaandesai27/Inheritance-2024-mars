@@ -33,7 +33,7 @@ class _RecipeRecommendationsPageState extends State<RecipeRecommendationsPage> {
 
   Future<void> _fetchRecommendations() async {
   try {
-    recipes = await getRecommendations(widget.selectedIngredients.join(" "), 10);
+    recipes = await getRecommendations(widget.selectedIngredients.join(","), 10);
   } catch (e) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(

@@ -2,10 +2,10 @@
 
 import 'package:app/api/saverecipe.dart';
 import 'package:http/http.dart' as http;
+import 'package:app/api/apiurl.dart';
 import 'dart:convert';
-import 'dart:collection';
 
-const recUrl = 'http://localhost:8000/recommend/';
+final String recUrl = '$mlUrl/recommend';
 SaveRecipeService saver = SaveRecipeService();
 
 Future<List<Map<String, dynamic>>> getRecommendations(
@@ -16,7 +16,7 @@ Future<List<Map<String, dynamic>>> getRecommendations(
     headers: {'Content-Type': 'application/json'},
     body: json.encode({
       'ingredients': ingredient,
-      'num_recommendations': numRecommendations,
+      'k': numRecommendations,
     }),
   );
 
@@ -36,13 +36,22 @@ Future<List<Map<String, dynamic>>?> getRecommendationsFromSaved(
 
     // Get saved recipe ingredients
     List<String> ingredients = await saver.getSavedRecipeIngredients(userId);
-    Set<Map<String, dynamic>> result = HashSet<Map<String, dynamic>>();
+    List<Map<String, dynamic>> result = [];
+    Set<String> seenTitles = {};
 
-    // Call getRecommendations for each ingredient and add results to HashSet
-    for (var ingredient in ingredients) {
-      List<Map<String, dynamic>> recommendations = await getRecommendations(
-          ingredient, 5); // You can adjust the numRecommendations
-      result.addAll(recommendations);
+    for (var ingredient
+        in ingredients.map((e) => e.trim().toLowerCase()).toSet()) {
+      List<Map<String, dynamic>> recommendations =
+          await getRecommendations(ingredient, 5);
+
+      for (var rec in recommendations) {
+        final title =
+            rec['TranslatedRecipeName'] ?? rec['title'] ?? rec['name'] ?? '';
+        if (title.isNotEmpty && !seenTitles.contains(title)) {
+          seenTitles.add(title);
+          result.add(rec);
+        } else {}
+      }
     }
 
     // Convert the HashSet to a List and return it

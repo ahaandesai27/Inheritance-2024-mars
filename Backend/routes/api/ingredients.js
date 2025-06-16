@@ -3,11 +3,9 @@ const router = express.Router();
 const ingredientsController = require('../../controllers/ingredientsController');
 
 const {
-    getIngredients,
-    getIngredientsByCategory
+    getIngredients
 } = ingredientsController;
 
-router.get('/:category', getIngredientsByCategory);
 router.get('/', getIngredients);
 
 module.exports = router;

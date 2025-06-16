@@ -1,8 +1,12 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const findCheapestProduct = require('./findsmallest.js')
 
 async function bigBasketScraper(query) {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+      executablePath: '/usr/bin/google-chrome',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      headless: true
+    });
   const page = await browser.newPage();
 
   // Set a custom User-Agent

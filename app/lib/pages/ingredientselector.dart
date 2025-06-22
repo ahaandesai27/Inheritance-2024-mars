@@ -78,9 +78,9 @@ class _IngredientSelectorState extends State<IngredientSelector> {
     });
 
     try {
-      final response = await http.get(
-        Uri.parse('$apiBaseUrl/api/ingredients?q=$query&limit=5'),
-      );
+      final requestUrl = Uri.parse('$apiBaseUrl/api/ingredients?q=$query&limit=5');
+      print('Fetching suggestions from: $requestUrl'); // Debugging line
+      final response = await http.get(requestUrl);
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);

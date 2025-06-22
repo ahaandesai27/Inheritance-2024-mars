@@ -49,15 +49,13 @@ class _CategoryIngredientsPageState extends State<CategoryIngredientsPage> {
   Future<void> _fetchIngredients() async {
     try {
       http.Response response;
-      if (widget.category == "Misc") {
-        response = await http.get(
-          Uri.parse('$apiBaseUrl/api/ingredients/Miscellaneous'),
-        );
-      } else {
-        response = await http.get(
-          Uri.parse('$apiBaseUrl/api/ingredients/${widget.category}'),
-        );
-      }
+      final encodedCategory = widget.category == "Misc"
+          ? Uri.encodeComponent("Miscellaneous")
+          : Uri.encodeComponent(widget.category);
+
+      response = await http.get(
+        Uri.parse('$apiBaseUrl/api/ingredients?q=$encodedCategory'),
+      );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);

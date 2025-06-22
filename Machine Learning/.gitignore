@@ -1,5 +1,3 @@
-utils
-saved_models
-recipes.csv
-incat
-recipes.json
+/embeddings
+/trained_model
+/venv

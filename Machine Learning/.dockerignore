@@ -1,0 +1,5 @@
+/embeddings
+/trained_model
+/venv
+/training/trainer.py
+/training/data_processor.py

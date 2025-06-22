@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                keyboardType: TextInputType.phone,
+                keyboardType: TextInputType.text,
               ),
               const SizedBox(height: 20),
 

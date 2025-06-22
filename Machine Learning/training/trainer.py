@@ -5,7 +5,7 @@ from tqdm import tqdm
 from typing import Tuple
 from torch.utils.data import DataLoader
 from config.config import Config
-from .model import RecipeEmbeddingModel
+from .embedder import RecipeEmbeddingModel
 
 class ContrastiveLoss(nn.Module):
     def __init__(self, temperature=0.07):

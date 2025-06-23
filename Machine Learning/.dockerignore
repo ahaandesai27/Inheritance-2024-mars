@@ -1,4 +1,3 @@
-/embeddings
 /trained_model
 /venv
 /training/trainer.py

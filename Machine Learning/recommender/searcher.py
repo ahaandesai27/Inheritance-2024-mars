@@ -9,7 +9,6 @@ class RecipeSearcher:
     def __init__(self, model: RecipeEmbeddingModel):
         self.model = model
         self.embeddings = self.load_all_embeddings()
-        faiss.normalize_L2(self.embeddings)
 
         with open("./embeddings/metadata.json") as f:
             self.metadata = json.load(f)

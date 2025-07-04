@@ -16,6 +16,21 @@ class RecipeDataset(Dataset):
         item = {'text': self.texts[idx]}
         return item
 
+"""
+This class takes in as input the configuration parameters (config), which included where the JSON data was.
+I've made a class config, which included static variables as parameters
+An object of this class would allow access to these parameters.     
+
+In the main training program, load_and_preprocess_data is called first.
+This convers the json data to a pandas dataframe, on which some functions are applied
+The Cleaned-ingredients field contained ingredients separated by comma, so first I converted them to a list of ingredients.
+This was done so that we could get ingredients-text field, which is just space separated ingredients (for the embeddings).
+And then cleaned-ingredients was again transformed back to comma separated ingredients (though this step isnt necessary)
+Then this data is saved to a file, for embedding and querying purposes 
+
+Later use of json file was changed to embeddings + direct database queries.
+
+"""
 class DataProcessor:
     def __init__(self, config: Config):
         self.config = config

@@ -6,17 +6,14 @@ from torch.utils.data import Dataset, DataLoader
 from config.config import Config
 
 class RecipeDataset(Dataset):
-    def __init__(self, texts: List[str], labels: List[Tuple[str, int]] = None):
+    def __init__(self, texts: List[str]):
         self.texts = texts
-        self.labels = labels
 
     def __len__(self):
         return len(self.texts)
 
     def __getitem__(self, idx):
         item = {'text': self.texts[idx]}
-        if self.labels is not None:
-            item['label'] = self.labels[idx]
         return item
 
 class DataProcessor:
@@ -37,19 +34,13 @@ class DataProcessor:
         self.df['Cleaned-Ingredients'] = self.df['Cleaned-Ingredients'].apply(lambda x: ', '.join(x))
         self.save_data('./recipes.json')  # Save after ingredients_text is created
         
-        cuisines = self.df['Cuisine'].tolist()
-        total_time = self.df['TotalTimeInMins'].tolist()
-        calorie_count = self.df['calorieCount'].tolist()
-        
-        labels = list(zip(cuisines, total_time, calorie_count))
-        train_texts, val_texts, train_labels, val_labels = train_test_split(
+        train_texts, val_texts = train_test_split(
             self.df['ingredients_text'].tolist(),
-            labels,
             train_size=self.config.TRAIN_SIZE,
             random_state=42
         )
-        train_dataset = RecipeDataset(train_texts, train_labels)
-        val_dataset = RecipeDataset(val_texts, val_labels)
+        train_dataset = RecipeDataset(train_texts)
+        val_dataset = RecipeDataset(val_texts)
         return train_dataset, val_dataset
     
     def create_dataloaders(self, train_dataset: RecipeDataset, 

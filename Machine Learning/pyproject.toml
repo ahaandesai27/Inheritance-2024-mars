@@ -1,0 +1,39 @@
+[project]
+name = "recipe-ml"
+version = "0.1.0"
+description = "Recipe recommendation: ingredient embeddings served over Atlas Vector Search"
+readme = "README.md"
+authors = [
+    { name = "Ahaan Desai", email = "ahaan.desai2705@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "numpy",
+    "pandas",
+    "pydantic",
+    "pymongo>=4.7",
+    "python-dotenv",
+    "sentence-transformers",
+    "torch",
+    "uvicorn",
+]
+
+[project.optional-dependencies]
+# Only needed to retrain the projection head, not to serve it.
+training = [
+    "scikit-learn",
+    "tqdm",
+]
+
+[project.scripts]
+recipe-api = "recipe_ml.api.app:main"
+recipe-load = "recipe_ml.scripts.load_recipes:main"
+recipe-train = "recipe_ml.training.main:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "recipe_ml"

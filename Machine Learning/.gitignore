@@ -1,4 +1,10 @@
-/embeddings
-/trained_model
-/venv
-/.env
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+/data/
+/model/*
+!/model/.gitkeep
+/embeddings/
+/trained_model/

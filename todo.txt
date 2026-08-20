@@ -1,0 +1,3 @@
+1) add redis caching for all routes (ttl 1 day ig idk)
+2) move vector search to public db (atlas vector search)
+3) change recipe add flow to atuomatically embed and send to db

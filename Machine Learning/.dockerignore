@@ -1,4 +1,9 @@
-/trained_model
-/venv
-/training/trainer.py
-/training/data_processor.py
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+.git/
+data/
+src/recipe_ml/training/
+README.md

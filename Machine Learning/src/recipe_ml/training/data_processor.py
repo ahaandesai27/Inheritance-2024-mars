@@ -1,9 +1,11 @@
+from pathlib import Path
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from typing import Tuple, List
 import torch
 from torch.utils.data import Dataset, DataLoader
-from config.config import Config
+from ..config import Config
 
 class RecipeDataset(Dataset):
     def __init__(self, texts: List[str]):
@@ -47,7 +49,7 @@ class DataProcessor:
         self.df['Cleaned-Ingredients'] = self.df['Cleaned-Ingredients'].apply(self.clean_ingredients)
         self.df['ingredients_text'] = self.df['Cleaned-Ingredients'].apply(lambda x: ' '.join(x))
         self.df['Cleaned-Ingredients'] = self.df['Cleaned-Ingredients'].apply(lambda x: ', '.join(x))
-        self.save_data('./recipes.json')  # Save after ingredients_text is created
+        self.save_data(self.config.PROCESSED_DATA_PATH)  # Save after ingredients_text is created
         
         train_texts, val_texts = train_test_split(
             self.df['ingredients_text'].tolist(),
@@ -72,6 +74,7 @@ class DataProcessor:
         )
         return train_loader, val_loader
 
-    def save_data(self, file_path: str) -> None:
+    def save_data(self, file_path) -> None:
+        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
         self.df.to_json(file_path, orient='records', lines=True)  # Saving as JSON
         print(f"Data saved to {file_path}")

@@ -4,8 +4,8 @@ import torch.nn.functional as F
 from tqdm import tqdm
 from typing import Tuple
 from torch.utils.data import DataLoader
-from config.config import Config
-from .embedder import RecipeEmbeddingModel
+from ..config import Config
+from ..model.embedder import RecipeEmbeddingModel
 
 """
 The actual training of the model
@@ -104,8 +104,18 @@ class Trainer:
             print(f"Train Loss: {train_loss:.4f}")
             print(f"Val Loss: {val_loss:.4f}")
             
-            # Save model
-        model_path = self.config.MODEL_SAVE_PATH / f"model_epoch_{epoch+1}.pt"
-        torch.save(self.model.state_dict(), model_path)
-            
+            # Checkpoint every epoch, so a crash halfway through a long run
+            # does not throw away the earlier epochs.
+            self.save(self.config.MODEL_SAVE_PATH / f"model_epoch_{epoch+1}.pt")
+
+        # The canonical path the embedding job and the API both load from.
+        # Without this the projection head stays randomly initialised at
+        # serving time and every stored vector becomes meaningless.
+        self.save(self.config.MODEL_WEIGHTS_PATH)
+
         return train_losses, val_losses
+
+    def save(self, path) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        torch.save(self.model.state_dict(), path)
+        print(f"saved weights to {path}")

@@ -1,12 +1,13 @@
+fastapi
 numpy
-faiss-cpu
+pandas
+pydantic
+pymongo>=4.7
+python-dotenv
 sentence-transformers
 torch
-pymongo
-python-dotenv
-fastapi
 uvicorn
-pydantic
-pandas
 
-
+# training only
+scikit-learn
+tqdm

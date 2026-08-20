@@ -1,14 +1,14 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV HOST 0.0.0.0
-ENV PORT=8080
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app/src \
+    HOST=0.0.0.0 \
+    PORT=8080
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        build-essential \
-        && rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -17,8 +17,9 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y --auto-remove build-essential
 
-COPY . .
+COPY src/ ./src/
+COPY model/ ./model/
 
 EXPOSE $PORT
 
-CMD exec uvicorn app:app --host 0.0.0.0 --port $PORT --workers 1
+CMD exec uvicorn recipe_ml.api.app:app --host "$HOST" --port "$PORT" --workers 1

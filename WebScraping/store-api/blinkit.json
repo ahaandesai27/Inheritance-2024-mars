@@ -1,0 +1,362 @@
+[
+  {
+    "productName": "Desi Farms Low Fat Paneer",
+    "productPrice": {
+      "discountedPrice": 78,
+      "originalPrice": 96
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1772510709004-770.png",
+    "productLink": "https://blinkit.com/prn/x/prid/528454",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Amul Fresh Malai Paneer",
+    "productPrice": {
+      "discountedPrice": 95,
+      "originalPrice": 95
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/7a1700ee-dd38-49cf-b34e-171ff84ac0e7.png",
+    "productLink": "https://blinkit.com/prn/x/prid/329500",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Country Delight Taaza Paneer (made with Lemon Juice)",
+    "productPrice": {
+      "discountedPrice": 111,
+      "originalPrice": 117
+    },
+    "productWeight": "180 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1784778239459-1613.png",
+    "productLink": "https://blinkit.com/prn/x/prid/478895",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Mother Dairy Paneer",
+    "productPrice": {
+      "discountedPrice": 96,
+      "originalPrice": 96
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1774944833006-466.png",
+    "productLink": "https://blinkit.com/prn/x/prid/192",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Pride of Cows Low Fat High Protein Paneer",
+    "productPrice": {
+      "discountedPrice": 187,
+      "originalPrice": 235
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/35fa37ac-edd1-4778-8fe9-9c493cdd6783.png",
+    "productLink": "https://blinkit.com/prn/x/prid/686510",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Milky Mist Paneer",
+    "productPrice": {
+      "discountedPrice": 104,
+      "originalPrice": 140
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/f4c08a61-32f2-42bd-9772-acb4c721651d.png",
+    "productLink": "https://blinkit.com/prn/x/prid/28169",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Gowardhan Classic Block Paneer",
+    "productPrice": {
+      "discountedPrice": 97,
+      "originalPrice": 105
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1782198535399-585.png",
+    "productLink": "https://blinkit.com/prn/x/prid/123007",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Gowardhan Classic Block Paneer",
+    "productPrice": {
+      "discountedPrice": 228,
+      "originalPrice": 245
+    },
+    "productWeight": "500 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/790d0246-e56b-45aa-af55-571d6647b693.png",
+    "productLink": "https://blinkit.com/prn/x/prid/71109",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Pride of Cows Paneer",
+    "productPrice": {
+      "discountedPrice": 179,
+      "originalPrice": 195
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/f55e3b84-2298-4d8d-83c4-72df0c662361.png",
+    "productLink": "https://blinkit.com/prn/x/prid/481292",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Country Delight Taaza 40 g High Protein Paneer",
+    "productPrice": {
+      "discountedPrice": 125,
+      "originalPrice": 130
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1782287560669-646.png",
+    "productLink": "https://blinkit.com/prn/x/prid/735779",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "iD Soft and Creamy Paneer",
+    "productPrice": {
+      "discountedPrice": 140,
+      "originalPrice": 140
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/e5bffe35-690a-4111-8fb6-3c0b18b3859b.png",
+    "productLink": "https://blinkit.com/prn/x/prid/335816",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Milky Mist Low Fat High Protein Paneer",
+    "productPrice": {
+      "discountedPrice": 144,
+      "originalPrice": 165
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/abf8d085-55b4-4c91-a0ef-227faa48c695.png",
+    "productLink": "https://blinkit.com/prn/x/prid/605732",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Punjab Sind Low Fat High Protein Paneer",
+    "productPrice": {
+      "discountedPrice": 170,
+      "originalPrice": 170
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/b5686e3e-02b4-427e-b55b-75b75043fdc4.png",
+    "productLink": "https://blinkit.com/prn/x/prid/559381",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Akshayakalpa Organic Malai Paneer",
+    "productPrice": {
+      "discountedPrice": 152,
+      "originalPrice": 160
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1781162983306-67.png",
+    "productLink": "https://blinkit.com/prn/x/prid/448464",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "iD High Protein Paneer (56 g Protein)",
+    "productPrice": {
+      "discountedPrice": 155,
+      "originalPrice": 155
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1775121099346-414.png",
+    "productLink": "https://blinkit.com/prn/x/prid/770487",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Punjab Sind Malai Paneer",
+    "productPrice": {
+      "discountedPrice": 180,
+      "originalPrice": 180
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/16a64d5b-4bf7-4e0d-ae7b-a369cba4e009.png",
+    "productLink": "https://blinkit.com/prn/x/prid/559384",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Humpy Farms A2 Paneer",
+    "productPrice": {
+      "discountedPrice": 150,
+      "originalPrice": 170
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/388192a4-9f7b-47d9-a5ae-33d5a8913c71.png",
+    "productLink": "https://blinkit.com/prn/x/prid/589027",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Akshayakalpa Organic High Protein Paneer",
+    "productPrice": {
+      "discountedPrice": 181,
+      "originalPrice": 190
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1786402939598-235.png",
+    "productLink": "https://blinkit.com/prn/x/prid/703472",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Bio Nutrients Pure Diet Tofu",
+    "productPrice": {
+      "discountedPrice": 57,
+      "originalPrice": 57
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/fa013f53-7074-4876-94bd-d8f7a8a1ef89.png",
+    "productLink": "https://blinkit.com/prn/x/prid/110985",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Amul Malai Paneer",
+    "productPrice": {
+      "discountedPrice": 99,
+      "originalPrice": 99
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/73281f49-4924-4f16-ab23-c4652b503257.png",
+    "productLink": "https://blinkit.com/prn/x/prid/191",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Epigamia High Protein Paneer",
+    "productPrice": {
+      "discountedPrice": 149,
+      "originalPrice": 250
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/f6aef3a4edb648ff9a8014af9cbc4576.png",
+    "productLink": "https://blinkit.com/prn/x/prid/1370484",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Hello Tempayy 42g Protein Natural Tempeh Cubes",
+    "productPrice": {
+      "discountedPrice": 102,
+      "originalPrice": 159
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/709c970f-5e93-4306-b3cf-c6addf045fcf.png",
+    "productLink": "https://blinkit.com/prn/x/prid/452621",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Mother Nature's Fresh and Soft Tofu (Soya Paneer)",
+    "productPrice": {
+      "discountedPrice": 90,
+      "originalPrice": 90
+    },
+    "productWeight": "200 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/7b930159-f243-4c34-960d-662c2529e8db.png",
+    "productLink": "https://blinkit.com/prn/x/prid/481581",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Too Yumm Protein Chips Masala Magic",
+    "productPrice": {
+      "discountedPrice": 45,
+      "originalPrice": 50
+    },
+    "productWeight": "60 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/edd54dea50fa49f381d08254d500a83a.png",
+    "productLink": "https://blinkit.com/prn/x/prid/1370856",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Too Yumm Protein Potato Chips - Masala Magic",
+    "productPrice": {
+      "discountedPrice": 89,
+      "originalPrice": 100
+    },
+    "productWeight": "2 x 60 g",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1785491846976-40.png",
+    "productLink": "https://blinkit.com/prn/x/prid/1380460",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Yu 1 Ingredient Coconut Water",
+    "productPrice": {
+      "discountedPrice": 199,
+      "originalPrice": 360
+    },
+    "productWeight": "6 x 200 ml",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1786420113452-1146.png",
+    "productLink": "https://blinkit.com/prn/x/prid/565122",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Yu 1 Ingredient Coconut Water",
+    "productPrice": {
+      "discountedPrice": 46,
+      "originalPrice": 60
+    },
+    "productWeight": "200 ml",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/rc-upload-1787024504215-245.png",
+    "productLink": "https://blinkit.com/prn/x/prid/565123",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Hello Tempayy Peri Peri Protein Veg Momos",
+    "productPrice": {
+      "discountedPrice": 160,
+      "originalPrice": 195
+    },
+    "productWeight": "10 pcs",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/66cd3947a21d47f9b7c205f02adcb841.png",
+    "productLink": "https://blinkit.com/prn/x/prid/794672",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Amul Taaza Toned Milk",
+    "productPrice": {
+      "discountedPrice": 30,
+      "originalPrice": 30
+    },
+    "productWeight": "500 ml",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/5734b087-3ad9-485f-bbe2-52079cd9e35d.png",
+    "productLink": "https://blinkit.com/prn/x/prid/19512",
+    "inStock": true,
+    "origin": "blinkit"
+  },
+  {
+    "productName": "Amul Taaza Toned Milk",
+    "productPrice": {
+      "discountedPrice": 59,
+      "originalPrice": 59
+    },
+    "productWeight": "1 ltr",
+    "productImage": "https://cdn.grofers.com/da/cms-assets/cms/product/71e545db-24e9-40c9-9d47-1e197b50fb28.png",
+    "productLink": "https://blinkit.com/prn/x/prid/561270",
+    "inStock": true,
+    "origin": "blinkit"
+  }
+]

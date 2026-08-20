@@ -9,8 +9,8 @@ const verifyJWT = require('./middleware/verifyJWT');
 const credentials = require('./middleware/credentials');
 const mongoose = require('mongoose');
 const connectDB = require('./config/dbConnection');
-const session = require('express-session')
-const passport = require('passport');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 
 require('dotenv').config();
 const PORT = process.env.PORT || 3500;
@@ -32,27 +32,20 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(session({
-    secret: '75d6b7ec58761381e182e49abef9b2d1',
-    resave: false,
-    saveUninitialized: true,
-  }));
-  
-  // Passport initialization
-app.use(passport.initialize());
-app.use(passport.session());
-  
+// API docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // authentication
 app.use('/register', require('./routes/user/register'));
 app.use('/login', require('./routes/user/login'));            // Login
 app.use('/logout', require('./routes/user/logout'));
-app.use('/auth/google', require('./routes/user/google')); // Google OAuth  
 
 // app.use(verifyJWT) 
 
 // Normal routes
 app.use('/api/recipes', require('./routes/api/recipes'));
+// declared above the ingredients router so the more specific prefix wins
+app.use('/api/ingredients/stores', require('./routes/api/stores'));
 app.use('/api/ingredients', require('./routes/api/ingredients'));
 app.use('/api/dietplans', require('./routes/api/dietplans'));
 app.use('/api/feedback', require('./routes/api/feedback'));

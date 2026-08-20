@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:app/api/localstorage.dart';
-import 'package:app/widgets/NavBar.dart';
+import 'package:app/widgets/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app/api/fetchuser.dart'; // Ensure this contains `fetchUserById` and `User` class.

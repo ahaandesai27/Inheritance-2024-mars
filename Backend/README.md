@@ -95,40 +95,41 @@ Default limit 5
   It will return **`name`**, **`category`**, **`_id`**
 
 
-### **3. Routes for getting ingredient prices and other data from crawlers**
-**Base Path**: `/api/getingredients/<platform>?q=<item>`<br>
-**Example**: `/api/getingredients/amazon?q=bananas`
+### **3. Getting ingredient prices from the stores**
+The store clients live in `controllers/stores/`. Each one calls that store's own JSON API and
+returns an array of products. They are plain functions, not routes yet:
 
-#### **Crawler Response Keys**:
-Each crawler returns an array of objects with the following keys:
-- **`productName`**: Name of the product.  
+```js
+const bigBasketSearch = require('./controllers/stores/bigbasket');
+const products = await bigBasketSearch('paneer', { limit: 30 });
+```
+
+Available: `controllers/stores/bigbasket.js`, `blinkit.js`, `dmart.js`, `starquik.js`.
+
+#### **Response Keys**:
+All four return the same shape, an array of objects with these keys:
+- **`productName`**: Name of the product.
 - **`productPrice`**: Object containing:
   - `discountedPrice`: Discounted or final price.
-  - `originalPrice`: Original or marked price (if available).  
-- **`productWeight`**: Weight of the product.  
-- **`productImage`**: URL to the product image.  
-- **`productLink`**: Link to the product page.  
-- **`origin`**: Source platform (e.g., "amazon").
-<br> **Note**: Some crawlers may return less information than mentioned above. Null is returned if not there, but still check if the data exists for all fields or not to avoid errors. 
+  - `originalPrice`: Original or marked price.
+- **`productWeight`**: Weight of the product.
+- **`productImage`**: URL to the product image.
+- **`productLink`**: Link to the product page.
+- **`brand`**: Brand name.
+- **`inStock`**: Whether the store has it in stock.
+- **`origin`**: Source platform (e.g., "bigbasket").
 
-#### **Endpoints**:
-- **`GET /amazon`**  
-  Fetches ingredients data from Amazon.
+<br> **Note**: A field is `null` when the store does not provide it, but the key is
+always there, so you can read it without checking first.
 
-- **`GET /zepto`**  
-  Fetches ingredients data from Zepto.
-
-- **`GET /swiggy`**  
-  Fetches ingredients data from Swiggy. 
-  <br>[**Note**: `productLink` not available yet]
-
-- **`GET /bigbasket`**  
-  Fetches ingredients data from BigBasket.
-  <br>[**Note**: `productImage` not available yet]
-
-[**Note**: the following does not work properly]
-- **`GET /blinkit`**  
-  Fetches ingredients data from Blinkit.
+#### **Store notes**:
+- **BigBasket** - fetches a session cookie from the homepage first, since the search
+  call needs one. Rate limited, so it returns 429 if you hammer it.
+- **Starquik** - capped at 10 results by the endpoint, and it has no paging.
+- **DMart** - prices are per SKU, so one product can turn into several entries
+  (200 g, 500 g, ...). `storeId` option picks the region, defaults to Mumbai.
+- **Blinkit** - shells out to `curl` because the site needs HTTP/2, which Node's
+  `fetch` cannot do. **`curl` has to be installed on the machine.**
 
 ## Troubleshooting
 

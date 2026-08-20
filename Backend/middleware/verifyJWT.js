@@ -12,7 +12,7 @@ const verifyJWT = (req, res, next) => {
     const accessToken = authHeader.split(' ')[1]; //get token number from {Bearer <token>}
     jwt.verify(
         accessToken, 
-        process.env.ACCESS_TOKEN_SECRET,
+        process.env.JWT_SECRET,
         (err, decoded) => {
             if(err) {
                 res.status(403).send('Invalid token');

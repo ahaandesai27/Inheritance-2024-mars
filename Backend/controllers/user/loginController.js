@@ -28,7 +28,7 @@ const handleLogin = async (req, res) => {
                         "id": foundUser._id
                     }
                 },
-                process.env.ACCESS_TOKEN_SECRET, 
+                process.env.JWT_SECRET, 
                 {expiresIn: '30d'} 
             );
 

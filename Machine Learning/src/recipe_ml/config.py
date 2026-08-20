@@ -1,25 +1,12 @@
-"""
-Central configuration.
-
-Everything that differs between a laptop, a Colab notebook and the deployed
-container is read from the environment, with a sane default for local runs.
-Paths are resolved against the project root rather than the current working
-directory, so a script behaves the same wherever it is launched from.
-"""
-
 import os
 from pathlib import Path
 
 from dotenv import load_dotenv
 
-def _project_root() -> Path:
-    """
-    .../Machine Learning/src/recipe_ml/config.py -> .../Machine Learning
 
-    That walk is only meaningful for a source checkout or an editable install.
-    Installed as a plain wheel it would point into site-packages, so fall back
-    to the working directory when the marker file is not there.
-    """
+def _project_root() -> Path:
+    # .../Machine Learning/src/recipe_ml/config.py -> .../Machine Learning.
+    # Only valid for a checkout or editable install, hence the marker check.
     candidate = Path(__file__).resolve().parents[2]
     if (candidate / "pyproject.toml").exists():
         return candidate
@@ -28,8 +15,7 @@ def _project_root() -> Path:
 
 PROJECT_ROOT = _project_root()
 
-# Anchored to the project root so a script run from any directory - or from a
-# Colab notebook - picks up the same .env. Real environment variables win.
+# real environment variables win over the file
 load_dotenv(PROJECT_ROOT / ".env")
 
 
@@ -42,9 +28,7 @@ class Config:
     PROJECT_ROOT = PROJECT_ROOT
 
     # --- Data ---------------------------------------------------------------
-    # Source corpus used for training and for the initial database load.
     DATA_PATH = _env_path("DATA_PATH", PROJECT_ROOT / "data" / "recipes.json")
-    # Where the training run writes the cleaned corpus (adds `ingredients_text`).
     PROCESSED_DATA_PATH = _env_path("PROCESSED_DATA_PATH", PROJECT_ROOT / "data" / "recipes_processed.json")
     TRAIN_SIZE = 0.8
 
@@ -62,9 +46,8 @@ class Config:
 
     # --- Paths --------------------------------------------------------------
     MODEL_SAVE_PATH = _env_path("MODEL_SAVE_PATH", PROJECT_ROOT / "model")
-    # Weights of the trained projection head. Both the embedding job and the API
-    # must load the same file, otherwise the projection is randomly initialised
-    # differently in each process and the stored vectors become meaningless.
+    # The embedding job and the API must load the same file, or the two
+    # projections differ and the stored vectors mean nothing.
     MODEL_WEIGHTS_PATH = _env_path("MODEL_WEIGHTS_PATH", MODEL_SAVE_PATH / "model.pt")
 
     # --- MongoDB / Atlas Vector Search --------------------------------------
@@ -74,8 +57,7 @@ class Config:
     EMBEDDING_FIELD = "embedding"
     VECTOR_INDEX_NAME = os.getenv("VECTOR_INDEX_NAME", "recipe_vector_index")
     VECTOR_SIMILARITY = "cosine"
-    # ANN knob: how many candidates Atlas scans per query (higher = more
-    # accurate, slower). Atlas recommends ~10-20x the number of results.
+    # candidates Atlas scans per query; higher = more accurate, slower
     NUM_CANDIDATES_MULTIPLIER = int(os.getenv("NUM_CANDIDATES_MULTIPLIER", 10))
 
     # --- Server -------------------------------------------------------------
@@ -83,6 +65,5 @@ class Config:
     PORT = int(os.getenv("PORT", 8080))
 
     def ensure_dirs(self) -> None:
-        """Create the writable directories the app expects. Called explicitly
-        so that merely importing the config never touches the filesystem."""
+        """Called explicitly so importing the config never touches the disk."""
         self.MODEL_SAVE_PATH.mkdir(parents=True, exist_ok=True)

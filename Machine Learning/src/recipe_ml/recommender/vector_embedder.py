@@ -1,11 +1,3 @@
-"""
-Embeds recipes locally and stores the vectors in MongoDB, where they are
-indexed by Atlas Vector Search.
-
-The embedding lives on the recipe document itself (field `embedding`), so
-recipe -> recipe recommendation only needs a lookup, no re-embedding.
-"""
-
 import time
 from typing import List, Optional
 
@@ -28,10 +20,7 @@ def ingredients_text(recipe: dict) -> str:
 
 
 class RecipeEmbedder:
-    """
-    Converts recipes in the database to vector embeddings based on their
-    ingredients, and writes them back to the same document.
-    """
+    """Turns recipe ingredients into vectors and writes them back."""
 
     def __init__(self, model: RecipeEmbeddingModel, collection: Collection = None,
                  config: Config = None):
@@ -40,14 +29,10 @@ class RecipeEmbedder:
         self.collection = collection if collection is not None else db.recipes()
 
     def embed_text(self, text: str) -> List[float]:
-        """Embed free text (e.g. a list of ingredients typed by a user)."""
         return self.model.get_embedding(text).tolist()
 
     def embed_recipe(self, recipe_id) -> Optional[List[float]]:
-        """
-        Embed one recipe and store it. Used by the add-recipe flow so a new
-        recipe is searchable right away.
-        """
+        """Embed one recipe and store it, so it is searchable right away."""
         recipe = self.collection.find_one({"_id": ObjectId(recipe_id)})
         if not recipe:
             return None
@@ -61,11 +46,8 @@ class RecipeEmbedder:
 
     def embed_all(self, batch_size: int = 64, overwrite: bool = False,
                   progress: bool = True) -> int:
-        """
-        Backfill embeddings for the whole collection.
-        By default only recipes that don't have one yet, so it can be re-run
-        safely after a crash.
-        """
+        """Backfill the collection. Skips recipes that already have a vector
+        unless `overwrite`, so it is safe to re-run after a crash."""
         query = {} if overwrite else {self.config.EMBEDDING_FIELD: {"$exists": False}}
         pending = self.collection.count_documents(query)
         if not pending:
@@ -104,8 +86,6 @@ class RecipeEmbedder:
         ])
         return len(recipes)
 
-    # --- Atlas Vector Search index -----------------------------------------
-
     def vector_index_status(self) -> Optional[str]:
         """`READY`, `PENDING`, ... or None when the index does not exist."""
         try:
@@ -113,8 +93,7 @@ class RecipeEmbedder:
                 if index["name"] == self.config.VECTOR_INDEX_NAME:
                     return index.get("status")
         except OperationFailure:
-            # Search indexes are an Atlas feature - a local mongod has no such
-            # command, and that is worth saying plainly rather than crashing.
+            # search indexes are an Atlas-only command
             raise RuntimeError(
                 "This cluster does not support search indexes. Atlas Vector "
                 "Search needs an Atlas cluster (M0 and up)."
@@ -122,11 +101,6 @@ class RecipeEmbedder:
         return None
 
     def create_vector_index(self, wait: bool = False, timeout: int = 300) -> None:
-        """
-        Create the Atlas Vector Search index (run once, needs an Atlas cluster).
-        Building the index is asynchronous - it takes a minute or two before
-        queries return results. Pass `wait=True` to block until it is queryable.
-        """
         if self.vector_index_status() is None:
             index = SearchIndexModel(
                 name=self.config.VECTOR_INDEX_NAME,
@@ -149,7 +123,6 @@ class RecipeEmbedder:
             self.wait_for_index(timeout=timeout)
 
     def wait_for_index(self, timeout: int = 300, poll: int = 5) -> bool:
-        """Block until the index reports READY. False on timeout."""
         deadline = time.time() + timeout
         while time.time() < deadline:
             status = self.vector_index_status()

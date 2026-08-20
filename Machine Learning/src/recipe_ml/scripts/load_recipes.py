@@ -1,19 +1,3 @@
-"""
-One-shot loader: source file -> MongoDB -> embeddings -> Atlas Vector Search.
-
-    python -m recipe_ml.scripts.load_recipes                      # everything
-    python -m recipe_ml.scripts.load_recipes --source data/recipes.json
-    python -m recipe_ml.scripts.load_recipes --skip-load          # embed what is already there
-    python -m recipe_ml.scripts.load_recipes --overwrite --wait   # re-embed all, block on the index
-
-The three stages are independent and each is safe to re-run:
-
-  1. upsert  - recipes are keyed on their URL (or name), so a second run
-               updates rather than duplicating
-  2. index   - created only if it is missing
-  3. embed   - only recipes without a vector, unless --overwrite
-"""
-
 import argparse
 import json
 import sys
@@ -28,8 +12,7 @@ from ..config import Config
 from ..model.embedder import RecipeEmbeddingModel
 from ..recommender.vector_embedder import RecipeEmbedder
 
-# Fields the Backend's Recipe schema declares. Anything else in the source file
-# is dropped, so a stray column cannot poison the collection.
+# Fields the Backend's Recipe schema declares; anything else is dropped.
 RECIPE_FIELDS = [
     "TranslatedRecipeName",
     "TranslatedIngredients",
@@ -46,10 +29,6 @@ RECIPE_FIELDS = [
 
 
 def read_recipes(path: Path) -> List[dict]:
-    """
-    Read recipes from `.json` (either a records array or one object per line)
-    or `.csv`. Returns plain dicts.
-    """
     if not path.exists():
         raise FileNotFoundError(
             f"no recipe file at {path} - pass --source, or set DATA_PATH in .env"
@@ -66,23 +45,21 @@ def read_recipes(path: Path) -> List[dict]:
         stripped = text.lstrip()
         if stripped.startswith("["):
             return json.loads(text)
-        # JSON-lines, which is what data_processor.save_data writes
+        # JSON-lines, what data_processor.save_data writes
         return [json.loads(line) for line in text.splitlines() if line.strip()]
 
     raise ValueError(f"unsupported file type '{suffix}' - use .json, .jsonl or .csv")
 
 
 def clean(recipe: dict) -> dict:
-    """Keep known fields, normalise the two shapes that differ across sources."""
     doc = {key: recipe[key] for key in RECIPE_FIELDS if key in recipe and recipe[key] is not None}
 
-    # `Cleaned-Ingredients` is comma separated text in the database, but the
-    # training pipeline turns it into a list. Store the text form.
+    # the training pipeline makes this a list; the database wants the text form
     cleaned = doc.get("Cleaned-Ingredients")
     if isinstance(cleaned, list):
         doc["Cleaned-Ingredients"] = ", ".join(str(part).strip() for part in cleaned if str(part).strip())
 
-    # Instructions are a list of steps in the schema.
+    # instructions are a list of steps in the schema
     instructions = doc.get("TranslatedInstructions")
     if isinstance(instructions, str):
         doc["TranslatedInstructions"] = [
@@ -113,8 +90,7 @@ def load_into_mongo(collection: Collection, recipes: List[dict], batch_size: int
         for raw in chunk:
             doc = clean(raw)
             if not doc.get("Cleaned-Ingredients") or not doc.get("TranslatedRecipeName"):
-                # Without ingredients there is nothing to embed, and without a
-                # name there is nothing to show - such a row is not a recipe.
+                # nothing to embed, or nothing to show
                 skipped += 1
                 continue
             operations.append(UpdateOne(key_for(doc), {"$set": doc}, upsert=True))
@@ -158,7 +134,7 @@ def main(argv=None) -> int:
         print("cannot reach MongoDB - check MONGO_URI in .env", file=sys.stderr)
         return 1
 
-    # 1. load ---------------------------------------------------------------
+    # 1. load
     if args.drop:
         confirm = input(f"delete all {collection.count_documents({})} recipes? [y/N] ")
         if confirm.strip().lower() != "y":
@@ -174,14 +150,14 @@ def main(argv=None) -> int:
         print(f"loaded - {stats['inserted']} new, {stats['updated']} updated, "
               f"{stats['skipped']} skipped")
 
-    # 2. index --------------------------------------------------------------
+    # 2. index
     model = RecipeEmbeddingModel(config).load_weights()
     embedder = RecipeEmbedder(model, collection, config)
 
     if not args.no_index:
         embedder.create_vector_index(wait=args.wait)
 
-    # 3. embed --------------------------------------------------------------
+    # 3. embed
     embedder.embed_all(batch_size=args.batch_size, overwrite=args.overwrite)
 
     total = collection.count_documents({})

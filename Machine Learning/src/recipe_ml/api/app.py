@@ -1,13 +1,3 @@
-"""
-FastAPI service for recipe recommendation.
-
-Every recommendation path is approximate nearest neighbour over Atlas Vector
-Search: the query is embedded locally by the projection head, and Atlas finds
-the closest recipe vectors. Run with:
-
-    uvicorn recipe_ml.api.app:app --reload
-"""
-
 import os
 from contextlib import asynccontextmanager
 
@@ -26,8 +16,6 @@ from .schemas import EmbedResponse, HealthResponse, RecommendRequest
 
 config = Config()
 
-# Loaded once at import: the transformer takes a few seconds to warm up and we
-# do not want to pay that on the first request.
 model = RecipeEmbeddingModel(config).load_weights()
 collection = db.recipes()
 searcher = RecipeSearcher(model, collection, config)
@@ -38,8 +26,7 @@ embedder = RecipeEmbedder(model, collection, config)
 async def lifespan(app: FastAPI):
     yield
     db.close()
-
-
+    
 app = FastAPI(title="Recipe Recommendation API", version="1.0.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
@@ -49,14 +36,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.exception_handler(PyMongoError)
 async def mongo_error_handler(request: Request, exc: PyMongoError):
-    """
-    A database fault is not a bug in the request. The most common one here is
-    `$vectorSearch` being rejected because the cluster is not Atlas, or the
-    vector index not existing yet - both are worth saying out loud.
-    """
+    # usually $vectorSearch rejected because the cluster is not atlas or the index does not exist yet
     detail = "Search backend unavailable"
     message = str(exc)
     if "$vectorSearch" in message or "index" in message.lower():
@@ -66,7 +48,6 @@ async def mongo_error_handler(request: Request, exc: PyMongoError):
 
 
 def _object_id(recipe_id: str) -> ObjectId:
-    """A malformed id is a client mistake, not a server error."""
     try:
         return ObjectId(recipe_id)
     except (InvalidId, TypeError):
@@ -81,16 +62,14 @@ def health_check():
         "model_weights": "trained" if config.MODEL_WEIGHTS_PATH.exists() else "untrained",
     }
 
-
 @app.post("/recommend")
 async def get_recommendations(query: RecommendRequest):
-    """Ingredients -> recipes. Embeds the query locally, then ANN on Atlas."""
+    """Ingredients -> recipes. Embeds the query locally, then ANN."""
     ingredients = query.ingredients.strip()
     if not ingredients:
         raise HTTPException(status_code=400, detail="Ingredients list cannot be empty")
 
     return searcher.search(ingredients, top_k=query.k or 5)
-
 
 @app.get("/similar/{recipe_id}")
 async def get_similar_recipes(recipe_id: str, k: int = 5):
@@ -100,15 +79,13 @@ async def get_similar_recipes(recipe_id: str, k: int = 5):
         raise HTTPException(status_code=404, detail="Recipe not found or not embedded yet")
     return results
 
-
 @app.post("/embed/{recipe_id}", response_model=EmbedResponse)
 async def embed_recipe(recipe_id: str):
     """Embed a newly added recipe and store it, so it becomes searchable."""
     vector = embedder.embed_recipe(_object_id(recipe_id))
     if vector is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
-    return {"status": "ok", "recipe_id": recipe_id}
-
+    return {"status": "ok", "recipe_id": recipe_id, "dim": len(vector), "embedding": vector}
 
 def main():
     """Console entry point: `recipe-api`."""

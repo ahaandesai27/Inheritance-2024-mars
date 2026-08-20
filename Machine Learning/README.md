@@ -50,15 +50,6 @@ get_db().list_collection_names()
 ping()                                       # False if the cluster is unreachable
 ```
 
-For a short-lived script that shouldn't leave a pool open:
-
-```python
-from recipe_ml.db import mongo_client
-
-with mongo_client() as client:
-    ...
-```
-
 ## Loading recipes
 
 `load_recipes` runs three independent, re-runnable stages: **upsert → index → embed**.

@@ -1,5 +1,3 @@
-"""Entry point for training the projection head: `python -m recipe_ml.training.main`."""
-
 from ..config import Config
 from ..model.embedder import RecipeEmbeddingModel
 from .data_processor import DataProcessor

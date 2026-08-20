@@ -1,11 +1,3 @@
-"""
-Recommendation via Atlas Vector Search (approximate nearest neighbour).
-
-Two entry points:
-  - ingredients -> recipes : embed the query locally, then ANN
-  - recipe -> recipes      : reuse the recipe's stored embedding, then ANN
-"""
-
 from typing import List, Optional
 
 from bson import ObjectId
@@ -24,15 +16,12 @@ class RecipeSearcher:
         self.config = config or Config()
 
     def search(self, ingredients: str, top_k: int = 5) -> List[dict]:
-        """Ingredient text -> similar recipes. Embeds locally, then ANN."""
+        """Ingredient text -> similar recipes."""
         vector = self.model.get_embedding(ingredients).tolist()
         return self._vector_search(vector, top_k)
 
     def search_by_recipe(self, recipe_id, top_k: int = 5) -> List[dict]:
-        """
-        Recipe -> similar recipes. No embedding needed, the vector is already
-        stored on the document.
-        """
+        """Recipe -> similar recipes, using the vector stored on the document."""
         recipe = self.collection.find_one(
             {"_id": ObjectId(recipe_id)},
             {self.config.EMBEDDING_FIELD: 1},
@@ -56,15 +45,8 @@ class RecipeSearcher:
                     "limit": top_k,
                 }
             },
-            {
-                "$project": {
-                    # the embedding itself is big and useless to the client
-                    self.config.EMBEDDING_FIELD: 0,
-                }
-            },
-            {
-                "$set": {"similarity": {"$meta": "vectorSearchScore"}}
-            },
+            {"$project": {self.config.EMBEDDING_FIELD: 0}},
+            {"$set": {"similarity": {"$meta": "vectorSearchScore"}}},
         ]
 
         results = []

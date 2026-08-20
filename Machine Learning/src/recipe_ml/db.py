@@ -1,26 +1,7 @@
-"""
-MongoDB access for the whole project.
+"""MongoDB access for the whole project. One lazily created `MongoClient` is
+shared by every caller - it already owns a thread safe connection pool."""
 
-One lazily created client is shared by every caller, because a `MongoClient`
-already owns a connection pool and is thread safe - building a second one per
-module just burns connections against the Atlas cluster.
-
-Typical use::
-
-    from recipe_ml.db import recipes, get_collection, get_db
-
-    recipes().find_one({"Cuisine": "Indian"})   # the recipe collection
-    get_collection("feedback").insert_one({})   # any other collection
-    get_db().list_collection_names()
-
-For a short lived script that should not leave a pool open::
-
-    with mongo_client() as client:
-        client[Config.MONGO_DB].recipes.count_documents({})
-"""
-
-from contextlib import contextmanager
-from typing import Iterator, Optional
+from typing import Optional
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
@@ -38,13 +19,8 @@ class DatabaseError(RuntimeError):
 
 
 def get_client(uri: Optional[str] = None) -> MongoClient:
-    """
-    The shared client. Created on first use so that importing this module
-    never blocks on a network call.
-
-    Passing `uri` bypasses the shared instance and returns a fresh client -
-    the caller then owns it and is responsible for closing it.
-    """
+    """The shared client, created on first use. Passing `uri` returns a fresh
+    client the caller owns and must close."""
     if uri is not None:
         return _build_client(uri)
 
@@ -61,7 +37,7 @@ def get_client(uri: Optional[str] = None) -> MongoClient:
 def _build_client(uri: str) -> MongoClient:
     return MongoClient(
         uri,
-        # Fail fast with a clear error instead of hanging for 30s on a bad URI.
+        # fail fast instead of hanging 30s on a bad URI
         serverSelectionTimeoutMS=10_000,
         connectTimeoutMS=10_000,
         retryWrites=True,
@@ -80,12 +56,12 @@ def get_collection(name: str, db_name: Optional[str] = None) -> Collection:
 
 
 def recipes() -> Collection:
-    """The recipe collection - the one nearly every caller wants."""
+    """The recipe collection."""
     return get_collection(_config.RECIPE_COLLECTION)
 
 
 def ping() -> bool:
-    """True if the cluster answers. Used by the API health check."""
+    """True if the cluster answers."""
     try:
         get_client().admin.command("ping")
         return True
@@ -99,15 +75,3 @@ def close() -> None:
     if _client is not None:
         _client.close()
         _client = None
-
-
-@contextmanager
-def mongo_client(uri: Optional[str] = None) -> Iterator[MongoClient]:
-    """A client scoped to a `with` block, closed on exit."""
-    client = _build_client(uri or _config.MONGO_URI) if (uri or _config.MONGO_URI) else None
-    if client is None:
-        raise DatabaseError("MONGO_URI is not set - add it to the .env file at the project root.")
-    try:
-        yield client
-    finally:
-        client.close()

@@ -1,6 +1,6 @@
 """Request/response models for the API."""
 
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -13,6 +13,8 @@ class RecommendRequest(BaseModel):
 class EmbedResponse(BaseModel):
     status: str
     recipe_id: str
+    dim: int
+    embedding: List[float]
 
 
 class HealthResponse(BaseModel):

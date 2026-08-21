@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app/api/recipe.dart';
+import 'package:app/api/reccapi.dart';
 import 'package:app/api/saverecipe.dart';
 import 'package:app/api/localstorage.dart';
 import 'package:app/utils/colors.dart';
 import 'package:app/pages/ingredient_prices_page.dart';
+import 'package:app/widgets/recsection.dart';
 
 class RecipeDetailsPage extends StatefulWidget {
   final Map<String, dynamic> recipeData;
@@ -17,12 +19,49 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
   late Recipe recipe;
   final saver = SaveRecipeService();
   bool isSaved = false;
+  List<Map<String, dynamic>> similar = [];
+  bool isLoadingSimilar = true;
 
   @override
   void initState() {
     super.initState();
     recipe = Recipe.fromJson(widget.recipeData);
     _checkIfSaved();
+    if (recipe.id.isEmpty) {
+      isLoadingSimilar = false;
+    } else {
+      _loadSimilarRecipes();
+    }
+  }
+
+  Future<void> _loadSimilarRecipes() async {
+    List<Map<String, dynamic>> results = [];
+    try {
+      results = await getSimilarRecipes(recipe.id, 5);
+    } catch (_) {}
+    if (!mounted) return;
+    setState(() {
+      similar = results;
+      isLoadingSimilar = false;
+    });
+  }
+
+  Future<void> _saveSimilarRecipe(Recipe similarRecipe) async {
+    try {
+      String userId = await fetchStoredUserId();
+      if (userId == '') return;
+      await saver.saveRecipe(userId, similarRecipe.id);
+    } catch (_) {}
+  }
+
+  void _openSimilarRecipe(Recipe similarRecipe) {
+    final data = similar.firstWhere((item) => item['_id'] == similarRecipe.id);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecipeDetailsPage(recipeData: data),
+      ),
+    );
   }
 
   Future<void> _checkIfSaved() async {
@@ -291,6 +330,18 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                       );
                     },
                   ),
+
+                  if (isLoadingSimilar || similar.isNotEmpty) ...[
+                    const SizedBox(height: 24),
+                    RecommendationsSection(
+                      title: 'Similar recipes',
+                      recommendations:
+                          similar.map((item) => Recipe.fromJson(item)).toList(),
+                      isLoading: isLoadingSimilar,
+                      onSaveRecipe: _saveSimilarRecipe,
+                      onTapRecipe: _openSimilarRecipe,
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -7,6 +7,7 @@ class RecommendationsSection extends StatelessWidget {
   final bool isLoading;
   final Function(Recipe) onSaveRecipe;
   final Function(Recipe) onTapRecipe;
+  final String title;
 
   const RecommendationsSection({
     super.key,
@@ -14,6 +15,7 @@ class RecommendationsSection extends StatelessWidget {
     required this.isLoading,
     required this.onSaveRecipe,
     required this.onTapRecipe,
+    this.title = 'Recommended for you',
   });
 
   @override
@@ -25,9 +27,9 @@ class RecommendationsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Recommended for you',
-          style: TextStyle(
+        Text(
+          title,
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),

@@ -79,13 +79,17 @@ async def get_similar_recipes(recipe_id: str, k: int = 5):
         raise HTTPException(status_code=404, detail="Recipe not found or not embedded yet")
     return results
 
-@app.post("/embed/{recipe_id}", response_model=EmbedResponse)
+@app.post("/embed/{recipe_id}")
 async def embed_recipe(recipe_id: str):
     """Embed a newly added recipe and store it, so it becomes searchable."""
     vector = embedder.embed_recipe(_object_id(recipe_id))
     if vector is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
-    return {"status": "ok", "recipe_id": recipe_id, "dim": len(vector), "embedding": vector}
+    return {
+            "status": "ok",
+            "recipe_id": recipe_id,
+            "dim": len(vector)
+        }
 
 def main():
     """Console entry point: `recipe-api`."""

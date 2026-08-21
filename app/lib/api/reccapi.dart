@@ -27,6 +27,22 @@ Future<List<Map<String, dynamic>>> getRecommendations(
   throw Exception('Failed to load recommendations');
 }
 
+Future<List<Map<String, dynamic>>> getSimilarRecipes(
+    String recipeId, int numRecommendations) async {
+  final url = Uri.parse('$mlUrl/similar/$recipeId?k=$numRecommendations');
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    final List<dynamic> data = json.decode(response.body);
+    return List<Map<String, dynamic>>.from(data);
+  }
+  // the recipe has no stored embedding yet, so there is nothing to compare with
+  if (response.statusCode == 404) {
+    return [];
+  }
+  throw Exception('Failed to load similar recipes');
+}
+
 Future<List<Map<String, dynamic>>?> getRecommendationsFromSaved(
     String userId) async {
   try {
@@ -45,12 +61,11 @@ Future<List<Map<String, dynamic>>?> getRecommendationsFromSaved(
           await getRecommendations(ingredient, 5);
 
       for (var rec in recommendations) {
-        final title =
-            rec['TranslatedRecipeName'] ?? rec['title'] ?? rec['name'] ?? '';
+        final String title = rec['TranslatedRecipeName'] ?? '';
         if (title.isNotEmpty && !seenTitles.contains(title)) {
           seenTitles.add(title);
           result.add(rec);
-        } else {}
+        }
       }
     }
 

@@ -1,10 +1,11 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'package:app/api/apiurl.dart';
 import 'package:http/http.dart' as http;
 
 class Getservices {
-  final _baseUrl = 'http://localhost:4000/api/recipes';
+  final _baseUrl = '$apiUrl/api/recipes';
 
   Future<List<dynamic>> search(String query, int skip, int limit) async {
     try {

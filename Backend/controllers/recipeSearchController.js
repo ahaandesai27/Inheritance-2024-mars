@@ -69,6 +69,7 @@ const search = async (req, res) => {
                     data: [
                         { $skip: parseInt(skip) },
                         { $limit: parseInt(limit) },
+                        { $project: { embedding: 0 } },
                     ],
                 },
             },

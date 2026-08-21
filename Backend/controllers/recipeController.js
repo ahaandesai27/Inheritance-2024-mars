@@ -1,4 +1,6 @@
 const Recipe = require('../models/Recipe');
+require("dotenv").config()
+
 //get all Recipes
 const getRecipes = async (req, res) => {
     try {
@@ -35,11 +37,24 @@ const getRecipeById = async (req, res) => {
 
 const createNewRecipe = async (req, res) => {
     try {
-        const recipe = new Recipe(req.body);
-        await recipe.save();
-        res.status(201).json(recipe);
+      let recipe = new Recipe(req.body);
+      const id = recipe.id;
+      await recipe.save();
+      const mlApi = process.env.ML_API;
+
+      console.log(mlApi);
+      // fire and forget
+      await fetch(`${mlApi}/embed/${id}`, {
+          method: "POST"
+        }).catch(error => {
+          console.error("Embedding failed:", error);
+        });
+
+      recipe = await Recipe.findOne({_id: id});
+      res.status(201).json(recipe);
     }
     catch (error) {
+      console.error(error);
         res.status(400).json({ error: 'Failed to create recipe' });
     }
 }

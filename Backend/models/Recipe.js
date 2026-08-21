@@ -12,6 +12,7 @@ const recipeSchema = new mongoose.Schema({
   "Ingredient-count": { type: Number, required: true, min: [1, 'Ingredient count must be greater than 0'] },
   calorieCount: { type: Number, required: true, min: [1, 'Calorie count must be greater than 0'] },
   veg: { type: Boolean, default: null },
+  embedding: {type: [Number], select: false}
 });
 
 const Recipe = mongoose.model('recipes', recipeSchema);

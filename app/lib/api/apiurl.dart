@@ -4,4 +4,7 @@ const String apiUrl = String.fromEnvironment(
   'API_URL',
   defaultValue: "https://recipe-server-xc6l.onrender.com",
 );
-const String mlUrl = "https://recipe-ml-965807896618.asia-south1.run.app";
+const String mlUrl = String.fromEnvironment(
+  'ML_URL',
+  defaultValue: "https://recipe-ml-965807896618.asia-south1.run.app",
+);

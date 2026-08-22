@@ -27,7 +27,7 @@ RecipAura is an all inclusive app designed to enhance your culinary experience. 
 - Display of recipes under a given cuisine.
 - Display of information of particular recipe
 - Favoriting/Saving a single recipe
-- Webscraping of cheapest ingredient prices from amazon, zepto, big basket, swiggy
+- Getting cheapest ingredient prices from various stores using APIs.
 - ML Based Recommendation of recipes based on saved recipes and ingredients given by user.
 
 ## 🔗Links
@@ -47,13 +47,8 @@ RecipAura is an all inclusive app designed to enhance your culinary experience. 
 - NodeJS
 - ExpressJS
 - MongoDB
-
-#### Web Scraping
-
-- Puppeteer JS
-- Express JS 
-- Redis to cache results
-
+- Redis for caching
+  
 #### Machine Learning
 - PyTorch
 - sentence_transformers 
@@ -72,11 +67,10 @@ RecipAura is an all inclusive app designed to enhance your culinary experience. 
 
 <b>Note:</b> Contact for deployment URLs if required.
 
-### Backend and Webscraping Setup
+### Backend Setup
 
 - Navigate to the respective folder and install all dependencies by running `npm install`
 - Start server by running `npm start`
-- [Note] The 'install-chrome.sh' script file is for the Dockerfile. For local use, puppeteer should be listed in package.json, using that is sufficient.
 
 ### Machine Learning
 

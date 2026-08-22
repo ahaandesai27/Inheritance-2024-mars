@@ -4,6 +4,7 @@ pandas
 pydantic
 pymongo>=4.7
 python-dotenv
+redis
 sentence-transformers
 torch
 uvicorn

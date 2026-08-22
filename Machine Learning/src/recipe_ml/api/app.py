@@ -1,3 +1,4 @@
+import hashlib
 import os
 from contextlib import asynccontextmanager
 
@@ -8,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pymongo.errors import PyMongoError
 
-from .. import db
+from .. import cache, db
 from ..config import Config
 from ..model.embedder import RecipeEmbeddingModel
 from ..recommender import RecipeEmbedder, RecipeSearcher
@@ -26,6 +27,7 @@ embedder = RecipeEmbedder(model, collection, config)
 async def lifespan(app: FastAPI):
     yield
     db.close()
+    cache.close()
     
 app = FastAPI(title="Recipe Recommendation API", version="1.0.0", lifespan=lifespan)
 app.add_middleware(
@@ -69,14 +71,36 @@ async def get_recommendations(query: RecommendRequest):
     if not ingredients:
         raise HTTPException(status_code=400, detail="Ingredients list cannot be empty")
 
-    return searcher.search(ingredients, top_k=query.k or 5)
+    top_k = query.k or 5
+    # the query text is unbounded, so the key carries its digest
+    digest = hashlib.sha256(ingredients.lower().encode()).hexdigest()
+    key = f"{cache.KEY_PREFIX}recommend:{digest}:{top_k}"
+
+    results = cache.get(key)
+    if results is not None:
+        return results
+
+    results = searcher.search(ingredients, top_k=top_k)
+    if results:
+        cache.set(key, results)
+    return results
 
 @app.get("/similar/{recipe_id}")
 async def get_similar_recipes(recipe_id: str, k: int = 5):
     """Recipe -> recipes. Reuses the embedding already stored on the recipe."""
-    results = searcher.search_by_recipe(_object_id(recipe_id), top_k=k if k > 0 else 5)
+    recipe_oid = _object_id(recipe_id)
+    top_k = k if k > 0 else 5
+    key = f"{cache.KEY_PREFIX}similar:{recipe_oid}:{top_k}"
+
+    results = cache.get(key)
+    if results is not None:
+        return results
+
+    results = searcher.search_by_recipe(recipe_oid, top_k=top_k)
     if not results:
         raise HTTPException(status_code=404, detail="Recipe not found or not embedded yet")
+
+    cache.set(key, results)
     return results
 
 @app.post("/embed/{recipe_id}")
@@ -85,6 +109,8 @@ async def embed_recipe(recipe_id: str):
     vector = embedder.embed_recipe(_object_id(recipe_id))
     if vector is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
+
+    cache.invalidate_recommendations()
     return {
             "status": "ok",
             "recipe_id": recipe_id,

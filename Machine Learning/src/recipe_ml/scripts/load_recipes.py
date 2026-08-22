@@ -7,7 +7,7 @@ from typing import Iterator, List
 from pymongo import UpdateOne
 from pymongo.collection import Collection
 
-from .. import db
+from .. import cache, db
 from ..config import Config
 from ..model.embedder import RecipeEmbeddingModel
 from ..recommender.vector_embedder import RecipeEmbedder
@@ -159,11 +159,14 @@ def main(argv=None) -> int:
 
     # 3. embed
     embedder.embed_all(batch_size=args.batch_size, overwrite=args.overwrite)
+    # this path never touches /embed, so nothing else drops the stale results
+    cache.invalidate_recommendations()
 
     total = collection.count_documents({})
     embedded = collection.count_documents({config.EMBEDDING_FIELD: {"$exists": True}})
     print(f"\n{embedded}/{total} recipes are searchable")
     db.close()
+    cache.close()
     return 0
 
 

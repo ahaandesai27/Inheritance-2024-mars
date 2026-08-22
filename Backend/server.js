@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -7,16 +9,12 @@ const {logger} = require('./middleware/logEvents');
 const errorHandler = require('./middleware/errorHandler');
 const verifyJWT = require('./middleware/verifyJWT');
 const credentials = require('./middleware/credentials');
-const mongoose = require('mongoose');
 const connectDB = require('./config/dbConnection');
+const { connectRedis } = require('./config/redis');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 
-require('dotenv').config();
 const PORT = process.env.PORT || 3500;
-
-// Connect to DB
-connectDB();
 
 //custom middleware logger
 app.use(logger);
@@ -67,7 +65,10 @@ app.all('*', (req, res) => {
 
 app.use(errorHandler);
 
-mongoose.connection.once('open', () => {
-    console.log('MongoDB connection ready');
+const start = async () => {
+    await connectDB();
+    connectRedis();
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-});
+};
+
+start();

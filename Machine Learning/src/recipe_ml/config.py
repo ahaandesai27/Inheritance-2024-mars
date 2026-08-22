@@ -60,6 +60,13 @@ class Config:
     # candidates Atlas scans per query; higher = more accurate, slower
     NUM_CANDIDATES_MULTIPLIER = int(os.getenv("NUM_CANDIDATES_MULTIPLIER", 10))
 
+    # --- Redis --------------------------------------------------------------
+    REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379")
+    # /embed invalidates cached results when a recipe joins the corpus, but a
+    # retrain or a direct database write does not, so entries also expire on
+    # their own after a day.
+    RECOMMENDATION_CACHE_TTL = int(os.getenv("RECOMMENDATION_CACHE_TTL", 24 * 60 * 60))
+
     # --- Server -------------------------------------------------------------
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = int(os.getenv("PORT", 8080))

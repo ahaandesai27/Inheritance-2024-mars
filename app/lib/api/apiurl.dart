@@ -1,5 +1,5 @@
-// Override without editing this file, e.g. to point at a local backend:
-//   flutter run --dart-define=API_URL=http://localhost:3500
+// Supplied at build time. Put the values in env.json (see env.example.json) and
+// build with --dart-define-from-file=env.json, or pass --dart-define=API_URL=...
 const String apiUrl = String.fromEnvironment(
   'API_URL',
   defaultValue: "https://recipe-server-xc6l.onrender.com",

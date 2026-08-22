@@ -1,4 +1,5 @@
 const { stores, storeNames } = require('./stores');
+const { cacheGet, cacheSet } = require('../config/redis');
 
 const DEFAULT_LIMIT = 30;
 const MAX_LIMIT = 100;
@@ -63,6 +64,22 @@ async function fanOut(names, query, options) {
   });
 }
 
+// Everything that can change the response has to be in the key: the endpoint,
+// the query, which stores were asked for (order included - it is the order the
+// results come back in), and the options the store clients actually read.
+function cacheKey(endpoint, q, names, options) {
+  return [
+    'prices',
+    endpoint,
+    String(q).trim().toLowerCase(),
+    names.join(','),
+    options.limit,
+    options.lat ?? '',
+    options.lon ?? '',
+    options.storeId ?? '',
+  ].join(':');
+}
+
 const price = (product) => product.productPrice?.discountedPrice ?? null;
 
 // GET /api/stores
@@ -85,9 +102,14 @@ const searchStores = async (req, res) => {
     }
 
     const limit = parseLimit(req.query.limit);
+    const options = searchOptions(req.query, limit);
+    const key = cacheKey('search', q, selected, options);
+
+    const cached = await cacheGet(key);
+    if (cached) return res.json(cached);
 
     try {
-        const results = await fanOut(selected, q, searchOptions(req.query, limit));
+        const results = await fanOut(selected, q, options);
         const count = results.reduce((total, result) => total + result.count, 0);
 
         // every store failing is an upstream outage, not an empty result set
@@ -95,7 +117,14 @@ const searchStores = async (req, res) => {
             return res.status(502).json({ message: 'All stores failed', query: q, results });
         }
 
-        res.json({ query: q, limit, count, results });
+        const payload = { query: q, limit, count, results };
+        // a partial fan-out would pin today's answer to a store that was merely
+        // having a bad minute, so only a clean sweep is worth keeping
+        if (count > 0 && results.every((result) => result.ok)) {
+            await cacheSet(key, payload);
+        }
+
+        res.json(payload);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
@@ -112,9 +141,14 @@ const getCheapest = async (req, res) => {
     }
 
     const limit = parseLimit(req.query.limit);
+    const options = searchOptions(req.query, limit);
+    const key = cacheKey('cheapest', q, storeNames, options);
+
+    const cached = await cacheGet(key);
+    if (cached) return res.json(cached);
 
     try {
-        const results = await fanOut(storeNames, q, searchOptions(req.query, limit));
+        const results = await fanOut(storeNames, q, options);
         const needle = q.toLowerCase();
 
         const candidates = results
@@ -131,12 +165,18 @@ const getCheapest = async (req, res) => {
             return res.status(404).json({ message: 'No matching in-stock product found', query: q });
         }
 
-        res.json({
+        const payload = {
             query: q,
             cheapest: candidates[0],
             // the rest, so the client can show what it was cheapest against
             alternatives: candidates.slice(1),
-        });
+        };
+        // a store that failed might have been holding the actual cheapest price
+        if (results.every((result) => result.ok)) {
+            await cacheSet(key, payload);
+        }
+
+        res.json(payload);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
@@ -158,10 +198,21 @@ const searchStore = async (req, res) => {
     }
 
     const limit = parseLimit(req.query.limit);
+    const options = searchOptions(req.query, limit);
+    const key = cacheKey('store', q, [store], options);
+
+    const cached = await cacheGet(key);
+    if (cached) return res.json(cached);
 
     try {
-        const products = await withTimeout(search(q, searchOptions(req.query, limit)), store);
-        res.json({ query: q, store, count: products.length, products });
+        const products = await withTimeout(search(q, options), store);
+
+        const payload = { query: q, store, count: products.length, products };
+        if (products.length > 0) {
+            await cacheSet(key, payload);
+        }
+
+        res.json(payload);
     } catch (error) {
         // the failure is upstream's, so report it as a bad gateway
         res.status(502).json({ message: `${store} lookup failed`, error: error.message });

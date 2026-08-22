@@ -4,7 +4,11 @@
   "description": "Express tutorial",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server"
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "author": "Dave Gray",
   "license": "ISC",
@@ -14,10 +18,11 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "date-fns": "^2.23.0",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.6.1",
     "express": "^4.17.1",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.3.4",
+    "redis": "^6.2.1",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^8.3.2"
   },
